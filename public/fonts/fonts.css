@@ -1,0 +1,51 @@
+/*
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+// ==================================================================================================
+//
+// Fonts (embed)
+// * Prompt
+//   - Prompt Regular
+//   - Prompt Medium
+//   - Prompt Bold
+//
+// ==================================================================================================
+// //////////////////////////////////////////////////////////////////////////////////////////////////
+*/
+
+/*
+// Prompt
+// ============================================================
+*/
+
+/* Regular */
+@font-face {
+  font-family: 'Prompt';
+  src: url('../fonts/prompt/prompt-regular.eot');
+  src: url('../fonts/prompt/prompt-regular.eot') format('embedded-opentype'),
+    url('../fonts/prompt/prompt-regular.woff') format('woff'),
+    url('../fonts/prompt/prompt-regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Medium */
+@font-face {
+  font-family: 'Prompt';
+  src: url('../fonts/prompt/prompt-medium.eot');
+  src: url('../fonts/prompt/prompt-medium.eot') format('embedded-opentype'),
+    url('../fonts/prompt/prompt-medium.woff') format('woff'),
+    url('../fonts/prompt/prompt-medium.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Bold */
+@font-face {
+  font-family: 'Prompt';
+  src: url('../fonts/prompt/prompt-bold.eot');
+  src: url('../fonts/prompt/prompt-bold.eot') format('embedded-opentype'),
+    url('../fonts/prompt/prompt-bold.woff') format('woff'),
+    url('../fonts/prompt/prompt-bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}

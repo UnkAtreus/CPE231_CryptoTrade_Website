@@ -1,0 +1,15 @@
+export default {
+  MN: '2px',
+  TN: '4px',
+  XXS: '5px',
+  XS: '6px',
+  SM: '10px',
+  MD: '12px',
+  LG: '14px',
+  XL: '16px',
+  XXL: '18px',
+  BG: '20px',
+  HG: '22px',
+  MS: '24px',
+  ROUNDED: '50%',
+}
