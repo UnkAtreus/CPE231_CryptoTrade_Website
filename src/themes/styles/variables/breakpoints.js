@@ -48,7 +48,7 @@ export default {
   TABLET_LG_MIN: '1025px',
 
   // Desktop
-  DESKTOP_XS: '1280px',
+  DESKTOP_XS: '1024px',
   DESKTOP_SM: '1366px',
   DESKTOP_MD: '1440px',
   DESKTOP_LG: '1600px',

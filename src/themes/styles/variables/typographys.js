@@ -1,6 +1,6 @@
 export default {
   FONT_FAMILIES: {
-    FIRST:  'Prompt',
+    FIRST: 'Prompt',
   },
   FONT_SIZES_PX: {
     MN: '10px',
@@ -16,4 +16,13 @@ export default {
     HG: '48px',
     MS: '64px',
   },
+
+  FONT_THEME: {
+    LABEL: '12px',
+    PARAGRAPH: '16px',
+    TITLE: '18px',
+    FEATURE_CARD_TITLE: '24px',
+    SECTION_HEADLINE: '36px',
+    HEADLINE: '48px',
+  }
 }

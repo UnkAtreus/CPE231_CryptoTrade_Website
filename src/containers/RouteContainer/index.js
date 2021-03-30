@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  Route
+  Route, Switch
 } from 'react-router-dom'
 import {
   connect,
@@ -28,7 +28,10 @@ export class RouteApp extends React.Component {
     return (
       <MainLayoutContainer>
         {/* Use props 'exact' for match single container(not share container) */}
-        <Route exact path={ROUTE_PATH.HOME.LINK} component={HomeContainer} />
+        <Switch>
+          {/* <Route exact path={ROUTE_PATH.HOME.LINK} component={HomeContainer} /> */}
+          <Route path={ROUTE_PATH.HOME.LINK} component={HomeContainer} />
+        </Switch>
       </MainLayoutContainer>
     )
   }

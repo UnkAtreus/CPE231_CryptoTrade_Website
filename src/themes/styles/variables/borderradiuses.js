@@ -11,5 +11,7 @@ export default {
   BG: '20px',
   HG: '22px',
   MS: '24px',
+  REGULAR: '30px',
+  SMALL: '16px',
   ROUNDED: '50%',
 }

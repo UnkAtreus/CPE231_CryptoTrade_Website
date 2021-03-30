@@ -3,6 +3,14 @@ import {
 } from 'styled-components'
 
 injectGlobal`
+
+  * {
+    box-sizing: border-box;
+    font-family: 'Prompt', sans-serif;
+    color: #ffffff;
+    font-size: 12px;
+    background-color: #33334B;
+  }
   .flex-wrap {
     flex-wrap: wrap;
   }

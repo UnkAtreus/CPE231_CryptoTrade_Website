@@ -8,6 +8,7 @@ const HomeContainer = ({ match, ...props }) => {
   return (
     <React.Fragment>
       <HomeStyled>
+        Test
       </HomeStyled>
     </React.Fragment>
   );
