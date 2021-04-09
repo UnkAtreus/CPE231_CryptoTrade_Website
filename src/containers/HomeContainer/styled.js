@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import {
-  default as VARIABLES
+    default as VARIABLES
 } from '../../themes/styles/variables'
 // import {
 //   default as TYPOGRAPHYS
@@ -24,7 +24,7 @@ export const HomeStyled = styled.div`
   display: grid;
   gap: 8px;
   grid-template-columns: 1fr minmax(253px, 320px) minmax(510px, 880px) minmax(253px, 320px) 1fr;
-  grid-template-rows: minmax(64px, auto) 72px 320px 160px 256px auto 285px;
+  grid-template-rows: minmax(64px, auto) 112px 320px 160px 256px auto 285px;
   grid-template-areas:
       "header header header header header"
       "left subHeader subHeader profile right"
@@ -56,8 +56,6 @@ export const SubHeader = styled.div`
     grid-area: subHeader / subHeader / subHeader / subHeader;
     font-size: 14px;
     color: rgb(255, 255, 255);
-    padding-top: 10px;
-    padding-bottom: 10px;
 `;
 
 export const Header = styled.div`

@@ -11,8 +11,8 @@ export const Chart = () => {
         <TradingViewWidget
           symbol="BINANCE:BTCUSDT"
           theme={Themes.DARK}
-          locale="fr"
-          interval="en"
+          locale="en"
+          interval="60"
           autosize
         />
       </ChartStyle>

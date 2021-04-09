@@ -9,6 +9,9 @@ injectGlobal`
     font-family: 'Prompt', sans-serif;
     color: #ffffff;
     font-size: 12px;
+  }
+
+  body {
     background-color: #33334B;
   }
   .flex-wrap {
