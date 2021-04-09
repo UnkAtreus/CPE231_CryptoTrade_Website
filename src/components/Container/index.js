@@ -6,30 +6,25 @@ import {
   ContainerStyle
 } from './styled'
 
-export class Container extends React.PureComponent {
-  render() {
-    const {
-      className,
-      children,
-    } = this.props
+export const Container = ({ className,
+  children, }) => {
 
-    return (
-      <ContainerStyle
-        className={ClassNames(
-          'container',
-          className
-        )}
-      >
-        {children}
-      </ContainerStyle>
-    )
-  }
-
-  static propTypes = {
+  Container.propTypes = {
     className: PropTypes.string,
     children: PropTypes.oneOfType([
       PropTypes.node,
       PropTypes.string
     ]),
   }
-}
+
+  return (
+    <ContainerStyle
+      className={ClassNames(
+        'container',
+        className
+      )}
+    >
+      {children}
+    </ContainerStyle>
+  );
+};

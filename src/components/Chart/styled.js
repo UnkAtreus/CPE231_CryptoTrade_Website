@@ -3,23 +3,21 @@ import {
   default as VARIABLES
 } from '../../themes/styles/variables'
 
-export const ContainerStyle = styled.div`
+// Wrapper
+// ============================================================
+export const ChartStyle = styled.div`
   /* Parent styles
   ------------------------------- */
-  display: block;
-  width: 100%;
-  max-width: ${VARIABLES.BREAKPOINTS.TABLET_LG};
-  padding-left: 16px;
-  padding-right: 16px;
-  margin: 0 auto;
+  height: 488px;
 
   /* Child element styles
   ------------------------------- */
 
-
   /* Modifiers
   ------------------------------- */
 
+  /* Modifiers for single UI
+  ------------------------------- */
 
   /* Media queries
   ------------------------------- */
