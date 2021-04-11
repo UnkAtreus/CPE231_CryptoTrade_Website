@@ -3,9 +3,33 @@ export const ROUTE_PATH = {
     TEXT: 'Home',
     LINK: '/',
   },
+  TRADES: {
+    TEXT: 'Trades',
+    LINK: '/trade/:symbol',
+  },
   LOGIN: {
     TEXT: 'Login',
-    LINK: '/',
+    LINK: '/login',
+  },
+  REGISTER: {
+    TEXT: 'Register',
+    LINK: '/register',
+  },
+  P2P: {
+    TEXT: 'P2P',
+    LINK: '/p2p',
+  },
+  DEPOSIT: {
+    TEXT: 'Deposit',
+    LINK: '/deposit',
+  },
+  WITHDRAW: {
+    TEXT: 'Withdraw',
+    LINK: '/withdraw',
+  },
+  SETTING: {
+    TEXT: 'Setting',
+    LINK: '/setting',
   },
   NEWS: {
     TEXT: 'News',

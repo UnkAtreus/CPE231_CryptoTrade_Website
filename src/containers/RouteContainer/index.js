@@ -29,7 +29,13 @@ export class RouteApp extends React.Component {
       <MainLayoutContainer>
         {/* Use props 'exact' for match single container(not share container) */}
         <Switch>
-          {/* <Route exact path={ROUTE_PATH.HOME.LINK} component={HomeContainer} /> */}
+          <Route exact path={ROUTE_PATH.TRADES.LINK} component={HomeContainer} />
+          <Route exact path={ROUTE_PATH.LOGIN.LINK} component={HomeContainer} />
+          <Route exact path={ROUTE_PATH.REGISTER.LINK} component={HomeContainer} />
+          <Route exact path={ROUTE_PATH.P2P.LINK} component={HomeContainer} />
+          <Route exact path={ROUTE_PATH.DEPOSIT.LINK} component={HomeContainer} />
+          <Route exact path={ROUTE_PATH.WITHDRAW.LINK} component={HomeContainer} />
+          <Route exact path={ROUTE_PATH.SETTING.LINK} component={HomeContainer} />
           <Route path={ROUTE_PATH.HOME.LINK} component={HomeContainer} />
         </Switch>
       </MainLayoutContainer>
