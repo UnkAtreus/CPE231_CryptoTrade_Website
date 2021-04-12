@@ -178,6 +178,10 @@ injectGlobal`
     margin-right: 8px;
   }
 
+  .mgr-16 {
+    margin-right: 16px;
+  }
+
   .mgr-32 {
     margin-right: 32px;
   }

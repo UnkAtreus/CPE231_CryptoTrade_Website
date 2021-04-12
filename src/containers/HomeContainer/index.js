@@ -27,7 +27,92 @@ const HomeContainer = ({ match, ...props }) => {
       <Header name="header">
         <NavBar></NavBar>
       </Header>
-      <OrderBook name="orderbook"></OrderBook>
+      <OrderBook name="orderbook">
+        <div className="orderbook-container">
+          <div className="content-column mgb-16">
+            <div className="paragraph mgb-8">Orderbook</div>
+            <div className="content-row space-between mgb-2">
+              <div
+                className="label gray align-items-start"
+                style={{ minWidth: "70px" }}
+              >
+                Price(USDT)
+              </div>
+              <div
+                className="label gray align-items-end "
+                style={{ minWidth: "75px" }}
+              >
+                Amount(BTC)
+              </div>
+              <div
+                className="label gray align-items-end text-right"
+                style={{ minWidth: "60px" }}
+              >
+                Total
+              </div>
+            </div>
+
+            <div className="content-column mgb-16">
+              {Array.from(Array(17).keys()).map((data) => {
+                return (
+                  <div className="content-row space-between mgb-2">
+                    <div
+                      className="label red align-items-start"
+                      style={{ minWidth: "70px" }}
+                    >
+                      52187.43
+                    </div>
+                    <div
+                      className="label white align-items-end text-right"
+                      style={{ minWidth: "75px" }}
+                    >
+                      0.012375
+                    </div>
+                    <div
+                      className="label white align-items-end text-right"
+                      style={{ minWidth: "60px" }}
+                    >
+                      645.81945
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="content-row align-items-center mgb-16">
+              <div className="paragraph green mgr-16">52,160.29</div>
+              <div className="label gray">$52,160.29</div>
+            </div>
+
+            <div className="content-column mgb-16">
+              {Array.from(Array(17).keys()).map((data) => {
+                return (
+                  <div className="content-row space-between mgb-2">
+                    <div
+                      className="label green align-items-start"
+                      style={{ minWidth: "70px" }}
+                    >
+                      52187.43
+                    </div>
+                    <div
+                      className="label white align-items-end text-right"
+                      style={{ minWidth: "75px" }}
+                    >
+                      0.012375
+                    </div>
+                    <div
+                      className="label white align-items-end text-right"
+                      style={{ minWidth: "60px" }}
+                    >
+                      645.81945
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </OrderBook>
       <Chartstyle name="chart" id="chart">
         <Chart />
       </Chartstyle>

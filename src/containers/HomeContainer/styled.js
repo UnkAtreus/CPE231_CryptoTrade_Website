@@ -116,8 +116,10 @@ export const OrderBook = styled.div`
     border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
     grid-area: orderbook / orderbook / orderbook / orderbook;
     position: relative;
-    padding-top: 8px;
-    padding-bottom: 8px;
+
+    .orderbook-container {
+        padding: 16px;
+    }
 `;
 
 export const OrderForm = styled.div`
