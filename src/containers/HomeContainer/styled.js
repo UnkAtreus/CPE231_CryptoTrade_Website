@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import {
     default as VARIABLES
 } from '../../themes/styles/variables'
+import { LOGOS } from "../../themes";
 // import {
 //   default as TYPOGRAPHYS
 // } from '../../themes/styles/variables/typographys'
@@ -23,8 +24,8 @@ export const HomeStyled = styled.div`
   background-color: ${VARIABLES.COLORS.BACKGROUND_1};
   display: grid;
   gap: 8px;
-  grid-template-columns: 1fr minmax(253px, 320px) minmax(510px, 880px) minmax(253px, 320px) 1fr;
-  grid-template-rows: minmax(64px, auto) 112px 320px 160px 256px auto 285px;
+  grid-template-columns: 1fr minmax(250px, 320px) minmax(510px, 880px) minmax(250px, 320px) 1fr;
+  grid-template-rows: minmax(64px, auto) 112px 250px 228px 256px auto 285px;
   grid-template-areas:
       "header header header header header"
       "left subHeader subHeader profile right"
@@ -77,6 +78,32 @@ export const Profile = styled.div`
     background-color: ${VARIABLES.COLORS.BACKGROUND_2};
     border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
     grid-area: profile / profile / profile / profile;
+    
+    .profile-container {
+        padding: 16px;
+    }
+
+    .bitcoin {
+        background: url('${LOGOS['bitcoin.png']}') center center;
+    }
+
+    .bitcoin-cash {
+        background: url('${LOGOS['bitcoin-cash.png']}') center center;
+    }
+
+    .cardano {
+        background: url('${LOGOS['cardano.png']}') center center;
+    }
+
+    .ethereum {
+        background: url('${LOGOS['ethereum.png']}') center center;
+    }
+
+    .polkadot {
+        background: url('${LOGOS['polkadot.png']}') center center;
+        background-repeat: no-repeat;
+        background-color: #ffffff;
+    }
 `;
 
 export const OrderBook = styled.div`
@@ -123,12 +150,22 @@ export const Trades = styled.div`
     width: 100%;
     height: 100%;
     grid-area: trades / trades / trades / trades;
-    padding-left: 16px;
-    padding-right: 16px;
     background-color: ${VARIABLES.COLORS.BACKGROUND_2};
     border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
     z-index: auto;
     position: relative;
+
+    .trades-container {
+        padding: 16px;
+    }
+
+    .trades-price-container {
+        position: relative;
+        height: 458px;
+        overflow: auto;
+        will-change: transform;
+        direction: ltr;
+    }
 `;
 
 export const OrderHistory = styled.div`

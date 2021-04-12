@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import {
   HomeStyled,
   Header,
@@ -15,8 +16,12 @@ import { Container } from "components/Container";
 import { Chart } from "components/Chart";
 import { Tab } from "components/Tab";
 import { TabPane } from "components/TabPane";
+import { LOGOS } from "../../themes";
 
 const HomeContainer = ({ match, ...props }) => {
+  console.log("LOGO", LOGOS["bitcoin.png"]);
+  const [num, setnum] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
   return (
     <HomeStyled>
       <Header name="header">
@@ -24,7 +29,7 @@ const HomeContainer = ({ match, ...props }) => {
       </Header>
       <OrderBook name="orderbook"></OrderBook>
       <Chartstyle name="chart" id="chart">
-        <Chart></Chart>
+        <Chart />
       </Chartstyle>
       <SubHeader name="subHeader">
         <Tab>
@@ -46,8 +51,153 @@ const HomeContainer = ({ match, ...props }) => {
         </Tab>
       </SubHeader>
       <OrderForm name="orderForm"></OrderForm>
-      <Trades name="trades"></Trades>
-      <Profile name="profile"></Profile>
+      <Trades name="trades">
+        <div className="trades-container">
+          <div className="content-column mgb-16">
+            <div className="paragraph mgb-8">Market Trades</div>
+            <div
+              className="content-row space-between mgb-2"
+              style={{ paddingRight: "22px" }}
+            >
+              <div
+                className="label gray align-items-start"
+                style={{ minWidth: "70px" }}
+              >
+                Price(USDT)
+              </div>
+              <div
+                className="label gray align-items-end "
+                style={{ minWidth: "75px" }}
+              >
+                Amount(BTC)
+              </div>
+              <div
+                className="label gray align-items-end text-right"
+                style={{ minWidth: "60px" }}
+              >
+                Time
+              </div>
+            </div>
+            <div className="trades-price-container">
+              {Array.from(Array(30).keys()).map((data) => {
+                return (
+                  <div
+                    className="content-row space-between mgb-2"
+                    style={{ paddingRight: "16px" }}
+                  >
+                    <div
+                      className="label red align-items-start"
+                      style={{ minWidth: "70px" }}
+                    >
+                      52187.43
+                    </div>
+                    <div
+                      className="label white align-items-end text-right"
+                      style={{ minWidth: "75px" }}
+                    >
+                      0.012375
+                    </div>
+                    <div
+                      className="label white align-items-end text-right"
+                      style={{ minWidth: "60px" }}
+                    >
+                      03:25:10
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </Trades>
+      <Profile name="profile">
+        <div className="profile-container">
+          <div className="content-column mgb-16">
+            <div className="paragraph mgb-8">Fiat balance</div>
+            <div className="content-row space-between">
+              <div className="content-column">
+                <div className="paragraph">USDT</div>
+                <div className="label gray">TetherUS</div>
+              </div>
+              <div className="content-column text-right">
+                <div className="paragraph">52,160.29</div>
+                <div className="label gray">$ 52,160.29</div>
+              </div>
+            </div>
+          </div>
+          <div className="content-column">
+            <div className="paragraph mgb-8">Spot balance</div>
+            <div className="content-row space-between mgb-8">
+              <div className="label gray">Coin</div>
+              <div className="label gray text-right">Total</div>
+            </div>
+            <div className="content-row space-between align-items-center  mgb-8">
+              <div className="content-row">
+                <div className="content-row  align-items-center mgr-8">
+                  <div className="logo-symbol bitcoin"></div>
+                </div>
+                <div className="content-column">
+                  <div className="label">BTC</div>
+                  <div className="text-9">Bitcoin</div>
+                </div>
+              </div>
+              <div className="label">0.00000091</div>
+            </div>
+
+            <div className="content-row space-between align-items-center  mgb-8">
+              <div className="content-row">
+                <div className="content-row  align-items-center mgr-8">
+                  <div className="logo-symbol cardano"></div>
+                </div>
+                <div className="content-column">
+                  <div className="label">ADA</div>
+                  <div className="text-9">Cardano</div>
+                </div>
+              </div>
+              <div className="label">129.33490000</div>
+            </div>
+
+            <div className="content-row space-between align-items-center  mgb-8">
+              <div className="content-row">
+                <div className="content-row  align-items-center mgr-8">
+                  <div className="logo-symbol ethereum"></div>
+                </div>
+                <div className="content-column">
+                  <div className="label">ETH</div>
+                  <div className="text-9">Ethereum</div>
+                </div>
+              </div>
+              <div className="label">0.00138437</div>
+            </div>
+
+            <div className="content-row space-between align-items-center  mgb-8">
+              <div className="content-row">
+                <div className="content-row  align-items-center mgr-8">
+                  <div className="logo-symbol bitcoin-cash"></div>
+                </div>
+                <div className="content-column">
+                  <div className="label">BCH</div>
+                  <div className="text-9">Bitcoin Cash</div>
+                </div>
+              </div>
+              <div className="label">0.000</div>
+            </div>
+
+            <div className="content-row space-between align-items-center  mgb-8">
+              <div className="content-row">
+                <div className="content-row  align-items-center mgr-8">
+                  <div className="logo-symbol polkadot"></div>
+                </div>
+                <div className="content-column">
+                  <div className="label">DOT</div>
+                  <div className="text-9">Polkadot</div>
+                </div>
+              </div>
+              <div className="label">0.000</div>
+            </div>
+          </div>
+        </div>
+      </Profile>
       <OrderHistory name="orderHistory"></OrderHistory>
     </HomeStyled>
   );

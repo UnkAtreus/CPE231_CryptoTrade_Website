@@ -5,7 +5,7 @@ export const ROUTE_PATH = {
   },
   TRADES: {
     TEXT: 'Trades',
-    LINK: '/trade/:symbol',
+    LINK: '/trades/:symbol',
   },
   LOGIN: {
     TEXT: 'Login',
