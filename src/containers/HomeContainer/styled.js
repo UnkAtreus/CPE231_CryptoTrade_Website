@@ -131,6 +131,13 @@ export const OrderForm = styled.div`
     grid-area: orderForm / orderForm / orderForm / orderForm;
     background-color: ${VARIABLES.COLORS.BACKGROUND_2};
     border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
+
+    .limit-container {
+        padding: 16px;
+    }
+    .market-container {
+        padding: 16px;
+    }
 `;
 
 export const Chartstyle = styled.div`

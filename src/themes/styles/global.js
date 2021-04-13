@@ -190,6 +190,10 @@ injectGlobal`
     margin-left: 8px;
   }
 
+  .mgl-16 {
+    margin-left: 16px;
+  }
+
   .logo-symbol {
     width: 24px;
     height: 24px;

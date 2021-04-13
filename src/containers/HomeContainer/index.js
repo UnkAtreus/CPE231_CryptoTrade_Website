@@ -13,6 +13,7 @@ import {
 } from "./styled";
 import { NavBar } from "components/NavBar";
 import { Container } from "components/Container";
+import { Input } from "components/Input";
 import { Chart } from "components/Chart";
 import { Tab } from "components/Tab";
 import { TabPane } from "components/TabPane";
@@ -20,7 +21,6 @@ import { LOGOS } from "../../themes";
 
 const HomeContainer = ({ match, ...props }) => {
   console.log("LOGO", LOGOS["bitcoin.png"]);
-  const [num, setnum] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
   return (
     <HomeStyled>
@@ -135,7 +135,47 @@ const HomeContainer = ({ match, ...props }) => {
           </TabPane>
         </Tab>
       </SubHeader>
-      <OrderForm name="orderForm"></OrderForm>
+      <OrderForm name="orderForm">
+        <Tab>
+          <TabPane name="Limit" key="1">
+            <div className="limit-container">
+              <div className="content-row space-between">
+                <div
+                  className="content-column mgr-16"
+                  style={{ marginRight: "7%", flex: "1 1 0%" }}
+                >
+                  <div className="content-row space-between mgb-2">
+                    <div className="title white">Buy BTC</div>
+                    <div className="content-row">
+                      <div className="label gray">0.15143617</div>
+                      <div className="label gray mgl-8">USDT</div>
+                    </div>
+                  </div>
+                  <Input prefix="Price" suffix="USDT" />
+                  <Input prefix="Amount" suffix="BTC" />
+                  <Input prefix="Total" suffix="USDT" />
+                </div>
+
+                <div className="content-column" style={{ flex: "1 1 0%" }}>
+                  <div className="content-row space-between mgb-2">
+                    <div className="title white">Sell BTC</div>
+                    <div className="content-row">
+                      <div className="label gray">0.00000091</div>
+                      <div className="label gray mgl-8">BTC</div>
+                    </div>
+                  </div>
+                  <Input prefix="Price" suffix="USDT" />
+                  <Input prefix="Amount" suffix="BTC" />
+                  <Input prefix="Total" suffix="USDT" />
+                </div>
+              </div>
+            </div>
+          </TabPane>
+          <TabPane name="Market" key="2">
+            <div className="market-container"></div>
+          </TabPane>
+        </Tab>
+      </OrderForm>
       <Trades name="trades">
         <div className="trades-container">
           <div className="content-column mgb-16">
