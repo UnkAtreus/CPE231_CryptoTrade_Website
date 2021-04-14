@@ -13,7 +13,7 @@ import {
 } from "./styled";
 import { NavBar } from "components/NavBar";
 import { Container } from "components/Container";
-import { Input } from "components/Input";
+import { InputTrade } from "components/InputTrade";
 import { Chart } from "components/Chart";
 import { Tab } from "components/Tab";
 import { TabPane } from "components/TabPane";
@@ -151,9 +151,9 @@ const HomeContainer = ({ match, ...props }) => {
                       <div className="label gray mgl-8">USDT</div>
                     </div>
                   </div>
-                  <Input prefix="Price" suffix="USDT" />
-                  <Input prefix="Amount" suffix="BTC" />
-                  <Input prefix="Total" suffix="USDT" />
+                  <InputTrade prefix="Price" suffix="USDT" />
+                  <InputTrade prefix="Amount" suffix="BTC" />
+                  <InputTrade prefix="Total" suffix="USDT" />
                 </div>
 
                 <div className="content-column" style={{ flex: "1 1 0%" }}>
@@ -164,9 +164,9 @@ const HomeContainer = ({ match, ...props }) => {
                       <div className="label gray mgl-8">BTC</div>
                     </div>
                   </div>
-                  <Input prefix="Price" suffix="USDT" />
-                  <Input prefix="Amount" suffix="BTC" />
-                  <Input prefix="Total" suffix="USDT" />
+                  <InputTrade prefix="Price" suffix="USDT" />
+                  <InputTrade prefix="Amount" suffix="BTC" />
+                  <InputTrade prefix="Total" suffix="USDT" />
                 </div>
               </div>
             </div>
