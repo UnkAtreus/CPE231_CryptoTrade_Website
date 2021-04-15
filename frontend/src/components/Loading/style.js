@@ -1,5 +1,7 @@
 import styled from 'styled-components'
-import { VARIABLES } from 'themes'
+import {
+  default as VARIABLES
+} from '../../themes/styles/variables'
 
 // Modifier (props)
 // ============================================================

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { TabPane } from 'components/TabPane'
+import { TabPane } from '../TabPane'
 
 import {
   TabStyle,

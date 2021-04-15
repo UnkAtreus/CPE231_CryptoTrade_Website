@@ -24,6 +24,7 @@ export default {
   BACKGROUND_2: "#27273F",
   BACKGROUND_3: "#222338",
   BACKGROUND_4: "#3A3A5E",
+  BACKGROUND_5: "#323250",
 
   OVERLAY_1: "rgba(255, 255, 255, 0.5)",
   OVERLAY_2: "rgba(0, 0, 0, 0.5)",

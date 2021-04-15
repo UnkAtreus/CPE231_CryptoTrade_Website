@@ -193,6 +193,10 @@ injectGlobal`
   .mgb-24 {
     margin-bottom: 24px;
   }
+  
+  .mgr-4 {
+    margin-right: 4px;
+  }
 
   .mgr-8 {
     margin-right: 8px;
@@ -219,5 +223,9 @@ injectGlobal`
     height: 24px;
     background-color: #ffffff;
     border-radius: ${VARIABLES.BORDER_RADIUSES.ROUNDED};
+  }
+
+  .pointer {
+    cursor: pointer;
   }
 `;

@@ -2,7 +2,7 @@ const path = require('path')
 
 module.exports = {
 	// components: 'src/baseComponents/**/[A-Z]*.js',
-	components: 'src/components/**/[A-Z]*.js',
+	components: 'src/components/**/index.js',
 	defaultExample: true,
 	webpackConfig: {
 		// Hot reloading does not work by default. Probably caused by some caching bug.

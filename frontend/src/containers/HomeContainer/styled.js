@@ -56,6 +56,10 @@ export const SubHeader = styled.div`
     grid-area: subHeader / subHeader / subHeader / subHeader;
     font-size: 14px;
     color: rgb(255, 255, 255);
+
+    .subHeader-container {
+        padding: 8px 24px;
+    }
 `;
 
 export const Header = styled.div`
@@ -190,4 +194,17 @@ export const OrderHistory = styled.div`
     color: rgb(255, 255, 255);
     flex-direction: column;
     overflow: hidden;
+
+    .open-order-container {
+        padding: 16px;
+    }
+
+    .order-container {
+        height: 32px;
+        border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
+    }
+
+    .even {
+        background-color: ${VARIABLES.COLORS.BACKGROUND_5};
+    }
 `;

@@ -7,6 +7,14 @@ export const Button = ({ match, ...props }) => {
   Button.propTypes = {
     className: PropTypes.string,
     children: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
+    color: PropTypes.oneOf(["green", "purple", "red"]),
+    fontColor: PropTypes.oneOf(["green", "purple", "red", "white", "black"]),
+    style: PropTypes.object,
+  };
+
+  Button.defaultProps = {
+    color: "green",
+    fontColor: "white",
   };
 
   const CheckColor = () => {
@@ -17,7 +25,6 @@ export const Button = ({ match, ...props }) => {
         return "bg-red";
       case "purple":
         return "bg-purple";
-
       default:
         return "bg-purple";
     }
@@ -27,6 +34,7 @@ export const Button = ({ match, ...props }) => {
     <ButtonStyle
       onClick={console.log("test")}
       className={ClassNames("container", CheckColor())}
+      style={props.style}
     >
       <div className={ClassNames("paragraph ", props.fontColor)}>
         {props.label}

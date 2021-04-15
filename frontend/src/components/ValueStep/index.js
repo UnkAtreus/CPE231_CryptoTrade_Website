@@ -32,7 +32,7 @@ export const ValueStep = ({ match, ...props }) => {
               <div
                 className={ClassNames(
                   "step mgb-2",
-                  index === active ? "bg-purple" : "bg-gray"
+                  index <= active ? "bg-purple" : "bg-gray"
                 )}
               />
               <div
