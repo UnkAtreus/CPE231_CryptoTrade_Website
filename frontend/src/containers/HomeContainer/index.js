@@ -14,13 +14,20 @@ import {
 import { NavBar } from "components/NavBar";
 import { Container } from "components/Container";
 import { InputTrade } from "components/InputTrade";
+import { ValueStep } from "components/ValueStep";
 import { Chart } from "components/Chart";
 import { Tab } from "components/Tab";
 import { TabPane } from "components/TabPane";
+import { Button } from "components/Button";
 import { LOGOS } from "../../themes";
 
 const HomeContainer = ({ match, ...props }) => {
   console.log("LOGO", LOGOS["bitcoin.png"]);
+
+  const setValue = (value) => {
+    console.log('test',value);
+  }
+
 
   return (
     <HomeStyled>
@@ -53,9 +60,9 @@ const HomeContainer = ({ match, ...props }) => {
             </div>
 
             <div className="content-column mgb-16">
-              {Array.from(Array(17).keys()).map((data) => {
+              {Array.from(Array(17).keys()).map((data,index) => {
                 return (
-                  <div className="content-row space-between mgb-2">
+                  <div className="content-row space-between mgb-2" key={index}>
                     <div
                       className="label red align-items-start"
                       style={{ minWidth: "70px" }}
@@ -85,9 +92,9 @@ const HomeContainer = ({ match, ...props }) => {
             </div>
 
             <div className="content-column mgb-16">
-              {Array.from(Array(17).keys()).map((data) => {
+              {Array.from(Array(17).keys()).map((data, index) => {
                 return (
-                  <div className="content-row space-between mgb-2">
+                  <div className="content-row space-between mgb-2" key={index}>
                     <div
                       className="label green align-items-start"
                       style={{ minWidth: "70px" }}
@@ -153,7 +160,9 @@ const HomeContainer = ({ match, ...props }) => {
                   </div>
                   <InputTrade prefix="Price" suffix="USDT" />
                   <InputTrade prefix="Amount" suffix="BTC" />
+                  <ValueStep />
                   <InputTrade prefix="Total" suffix="USDT" />
+                  <Button label="Buy BTC" color="green" />
                 </div>
 
                 <div className="content-column" style={{ flex: "1 1 0%" }}>
@@ -166,7 +175,9 @@ const HomeContainer = ({ match, ...props }) => {
                   </div>
                   <InputTrade prefix="Price" suffix="USDT" />
                   <InputTrade prefix="Amount" suffix="BTC" />
+                  <ValueStep />
                   <InputTrade prefix="Total" suffix="USDT" />
+                  <Button label="Sell BTC" color="red" />
                 </div>
               </div>
             </div>
@@ -204,11 +215,12 @@ const HomeContainer = ({ match, ...props }) => {
               </div>
             </div>
             <div className="trades-price-container">
-              {Array.from(Array(30).keys()).map((data) => {
+              {Array.from(Array(30).keys()).map((data,index) => {
                 return (
                   <div
                     className="content-row space-between mgb-2"
                     style={{ paddingRight: "16px" }}
+                    key={index}
                   >
                     <div
                       className="label red align-items-start"

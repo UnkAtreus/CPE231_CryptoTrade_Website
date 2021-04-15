@@ -1,21 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-
+import ClassNames from "classnames";
 import { InputTradeStyle } from "./styled";
 
-export const InputTrade = (props) => {
+export const InputTrade = ({ match, ...props }) => {
   const [name, setname] = useState("0");
 
-  InputTrade.propTypes = {
-    className: PropTypes.string,
-    placeholder: PropTypes.string,
-    title: PropTypes.string,
-    prefix: PropTypes.string,
-    suffix: PropTypes.string,
-  };
-
   return (
-    <InputTradeStyle>
+    <InputTradeStyle className={ClassNames(
+      props.className
+    )}>
       <div
         className="content-row align-items-center justify-content-center"
         style={{ width: "100%" }}
@@ -25,7 +19,7 @@ export const InputTrade = (props) => {
           type="text"
           placeholder={props.placeholder || "0"}
           value={name}
-          onChange={(e) => setname(e.target.value)}
+          onChange={(e) => { setname(e.target.value); props.value(e.target.value) }}
         />
         <div className="suffix-container mgr-16 gray">{props.suffix}</div>
       </div>

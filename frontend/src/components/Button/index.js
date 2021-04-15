@@ -1,33 +1,36 @@
-import React from 'react'
-import ClassNames from 'classnames'
-import PropTypes from 'prop-types'
-import {
-  ButtonStyle
-} from './styled'
+import React from "react";
+import ClassNames from "classnames";
+import PropTypes from "prop-types";
+import { ButtonStyle } from "./styled";
 
-/**
- * Button description
- * - ...
- */
+export const Button = ({ match, ...props }) => {
+  Button.propTypes = {
+    className: PropTypes.string,
+    children: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
+  };
 
-export class Button extends React.PureComponent {
-  render() {
-    const {
-      className,
-      children,
-      onClick
-    } = this.props
+  const CheckColor = () => {
+    switch (props.color) {
+      case "green":
+        return "bg-green";
+      case "red":
+        return "bg-red";
+      case "purple":
+        return "bg-purple";
 
-    return (
-      <ButtonStyle
-        className={ClassNames(
-          'button',
-          className
-        )}
-        onClick={onClick}
-      >
-        {children}
-      </ButtonStyle>
-    )
-  }
-}
+      default:
+        return "bg-purple";
+    }
+  };
+
+  return (
+    <ButtonStyle
+      onClick={console.log("test")}
+      className={ClassNames("container", CheckColor())}
+    >
+      <div className={ClassNames("paragraph ", props.fontColor)}>
+        {props.label}
+      </div>
+    </ButtonStyle>
+  );
+};

@@ -25,13 +25,12 @@ export const HomeStyled = styled.div`
   display: grid;
   gap: 8px;
   grid-template-columns: 1fr minmax(250px, 320px) minmax(510px, 880px) minmax(250px, 320px) 1fr;
-  grid-template-rows: minmax(64px, auto) 112px 250px 228px 256px auto 285px;
+  grid-template-rows: minmax(64px, auto) 112px 250px 228px 324px 285px;
   grid-template-areas:
       "header header header header header"
       "left subHeader subHeader profile right"
       "left orderbook chart profile right"
       "left orderbook chart trades right"
-      "left orderbook orderForm trades right"
       "left orderbook orderForm trades right"
       "left orderHistory orderHistory orderHistory right";
 

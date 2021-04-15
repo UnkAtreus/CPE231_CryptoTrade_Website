@@ -158,6 +158,26 @@ injectGlobal`
     color: ${VARIABLES.COLORS.PURPLE};
   }
 
+  .bg-white {
+    background-color: ${VARIABLES.COLORS.WHITE};
+  }
+
+  .bg-red {
+    background-color: ${VARIABLES.COLORS.RED};
+  }
+
+  .bg-green {
+    background-color: ${VARIABLES.COLORS.GREEN};
+  }
+  
+  .bg-gray {
+    background-color: ${VARIABLES.COLORS.GRAY};
+  }
+
+  .bg-purple {
+    background-color: ${VARIABLES.COLORS.PURPLE};
+  }
+
   .mgb-2 {
     margin-bottom: 2px;
   }
