@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import ClassNames from "classnames";
-import PropTypes, { symbol } from "prop-types";
+import React from "react";
 import { ChartStyle } from "./styled";
 import TradingViewWidget, { Themes } from "react-tradingview-widget";
 

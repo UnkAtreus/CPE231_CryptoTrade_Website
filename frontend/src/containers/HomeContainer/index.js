@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useState } from "react";
 import {
   HomeStyled,
   Header,
@@ -12,7 +11,6 @@ import {
   OrderHistory,
 } from "./styled";
 import { NavBar } from "components/NavBar";
-import { Container } from "components/Container";
 import { InputTrade } from "components/InputTrade";
 import { ValueStep } from "components/ValueStep";
 import { Chart } from "components/Chart";
@@ -24,9 +22,9 @@ import { LOGOS } from "../../themes";
 const HomeContainer = ({ match, ...props }) => {
   console.log("LOGO", LOGOS["bitcoin.png"]);
 
-  const setValue = (value) => {
-    console.log("test", value);
-  };
+  // const setValue = (value) => {
+  //   console.log("test", value);
+  // };
 
   return (
     <HomeStyled>

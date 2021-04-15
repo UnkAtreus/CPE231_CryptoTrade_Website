@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
 import ClassNames from "classnames";
 
 import { ValueStepStyle } from "./styled";
 
 export const ValueStep = ({ match, ...props }) => {
   const [active, setActive] = useState(0);
-  const [rangeStep, setRangeStep] = useState(["25", "50", "75", "100"]);
+  const [rangeStep] = useState(["25", "50", "75", "100"]);
 
   const changeStep = (step) => {
     setActive(step);
