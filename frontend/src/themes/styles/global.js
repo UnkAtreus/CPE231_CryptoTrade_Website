@@ -218,6 +218,22 @@ injectGlobal`
     margin-left: 16px;
   }
 
+  .mgt-8 {
+    margin-top: 8px;
+  }
+
+  .mgt-16 {
+    margin-top: 16px;
+  }
+
+  .mgt-24 {
+    margin-top: 24px;
+  }
+
+  .mgt-32 {
+    margin-top: 32px;
+  }
+
   .logo-symbol {
     width: 24px;
     height: 24px;

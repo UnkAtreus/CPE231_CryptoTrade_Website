@@ -15,6 +15,7 @@ import HomeContainer from "../HomeContainer"
 import {
   ROUTE_PATH,
 } from 'helpers'
+import LoginContainer from '../LoginContainer'
 
 export class RouteApp extends React.Component {
 
@@ -30,7 +31,7 @@ export class RouteApp extends React.Component {
         {/* Use props 'exact' for match single container(not share container) */}
         <Switch>
           <Route exact path={ROUTE_PATH.TRADES.LINK} component={HomeContainer} />
-          <Route exact path={ROUTE_PATH.LOGIN.LINK} component={HomeContainer} />
+          <Route exact path={ROUTE_PATH.LOGIN.LINK} component={LoginContainer} />
           <Route exact path={ROUTE_PATH.REGISTER.LINK} component={HomeContainer} />
           <Route exact path={ROUTE_PATH.P2P.LINK} component={HomeContainer} />
           <Route exact path={ROUTE_PATH.DEPOSIT.LINK} component={HomeContainer} />

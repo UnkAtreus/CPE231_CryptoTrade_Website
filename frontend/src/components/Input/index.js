@@ -1,33 +1,36 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import ClassNames from "classnames";
 
 import { InputStyle } from "./styled";
 
-export const Input = (props) => {
-  const [name, setname] = useState("0");
+export const Input = ({ match, ...props }) => {
+  const [name, setname] = useState("");
 
   Input.propTypes = {
     className: PropTypes.string,
     placeholder: PropTypes.string,
     title: PropTypes.string,
-    prefix: PropTypes.string,
-    suffix: PropTypes.string,
+    type: PropTypes.string,
   };
 
   return (
-    <InputStyle>
+    <InputStyle className={ClassNames(props.className)}>
+      <div className="content-row">
+        <div className="label white">{props.title}</div>
+      </div>
       <div
         className="content-row align-items-center justify-content-center"
-        style={{ width: "100%" }}
+        style={{ width: "100%", height: "32px" }}
       >
-        <div className="prefix-container mgl-16 gray">{props.prefix}</div>
         <input
-          type="text"
+          type={props.type || "text"}
           placeholder={props.placeholder || "0"}
           value={name}
-          onChange={(e) => setname(e.target.value)}
+          onChange={(e) => {
+            setname(e.target.value);
+          }}
         />
-        <div className="suffix-container mgr-16 gray">{props.suffix}</div>
       </div>
     </InputStyle>
   );

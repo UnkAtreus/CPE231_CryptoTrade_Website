@@ -9,12 +9,14 @@ export const Button = ({ match, ...props }) => {
     children: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     color: PropTypes.oneOf(["green", "purple", "red"]),
     fontColor: PropTypes.oneOf(["green", "purple", "red", "white", "black"]),
+    size: PropTypes.oneOf(["label","paragraph","title"]),
     style: PropTypes.object,
   };
 
   Button.defaultProps = {
     color: "green",
     fontColor: "white",
+    size: "label",
   };
 
   const CheckColor = () => {
@@ -30,13 +32,26 @@ export const Button = ({ match, ...props }) => {
     }
   };
 
+  const CheckSize = () => {
+    switch (props.size) {
+      case "label":
+        return "height-32";
+      case "paragraph":
+        return "height-48";
+      case "title":
+        return "height-64";
+      default:
+        return "height-32";
+    }
+  };
+
   return (
     <ButtonStyle
       onClick={console.log("test")}
-      className={ClassNames("container", CheckColor())}
+      className={ClassNames("container", CheckColor(),CheckSize())}
       style={props.style}
     >
-      <div className={ClassNames("paragraph ", props.fontColor)}>
+      <div className={ClassNames(props.fontColor, props.size)}>
         {props.label}
       </div>
     </ButtonStyle>
