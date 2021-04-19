@@ -9,6 +9,7 @@ export const InputStyle = styled.div`
     font-size: ${VARIABLES.TYPOGRAPHYS.FONT_THEME.PARAGRAPH};
     margin-bottom: 8px;
     height: 100%;
+    
 
   /* Child element styles
   ------------------------------- */
@@ -16,12 +17,9 @@ export const InputStyle = styled.div`
     color: ${VARIABLES.COLORS.WHITE};
     background-color: ${VARIABLES.COLORS.BACKGROUND_1};
     border: none;
-    padding-left: 16px;
-    padding-right: 16px;
     height: 32px;
     width: 100%;
     height: 100%;
-    border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
     font-size: ${VARIABLES.TYPOGRAPHYS.FONT_THEME.LABEL};
 
     ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -38,9 +36,18 @@ export const InputStyle = styled.div`
     }
   }
 
+  .prefix-container {
+    
+  }
+
   /* Modifiers
   ------------------------------- */
 
   /* Media queries
   ------------------------------- */
 `
+
+export const InputField = styled.div`
+  border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
+  background-color: ${VARIABLES.COLORS.BACKGROUND_1};
+`;

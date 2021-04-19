@@ -244,4 +244,8 @@ injectGlobal`
   .pointer {
     cursor: pointer;
   }
+
+  .hidden {
+    display: none;
+  }
 `;

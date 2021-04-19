@@ -16,6 +16,7 @@ import {
   ROUTE_PATH,
 } from 'helpers'
 import LoginContainer from '../LoginContainer'
+import RegisterContainer from '../RegisterContainer'
 
 export class RouteApp extends React.Component {
 
@@ -32,7 +33,7 @@ export class RouteApp extends React.Component {
         <Switch>
           <Route exact path={ROUTE_PATH.TRADES.LINK} component={HomeContainer} />
           <Route exact path={ROUTE_PATH.LOGIN.LINK} component={LoginContainer} />
-          <Route exact path={ROUTE_PATH.REGISTER.LINK} component={HomeContainer} />
+          <Route exact path={ROUTE_PATH.REGISTER.LINK} component={RegisterContainer} />
           <Route exact path={ROUTE_PATH.P2P.LINK} component={HomeContainer} />
           <Route exact path={ROUTE_PATH.DEPOSIT.LINK} component={HomeContainer} />
           <Route exact path={ROUTE_PATH.WITHDRAW.LINK} component={HomeContainer} />
