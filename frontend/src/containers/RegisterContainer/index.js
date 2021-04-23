@@ -5,6 +5,7 @@ import {
   RegisterForm,
   RegisterFormContainer,
   BirthdayInput,
+  GenderInput,
 } from "./styled";
 import { NavBar } from "components/NavBar";
 import { InputTrade } from "components/InputTrade";
@@ -15,7 +16,7 @@ import { Tab } from "components/Tab";
 import { TabPane } from "components/TabPane";
 import { Button } from "components/Button";
 import { LOGOS } from "../../themes";
-import { Container, Dropdown, DropdownChild } from "components";
+import { Container, Dropdown, DropdownChild , Radio , RadioChild} from "components";
 
 const RegisterContainer = ({ match, ...props }) => {
 
@@ -39,7 +40,8 @@ const RegisterContainer = ({ match, ...props }) => {
                   <Input type="text" title="FirstName" placeholder="Kittipat" />
                   <Input type="text" title="LastName" placeholder="Dechkul" />
                   <Input type="text" title="Email" placeholder="test@gmail.com" />
-                  <Input type="text" title="CitizenID / PassportNumber" placeholder="CitizenID / PassportNumber" />
+                  <Input type="text" title="CitizenID" placeholder="CitizenID" />
+                  <Input type="text" title="PassportNumber" placeholder="PassportNumber" />
                   <Input type="text" title="Telephone" placeholder="080 000 0000" />
                   <BirthdayInput>
                     <div className="content-row">
@@ -70,6 +72,19 @@ const RegisterContainer = ({ match, ...props }) => {
                       </Dropdown >
                     </div>
                   </BirthdayInput>
+                  <GenderInput>
+                    <div className="content-row">
+                      <div className="label white">Gender</div>
+                    </div>
+                      <Radio position="row" gap={16}>
+                        <RadioChild name="Male">
+                        </RadioChild>
+                        <RadioChild name="Female">
+                        </RadioChild>
+                        <RadioChild name="Other">
+                        </RadioChild>
+                      </Radio >
+                  </GenderInput>
                   <Input type="text" title="Address" placeholder="Address" />
                   <div className="content-row">
                     <Input type="text" title="City" placeholder="Bangkok" style={{ marginRight: "32px" }} />

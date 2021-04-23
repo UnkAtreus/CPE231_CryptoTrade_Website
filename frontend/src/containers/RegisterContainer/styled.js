@@ -60,3 +60,7 @@ export const RegisterFormContainer = styled.div`
 
 export const BirthdayInput = styled.div`
 `;
+
+export const GenderInput = styled.div`
+margin-bottom: 8px;
+`;
