@@ -198,6 +198,10 @@ injectGlobal`
   .mgb-24 {
     margin-bottom: 24px;
   }
+
+  .mgb-32{
+    margin-bottom: 32px;
+  }
   
   .mgr-4 {
     margin-right: 4px;
