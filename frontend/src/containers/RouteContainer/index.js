@@ -18,6 +18,9 @@ import {
 import LoginContainer from '../LoginContainer'
 import RegisterContainer from '../RegisterContainer'
 import DeopsitContainer from '../DeopsitContainer'
+import WithdrawContainer from '../WithdrawContainer'
+import PeerToPeerContainer from '../PeerToPeerContainer'
+import SettingContainer from '../SettingContainer'
 
 export class RouteApp extends React.Component {
 
@@ -35,10 +38,10 @@ export class RouteApp extends React.Component {
           <Route exact path={ROUTE_PATH.TRADES.LINK} component={HomeContainer} />
           <Route exact path={ROUTE_PATH.LOGIN.LINK} component={LoginContainer} />
           <Route exact path={ROUTE_PATH.REGISTER.LINK} component={RegisterContainer} />
-          <Route exact path={ROUTE_PATH.P2P.LINK} component={HomeContainer} />
+          <Route exact path={ROUTE_PATH.P2P.LINK} component={PeerToPeerContainer} />
           <Route exact path={ROUTE_PATH.DEPOSIT.LINK} component={DeopsitContainer} />
-          <Route exact path={ROUTE_PATH.WITHDRAW.LINK} component={HomeContainer} />
-          <Route exact path={ROUTE_PATH.SETTING.LINK} component={HomeContainer} />
+          <Route exact path={ROUTE_PATH.WITHDRAW.LINK} component={WithdrawContainer} />
+          <Route exact path={ROUTE_PATH.SETTING.LINK} component={SettingContainer} />
           <Route path={ROUTE_PATH.HOME.LINK} component={HomeContainer} />
         </Switch>
       </MainLayoutContainer>
