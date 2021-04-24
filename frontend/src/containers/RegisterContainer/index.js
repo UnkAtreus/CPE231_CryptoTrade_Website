@@ -7,22 +7,13 @@ import {
   BirthdayInput,
   GenderInput,
 } from "./styled";
-import { NavBar } from "components/NavBar";
-import { InputTrade } from "components/InputTrade";
-import { Input } from "components/Input";
-import { ValueStep } from "components/ValueStep";
-import { Chart } from "components/Chart";
-import { Tab } from "components/Tab";
-import { TabPane } from "components/TabPane";
-import { Button } from "components/Button";
-import { LOGOS } from "../../themes";
-import { Container, Dropdown, DropdownChild , Radio , RadioChild} from "components";
+import { Container, Dropdown, DropdownChild , Radio , RadioChild , Button , Input , NavBar} from "components";
 
 const RegisterContainer = ({ match, ...props }) => {
 
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const now = new Date().getUTCFullYear();
-  const years = Array(now - (now - 60)).fill('').map((v, idx) => now - idx);
+  const years = Array(now - (now - 60)).fill('').map((_v, idx) => now - idx);
   return (
     <RegisterStyled>
       <Header name="header">

@@ -2,7 +2,6 @@ import styled from 'styled-components'
 import {
     default as VARIABLES
 } from '../../themes/styles/variables'
-import { LOGOS } from "../../themes";
 // import {
 //   default as TYPOGRAPHYS
 // } from '../../themes/styles/variables/typographys'

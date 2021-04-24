@@ -10,17 +10,18 @@ import {
   DepositHistory,
   PaymentSelected,
 } from "./styled";
-import { NavBar } from "components/NavBar";
-import { Input } from "components/Input";
-import { Dropdown } from "components/Dropdown";
-import { DropdownChild } from "components/DropdownChild";
-import { Radio } from "components/Radio";
-import { RadioChild } from "components/RadioChild";
-import { Tab } from "components/Tab";
-import { TabPane } from "components/TabPane";
-import { Button } from "components/Button";
-import { SHARDS } from "../../themes";
-import { Container } from "components/Container";
+import {
+  Container,
+  Dropdown,
+  DropdownChild,
+  Radio,
+  RadioChild,
+  Button,
+  Input,
+  NavBar,
+  Tab,
+  TabPane,
+} from "components";
 
 const DeopsitContainer = ({ match, ...props }) => {
   return (

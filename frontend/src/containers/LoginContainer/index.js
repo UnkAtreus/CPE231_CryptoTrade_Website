@@ -1,15 +1,12 @@
 import * as React from "react";
 import { LoginStyled, Header, LoginForm, LoginFormContainer } from "./styled";
-import { NavBar } from "components/NavBar";
-import { InputTrade } from "components/InputTrade";
-import { Input } from "components/Input";
-import { ValueStep } from "components/ValueStep";
-import { Chart } from "components/Chart";
-import { Tab } from "components/Tab";
-import { TabPane } from "components/TabPane";
-import { Button } from "components/Button";
-import { LOGOS } from "../../themes";
-import { Container } from "components/Container";
+import {
+  Container,
+  Button,
+  Input,
+  NavBar,
+} from "components";
+
 
 const LoginContainer = ({ match, ...props }) => {
   return (
