@@ -94,6 +94,7 @@ injectGlobal`
     font-weight: 500;
     line-height: 13px;
     color: ${VARIABLES.COLORS.GRAY};
+    margin-bottom: 1px;
   }
 
   .label {
@@ -140,6 +141,10 @@ injectGlobal`
 
   .white {
     color: ${VARIABLES.COLORS.WHITE};
+  }
+
+  .black {
+    color: #000000;
   }
 
   .red {

@@ -81,6 +81,7 @@ Dropdown.propTypes = {
   placeholder: PropTypes.string,
   title: PropTypes.string,
   type: PropTypes.string,
+  style: PropTypes.object,
   children: function (props, propName, componentName) {
     const prop = props[propName];
 

@@ -8,7 +8,7 @@ export const InputStyle = styled.div`
   ------------------------------- */
     font-size: ${VARIABLES.TYPOGRAPHYS.FONT_THEME.PARAGRAPH};
     margin-bottom: 8px;
-    height: 100%;
+    height: 50px;
     
 
   /* Child element styles

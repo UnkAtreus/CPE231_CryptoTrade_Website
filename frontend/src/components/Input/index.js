@@ -34,7 +34,7 @@ export const Input = ({ match, ...props }) => {
               setname(e.target.value);
             }}
           />
-          <div className="suffix-container mgr-16 gray">{props.suffix}</div>
+          <div className="suffix-container mgr-16 white">{props.suffix}</div>
         </div>
       </InputField>
     </InputStyle>
