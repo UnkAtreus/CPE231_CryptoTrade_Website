@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState , useEffect} from "react";
 import {
   HomeStyled,
   Header,
@@ -18,9 +18,23 @@ import { Tab } from "components/Tab";
 import { TabPane } from "components/TabPane";
 import { Button } from "components/Button";
 import { LOGOS } from "../../themes";
+import { marketController } from "apiService";
 
 const HomeContainer = ({ match, ...props }) => {
+  const [price , setPrice ] = useState([]);
   console.log("LOGO", LOGOS["bitcoin.png"]);
+
+  useEffect(() => {
+    GetPosts();
+  }, []);
+
+  const GetPosts = async () => {
+    const crypto_price = await marketController().getPrice("symbol=BTCUSDT");
+    console.log(crypto_price);
+    var price = (Math.round(crypto_price.price * 100) / 100).toFixed(2);
+    setPrice(price);
+  };
+
 
   // const setValue = (value) => {
   //   console.log("test", value);
@@ -84,8 +98,8 @@ const HomeContainer = ({ match, ...props }) => {
             </div>
 
             <div className="content-row align-items-center mgb-16">
-              <div className="paragraph green mgr-16">52,160.29</div>
-              <div className="label gray">$52,160.29</div>
+              <div className="paragraph green mgr-16">${price}</div>
+              <div className="label gray">$${price}</div>
             </div>
 
             <div className="content-column mgb-16">
@@ -130,8 +144,8 @@ const HomeContainer = ({ match, ...props }) => {
                   <div className="label gray">Bitcoin</div>
                 </div>
                 <div className="content-column mgr-32">
-                  <div className="paragraph green">52,160.29</div>
-                  <div className="label gray">$52,160.29</div>
+                  <div className="paragraph green">${price}</div>
+                  <div className="label gray">$${price}</div>
                 </div>
                 <div className="content-column mgr-16">
                   <div className="label gray">24h Change</div>
@@ -167,8 +181,8 @@ const HomeContainer = ({ match, ...props }) => {
                   <div className="label gray">Cardano</div>
                 </div>
                 <div className="content-column mgr-32">
-                  <div className="paragraph green">52,160.29</div>
-                  <div className="label gray">$52,160.29</div>
+                  <div className="paragraph green">${price}</div>
+                  <div className="label gray">$${price}</div>
                 </div>
                 <div className="content-column mgr-16">
                   <div className="label gray">24h Change</div>
@@ -357,8 +371,8 @@ const HomeContainer = ({ match, ...props }) => {
                 <div className="label gray">TetherUS</div>
               </div>
               <div className="content-column text-right">
-                <div className="paragraph">52,160.29</div>
-                <div className="label gray">$ 52,160.29</div>
+                <div className="paragraph">${price}</div>
+                <div className="label gray">$ ${price}</div>
               </div>
             </div>
           </div>

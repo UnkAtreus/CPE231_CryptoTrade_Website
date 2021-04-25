@@ -4,12 +4,11 @@ import ClassNames from "classnames";
 import PropTypes from "prop-types";
 
 import { RadioStyle, RadioHeader, RadioChildStyle } from "./styled";
-import { css } from "styled-components";
 
 export const Radio = (props) => {
   const { children } = props;
   const [radioHeader, setRadioHeader] = useState([]);
-  const [childContent, setChildConent] = useState({});
+  const [setChildConent] = useState({});
   const [active, setActive] = useState("");
 
   useEffect(() => {
