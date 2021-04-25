@@ -8,6 +8,7 @@ import {
   FiatBalanceContainer,
   SpotBalanceContainer,
   CryptoBalance,
+  InfoWrapper,
 } from "./styled";
 import { Container, NavBar } from "components";
 
@@ -268,84 +269,91 @@ const SettingContainer = ({ match, ...props }) => {
           <div className="feature-card-title white">Infomation</div>
         </SubHeader>
         <InfomationContainer>
-          <div className="content-column mgb-16">
-            <div className="title white mgb-16">Basic Info</div>
-            <div className="content-column mgl-16">
-              <div className="content-row mgb-8">
-                <div className="label gray" style={{ minWidth: "164px" }}>
-                  Name:
+          <InfoWrapper>
+            <div className="content-column">
+              <div className="content-column mgb-16">
+                <div className="title white mgb-16">Basic Info</div>
+                <div className="content-column mgl-16">
+                  <div className="content-row mgb-8">
+                    <div className="label gray" style={{ minWidth: "164px" }}>
+                      Name:
+                    </div>
+                    <div className="label white">Kittipat Dechkul</div>
+                  </div>
+                  <div className="content-row mgb-8">
+                    <div className="label gray" style={{ minWidth: "164px" }}>
+                      Telephone:
+                    </div>
+                    <div className="label white">+6 ••• ••• •• 90</div>
+                  </div>
+                  <div className="content-row mgb-8">
+                    <div className="label gray" style={{ minWidth: "164px" }}>
+                      Email:
+                    </div>
+                    <div className="label white">kittipat2544@gmail.com</div>
+                  </div>
+                  <div className="content-row mgb-8">
+                    <div className="label gray" style={{ minWidth: "164px" }}>
+                      Gender:
+                    </div>
+                    <div className="label white">Male</div>
+                  </div>
+                  <div className="content-row mgb-8">
+                    <div className="label gray" style={{ minWidth: "164px" }}>
+                      Birthdate:
+                    </div>
+                    <div className="label white">20 January 2001</div>
+                  </div>
+                  <div className="content-row mgb-8">
+                    <div className="label gray" style={{ minWidth: "164px" }}>
+                      Nationality
+                    </div>
+                    <div className="label white">Thai</div>
+                  </div>
                 </div>
-                <div className="label white">Kittipat Dechkul</div>
               </div>
-              <div className="content-row mgb-8">
-                <div className="label gray" style={{ minWidth: "164px" }}>
-                  Telephone:
+              <div className="content-column mgb-16">
+                <div className="title white mgb-16">Address Info</div>
+                <div className="content-column mgl-16">
+                  <div className="content-row mgb-8">
+                    <div className="label gray" style={{ minWidth: "164px" }}>
+                      Country
+                    </div>
+                    <div className="label white">Thailand</div>
+                  </div>
+                  <div className="content-row mgb-8">
+                    <div className="label gray" style={{ minWidth: "164px" }}>
+                      Province:
+                    </div>
+                    <div className="label white">Bangkok</div>
+                  </div>
+                  <div className="content-row mgb-8">
+                    <div className="label gray" style={{ minWidth: "164px" }}>
+                      Time zone:
+                    </div>
+                    <div className="label white">Asia/Bangkok</div>
+                  </div>
+                  <div className="content-row mgb-8">
+                    <div className="label gray" style={{ minWidth: "164px" }}>
+                      Address
+                    </div>
+                    <div className="label white">1/98 The cube . . . .</div>
+                  </div>
                 </div>
-                <div className="label white">+6 ••• ••• •• 90</div>
               </div>
-              <div className="content-row mgb-8">
-                <div className="label gray" style={{ minWidth: "164px" }}>
-                  Email:
+              <div className="content-row">
+                <div className="label gray mgr-8">
+                  If you want to edit/manage your infomation please contact
                 </div>
-                <div className="label white">kittipat2544@gmail.com</div>
-              </div>
-              <div className="content-row mgb-8">
-                <div className="label gray" style={{ minWidth: "164px" }}>
-                  Gender:
-                </div>
-                <div className="label white">Male</div>
-              </div>
-              <div className="content-row mgb-8">
-                <div className="label gray" style={{ minWidth: "164px" }}>
-                  Birthdate:
-                </div>
-                <div className="label white">20 January 2001</div>
-              </div>
-              <div className="content-row mgb-8">
-                <div className="label gray" style={{ minWidth: "164px" }}>
-                  Nationality
-                </div>
-                <div className="label white">Thai</div>
+                <a href="/">
+                  <div className="label purple">support@admin.com</div>
+                </a>
               </div>
             </div>
-          </div>
-          <div className="content-column mgb-16">
-            <div className="title white mgb-16">Address Info</div>
-            <div className="content-column mgl-16">
-              <div className="content-row mgb-8">
-                <div className="label gray" style={{ minWidth: "164px" }}>
-                  Country
-                </div>
-                <div className="label white">Thailand</div>
-              </div>
-              <div className="content-row mgb-8">
-                <div className="label gray" style={{ minWidth: "164px" }}>
-                  Province:
-                </div>
-                <div className="label white">Bangkok</div>
-              </div>
-              <div className="content-row mgb-8">
-                <div className="label gray" style={{ minWidth: "164px" }}>
-                  Time zone:
-                </div>
-                <div className="label white">Asia/Bangkok</div>
-              </div>
-              <div className="content-row mgb-8">
-                <div className="label gray" style={{ minWidth: "164px" }}>
-                  Address
-                </div>
-                <div className="label white">1/98 The cube . . . .</div>
-              </div>
+            <div className="content-row pic-container">
+              <div className="pic-overlay cypto"></div>
             </div>
-          </div>
-          <div className="content-row">
-            <div className="label gray mgr-8">
-              If you want to edit/manage your infomation please contact
-            </div>
-            <a href="/">
-              <div className="label purple">support@admin.com</div>
-            </a>
-          </div>
+          </InfoWrapper>
         </InfomationContainer>
       </Container>
     </SettingStyled>
