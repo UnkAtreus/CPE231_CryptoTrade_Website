@@ -18,7 +18,7 @@ export const InputTrade = ({ match, ...props }) => {
           type="text"
           placeholder={props.placeholder || "0"}
           value={name}
-          onChange={(e) => { setname(e.target.value); props.value(e.target.value) }}
+          onChange={(e) => { setname(e.target.value);  }}
         />
         <div className="suffix-container mgr-16 gray">{props.suffix}</div>
       </div>

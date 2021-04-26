@@ -8,7 +8,6 @@ import { RadioStyle, RadioHeader, RadioChildStyle } from "./styled";
 export const Radio = (props) => {
   const { children } = props;
   const [radioHeader, setRadioHeader] = useState([]);
-  const [setChildConent] = useState({});
   const [active, setActive] = useState("");
 
   useEffect(() => {
@@ -22,7 +21,7 @@ export const Radio = (props) => {
     });
     setRadioHeader(headers);
     setActive(headers[0]);
-    setChildConent({ ...childCnt });
+    console.log(headers);
   }, [props, children]);
 
   const changeTab = (name) => {
@@ -30,7 +29,7 @@ export const Radio = (props) => {
   };
 
   const changePostion = (pos) => {
-    console.log("pos" , props.position);
+    // console.log("pos" , props.position);
     // if (pos === "row"){
     //   return "display-row";
     // }else if (pos === "column") {

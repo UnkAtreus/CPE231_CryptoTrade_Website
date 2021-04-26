@@ -41,7 +41,7 @@ const RegisterContainer = ({ match, ...props }) => {
                     <div className="inline-flex">
                       <Dropdown >
                         {Array.from(Array(31).keys()).map((data, index) => {
-                          return (<DropdownChild name={index}>
+                          return (<DropdownChild name={index} key={index}>
                             {data + 1}
                           </DropdownChild>
                           );
@@ -49,14 +49,14 @@ const RegisterContainer = ({ match, ...props }) => {
                       </Dropdown >
                       <Dropdown >
                         {months.map((data, index) => {
-                          return (<DropdownChild name={index}>
+                          return (<DropdownChild name={index} key={index}>
                             {data}
                           </DropdownChild>);
                         })}
                       </Dropdown >
                       <Dropdown >
                         {years.map((data, index) => {
-                          return (<DropdownChild name={index}>
+                          return (<DropdownChild name={index} key={index}>
                             {data}
                           </DropdownChild>);
                         })}

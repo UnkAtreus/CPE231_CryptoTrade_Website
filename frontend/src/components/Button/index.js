@@ -47,7 +47,7 @@ export const Button = ({ match, ...props }) => {
 
   return (
     <ButtonStyle
-      onClick={console.log("test")}
+      onClick={()=> {}}
       className={ClassNames("container", CheckColor(),CheckSize())}
       style={props.style}
     >
