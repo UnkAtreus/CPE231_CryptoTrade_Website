@@ -1,6 +1,6 @@
-import {
-  default as VARIABLES
-} from '../variables' // Use relative path for React Styleguidist
+// import {
+//   default as VARIABLES
+// } from '../variables' // Use relative path for React Styleguidist
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////
 // ==================================================================================================

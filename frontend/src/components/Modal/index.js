@@ -11,12 +11,12 @@ import {
   ModalCloseButtonStyle,
   ModalDialogStyle,
 } from './style'
-import {
-  Image,
-  Button,
-  Section,
-} from 'components'
-import { ICONS } from 'themes'
+// import {
+//   Image,
+//   Button,
+//   Section,
+// } from 'components'
+// import { ICONS } from 'themes'
 
 const ModalHeaderContainer = props => {
   const {
@@ -115,7 +115,7 @@ const ModalCloseButtonContainer = props => {
         className={ClassNames('modal-close-button', className)}
         onClick={onClick}
       >
-        {children ? children : <Image src={ICONS[closeSrc]} />}
+        {children ? children : <div />}
       </ModalCloseButtonStyle>
     </React.Fragment>
   )
@@ -130,8 +130,8 @@ export class Modal extends React.Component {
   renderPopupUI = (popupTitle, popupContent, popupOnClickOK) => {
     return (
       <React.Fragment>
-        <ModalBodyContainer>
-          <Section className='title'>
+        {/* <ModalBodyContainer> */}
+          {/* <Section className='title'>
             {popupTitle}
           </Section>
 
@@ -143,8 +143,8 @@ export class Modal extends React.Component {
         <ModalFooterContainer>
           <Button onClick={popupOnClickOK}>
             OK
-          </Button>
-        </ModalFooterContainer>
+          </Button> */}
+        {/* </ModalFooterContainer> */}
       </React.Fragment>
 
     )

@@ -1,50 +1,80 @@
+import axios from "axios";
+import {
+  BASE_API_LOCAL,
+  BASE_PATH_API_LOCAL,
+  BASE_API_BINANCE,
+  BASE_PATH_API_BINANCE,
+} from "./apiConfig";
+import { isValidResponse } from "helpers";
 
-import axios from 'axios'
-import {
-  BASE_API,
-  BASE_PATH_API,
-} from './apiConfig'
-import {
-  isValidResponse,
-} from 'helpers'
-const getConfig = (configService) => {
-  const config = {
-    baseURL: BASE_API + BASE_PATH_API,
+const getConfig = (configService, apiName) => {
+  var config = {
+    baseURL: "",
     headers: {},
-    params: {}
+    params: {},
+  };
+  switch (apiName) {
+    case "binance":
+      config = {
+        baseURL: BASE_API_BINANCE + BASE_PATH_API_BINANCE,
+        headers: {},
+        params: {},
+      };
+      break;
+    case "local":
+      config = {
+        baseURL: BASE_API_LOCAL + BASE_PATH_API_LOCAL,
+        headers: {},
+        params: {},
+      };
+      break;
+
+    default:
+      config = {
+        baseURL: BASE_API_LOCAL + BASE_PATH_API_LOCAL,
+        headers: {},
+        params: {},
+      };
   }
   if (configService.params) {
-    config.params = configService.params
+    config.params = configService.params;
   }
-  return config
-}
+  return config;
+};
 
 const axiosSuccess = (res) => {
   if (isValidResponse(res)) {
-    return res.data
+    return res.data;
+  } else {
+    return false;
   }
-  else {
-    return false
-  }
-}
+};
 
 const axiosError = (error) => {
-  console.log(error.message)
-  return false
-}
+  console.log(error.message);
+  return false;
+};
 
-const axiosService = (type, url, params, configService) => {
-  let config = getConfig(configService)
+const axiosService = (type, url, params, configService, apiName) => {
+  let config = getConfig(configService, apiName);
   switch (type) {
-    case 'get': return axios.get(url, config).then(axiosSuccess).catch(axiosError)
-    case 'post': return axios.post(url, params, config).then(axiosSuccess).catch(axiosError)
-    default: return false
+    case "get":
+      return axios.get(url, config).then(axiosSuccess).catch(axiosError);
+    case "post":
+      return axios
+        .post(url, params, config)
+        .then(axiosSuccess)
+        .catch(axiosError);
+    default:
+      return false;
   }
-}
+};
 
 export default (configService = {}) => {
   return {
-    get: (url, params) => axiosService('get', url, params, configService),
-    post: (url, params) => axiosService('post', url, params, configService),
-  }
-}
+    get: (url, params, apiName) =>
+      axiosService("get", url, params, configService, apiName),
+    post: (url, params, apiName) =>
+      axiosService("post", url, params, configService, apiName),
+  };
+};

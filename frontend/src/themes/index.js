@@ -9,6 +9,7 @@ function importAll(r) {
 }
 
 export const CONTENTS = importAll(require.context('./media/images/contents', false, /\.(png|jpe?g|gif|svg)$/))
+export const SHARDS = importAll(require.context('./media/images/shareds', false, /\.(png|jpe?g|gif|svg)$/))
 export const ICONS = importAll(require.context('./media/images/icons', false, /\.(png|jpe?g|gif|svg)$/))
 export const LOGOS = importAll(require.context('./media/images/logos', false, /\.(png|jpe?g|gif|svg)$/))
 export const VIDEOS = importAll(require.context('./media/videos', false, /\.(mp4)$/))

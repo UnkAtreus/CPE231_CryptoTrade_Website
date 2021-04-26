@@ -5,7 +5,7 @@ import {
 
 // Wrapper
 // ============================================================
-export const ButtonStyle = styled.div`
+export const ButtonStyle = styled.button`
   /* Parent styles
   ------------------------------- */
   transition: ${VARIABLES.TRANSITIONS.DEFAULT};
@@ -13,9 +13,10 @@ export const ButtonStyle = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 30px;
-  border-radius: ${VARIABLES.BORDER_RADIUSES.XS};
+  height: 32px;
+  border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
   cursor: pointer;
+  border: none;
 
   /* Child element styles
   ------------------------------- */
@@ -25,6 +26,16 @@ export const ButtonStyle = styled.div`
 
   /* Modifiers for single UI
   ------------------------------- */
+
+  &.height-32 {
+    height: 32px;
+  }
+  &.height-48 {
+    height: 48px;
+  }
+  &.height-64 {
+    height: 64px;
+  }
 
   /* Media queries
   ------------------------------- */

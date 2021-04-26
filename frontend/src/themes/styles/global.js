@@ -94,6 +94,7 @@ injectGlobal`
     font-weight: 500;
     line-height: 13px;
     color: ${VARIABLES.COLORS.GRAY};
+    margin-bottom: 1px;
   }
 
   .label {
@@ -142,6 +143,10 @@ injectGlobal`
     color: ${VARIABLES.COLORS.WHITE};
   }
 
+  .black {
+    color: #000000;
+  }
+
   .red {
     color: ${VARIABLES.COLORS.RED};
   }
@@ -158,6 +163,26 @@ injectGlobal`
     color: ${VARIABLES.COLORS.PURPLE};
   }
 
+  .bg-white {
+    background-color: ${VARIABLES.COLORS.WHITE};
+  }
+
+  .bg-red {
+    background-color: ${VARIABLES.COLORS.RED};
+  }
+
+  .bg-green {
+    background-color: ${VARIABLES.COLORS.GREEN};
+  }
+  
+  .bg-gray {
+    background-color: ${VARIABLES.COLORS.GRAY};
+  }
+
+  .bg-purple {
+    background-color: ${VARIABLES.COLORS.PURPLE};
+  }
+
   .mgb-2 {
     margin-bottom: 2px;
   }
@@ -172,6 +197,14 @@ injectGlobal`
 
   .mgb-24 {
     margin-bottom: 24px;
+  }
+
+  .mgb-32{
+    margin-bottom: 32px;
+  }
+  
+  .mgr-4 {
+    margin-right: 4px;
   }
 
   .mgr-8 {
@@ -194,10 +227,34 @@ injectGlobal`
     margin-left: 16px;
   }
 
+  .mgt-8 {
+    margin-top: 8px;
+  }
+
+  .mgt-16 {
+    margin-top: 16px;
+  }
+
+  .mgt-24 {
+    margin-top: 24px;
+  }
+
+  .mgt-32 {
+    margin-top: 32px;
+  }
+
   .logo-symbol {
     width: 24px;
     height: 24px;
     background-color: #ffffff;
     border-radius: ${VARIABLES.BORDER_RADIUSES.ROUNDED};
+  }
+
+  .pointer {
+    cursor: pointer;
+  }
+
+  .hidden {
+    display: none;
   }
 `;

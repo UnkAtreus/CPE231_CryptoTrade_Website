@@ -25,13 +25,12 @@ export const HomeStyled = styled.div`
   display: grid;
   gap: 8px;
   grid-template-columns: 1fr minmax(250px, 320px) minmax(510px, 880px) minmax(250px, 320px) 1fr;
-  grid-template-rows: minmax(64px, auto) 112px 250px 228px 256px auto 285px;
+  grid-template-rows: minmax(64px, auto) 112px 250px 228px 324px 285px;
   grid-template-areas:
       "header header header header header"
       "left subHeader subHeader profile right"
       "left orderbook chart profile right"
       "left orderbook chart trades right"
-      "left orderbook orderForm trades right"
       "left orderbook orderForm trades right"
       "left orderHistory orderHistory orderHistory right";
 
@@ -57,6 +56,10 @@ export const SubHeader = styled.div`
     grid-area: subHeader / subHeader / subHeader / subHeader;
     font-size: 14px;
     color: rgb(255, 255, 255);
+
+    .subHeader-container {
+        padding: 8px 24px;
+    }
 `;
 
 export const Header = styled.div`
@@ -191,4 +194,17 @@ export const OrderHistory = styled.div`
     color: rgb(255, 255, 255);
     flex-direction: column;
     overflow: hidden;
+
+    .open-order-container {
+        padding: 16px;
+    }
+
+    .order-container {
+        height: 32px;
+        border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
+    }
+
+    .even {
+        background-color: ${VARIABLES.COLORS.BACKGROUND_5};
+    }
 `;
