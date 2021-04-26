@@ -12,5 +12,8 @@ export const marketController = (configService = {}) => {
     getOrderBook: (params) => {
       return service.get(`depth?${params}`, params , "binance")
     },
+    getTrades: (params) => {
+      return service.get(`trades?${params}`, params , "binance")
+    },
   }
 }

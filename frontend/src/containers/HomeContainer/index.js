@@ -19,6 +19,8 @@ import { TabPane } from "components/TabPane";
 import { Button } from "components/Button";
 import { marketController } from "apiService";
 import ClassNames from 'classnames'
+import Moment from 'moment';
+
 
 const constants = {
     "lastUpdateId": 10299107955,
@@ -55,7 +57,7 @@ const HomeContainer = ({ match, ...props }) => {
   const [lowPrice , setLowPrice ] = useState(0);
   const [volume , setVolume ] = useState(0);
   const [quoteVolume , setQuoteVolume ] = useState(0);
-  const [active , setActive ] = useState(0);
+  const [trades , setTrades ] = useState([]);
 
   var old_price = 0
   var new_price = 0
@@ -67,12 +69,17 @@ const HomeContainer = ({ match, ...props }) => {
       GetPrice();
       Get24Price();
       GetOrderBook();
-    }, 2000);
+      GetTrades();
+    }, 200);
     return () => clearInterval(interval);
   }, []);
 
   const convertTwoDegit = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2)
+  };
+
+  const convertTime = (date) => {
+  return Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' ,hour12: false,}).format(date);
   };
 
   const GetPrice = async () => {
@@ -96,13 +103,17 @@ const HomeContainer = ({ match, ...props }) => {
 
   const GetOrderBook = async () => {
     const order_book = await marketController().getOrderBook("symbol=BTCUSDT&limit=20");
-    console.log(order_book);
     setOrderbook(order_book);
   };
 
-  const propsActive = (data) => {
-setActive(data)
+  const GetTrades = async () => {
+    const trades_data = await marketController().getTrades("symbol=BTCUSDT&limit=32");
+    trades_data.sort(function (a, b) {
+    return parseInt(b.time) - parseInt(a.time)
+  });
+    setTrades(trades_data);
   };
+
 
 
   // const setValue = (value) => {
@@ -402,7 +413,9 @@ setActive(data)
               </div>
             </div>
             <div className="trades-price-container">
-              {Array.from(Array(30).keys()).map((data, index) => {
+              {trades.map((data, index) => {
+                if (index >= 1 && index <= 30){
+                  var prv_data = trades[index-1];
                 return (
                   <div
                     className="content-row space-between mgb-2"
@@ -410,25 +423,27 @@ setActive(data)
                     key={index}
                   >
                     <div
-                      className="label red align-items-start"
+                      // className="label red align-items-start"
+                      className={ClassNames("label align-items-start" ,prv_data.price < data.price ? "green" : "red" )}
                       style={{ minWidth: "70px" }}
                     >
-                      52187.43
+                      {convertTwoDegit(data.price)}
                     </div>
                     <div
                       className="label white align-items-end text-right"
                       style={{ minWidth: "75px" }}
                     >
-                      0.012375
+                      {data.qty}
                     </div>
                     <div
                       className="label white align-items-end text-right"
                       style={{ minWidth: "60px" }}
                     >
-                      03:25:10
+                      {convertTime(data.time)}
                     </div>
                   </div>
                 );
+                }else return null
               })}
             </div>
           </div>
