@@ -1,5 +1,5 @@
 import { LoginService } from './login.service';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 @Controller('login')
 export class LoginController {
@@ -7,6 +7,11 @@ export class LoginController {
     }
     @Post()
     getLogin(@Body("email") email:String , @Body("password") password:String){
+        this.loginService.login(email , password)
+        // return `Email -> ${email} , Passwird -> ${password}`;
+    }
+    @Get('/:id')
+    getLogins(@Param("id") email:String , @Body("password") password:String){
         this.loginService.login(email , password)
         // return `Email -> ${email} , Passwird -> ${password}`;
     }
