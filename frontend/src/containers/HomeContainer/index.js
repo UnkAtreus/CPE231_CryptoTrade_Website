@@ -19,7 +19,6 @@ import { TabPane } from "components/TabPane";
 import { Button } from "components/Button";
 import { marketController } from "apiService";
 import ClassNames from 'classnames'
-import Moment from 'moment';
 
 
 const constants = {
@@ -48,7 +47,6 @@ const constants = {
 
 const HomeContainer = ({ match, ...props }) => {
   const [price , setPrice ] = useState(0);
-  const [price24Hr , setPrice24Hr] = useState([]);
   const [orderbook , setOrderbook] = useState(constants);
   const [isUpPrice , setIsUpPrice ] = useState(true);
   const [priceChange , setPriceChange ] = useState(0);
@@ -64,7 +62,6 @@ const HomeContainer = ({ match, ...props }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // setSeconds(seconds => seconds + 1);
       old_price = new_price;
       GetPrice();
       Get24Price();
@@ -92,7 +89,6 @@ const HomeContainer = ({ match, ...props }) => {
 
   const Get24Price = async () => {
     const crypto_24_price = await marketController().get24Price("symbol=BTCUSDT");
-    setPrice24Hr(crypto_24_price);
     setPriceChange(convertTwoDegit(crypto_24_price.priceChange));
     setPriceChangePercent(convertTwoDegit(crypto_24_price.priceChangePercent));
     setHighPrice(convertTwoDegit(crypto_24_price.highPrice));
@@ -234,8 +230,8 @@ const HomeContainer = ({ match, ...props }) => {
                 <div className="content-column mgr-16">
                   <div className="label gray">24h Change</div>
                   <div className="content-row">
-                    <div className="label red mgr-4">{priceChange}</div>
-                    <div className="label red">{priceChangePercent}%</div>
+                    <div className={ClassNames("label mgr-4" , priceChange > 0 ? "green": "red")}>{priceChange}</div>
+                    <div className={ClassNames("label" , priceChangePercent > 0 ? "green": "red")}>{priceChangePercent}%</div>
                   </div>
                 </div>
                 <div className="content-column mgr-16">
