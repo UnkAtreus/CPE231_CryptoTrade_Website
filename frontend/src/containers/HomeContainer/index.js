@@ -65,9 +65,15 @@ const HomeContainer = ({ match, ...props }) => {
       old_price = new_price;
       GetPrice();
       Get24Price();
-      GetOrderBook();
       GetTrades();
     }, 200);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      GetOrderBook();
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
 
