@@ -41,6 +41,7 @@ export class RegisterService {
       throw new BadRequestException();
     } else {
       console.log(
+        // this is debug
         ` id : ${uid} \n first : ${firstName}\n last : ${lastName}\n citizen : ${citizenID}\n passport : ${passportNumber}\n phone : ${telephone}\n BirthDate : ${BirthDate} \n gender : ${gender}\n address : ${address}\n city : ${city} \n postCode : ${postCode}\n password : ${password}\n conPass : ${confrimPassword}`,
       );
     }
