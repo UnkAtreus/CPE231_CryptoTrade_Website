@@ -9,11 +9,6 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-  @Post()
-  postTest(@Body('x') x:string , @Body('y') y:string ): string {
-    return `x = ${x} y = ${y}`;
-  }
 }
 
-// GET  // www.localhost:5000/?x=10&y=11
-// POST // www.localhost:5000/
+
