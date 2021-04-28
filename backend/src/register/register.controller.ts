@@ -17,7 +17,7 @@ export class RegisterController {
     @Body('passportNumber') passportNumber: string,
     @Body('telephone') telephone: string,
     @Body('birthDate') birthDate: Date,
-    @Body('gender') gender: Gender,
+    @Body('gender') gender: string,
     @Body('address') address: string,
     @Body('city') city: string,
     @Body('postCode') postCode: string,

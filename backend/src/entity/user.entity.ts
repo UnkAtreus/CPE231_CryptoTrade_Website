@@ -35,7 +35,7 @@ export class User{
     @Column()
     birthDate: Date;
 
-    @Column()
+    @Column({type:'varchar' , length:1})
     gender: string;
 
     @Column()
@@ -44,18 +44,18 @@ export class User{
     @Column({length: 64})
     city: string;
 
-    @Column({length: 6})
+    @Column({type:'varchar' , length: 6})
     postcode: string;
 
-    @Column({length: 64})
+    @Column({type:'varchar' , length: 64})
     password: string;
 
-    @Column({length: 6})
+    @Column({nullable:true, length: 6})
     pincode: string;
 
-    @Column({length: 64})
+    @Column({nullable:true,length: 64})
     token: string;
 
-    @Column()
+    @Column({default:false})
     verify: boolean;
 }

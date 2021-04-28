@@ -9,8 +9,8 @@ import { v4 as uuidv4 } from "uuid";
 export class RegisterService {
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>,
-  ){}
+    private userRepository: Repository<User>
+  ) {}
   register(
     firstName: string,
     lastName: string,
@@ -20,7 +20,7 @@ export class RegisterService {
     passportNumber: string,
     telephone: string,
     birthDate: Date,
-    gender: Gender,
+    gender: string,
     address: string,
     city: string,
     postcode: string,
@@ -30,16 +30,25 @@ export class RegisterService {
     if (!firstName) {
       throw new BadRequestException();
     } else {
-        var profile = new User()
-        profile.id = uuidv4()
-        // profile = {
-        //   firstName, lastName, email, nationality, citizenID, passportNumber, telephone, birthDate, gender, address, city, postcode, password  
-        // }
-        createOrUpdate(profile)
-      }
+      var profile = new User();
+      profile.id = uuidv4();
+      profile.firstName = firstName;
+      profile.lastName = lastName;
+      profile.email = email;
+      profile.nationality = nationality;
+      profile.citizenID = citizenID;
+      profile.passportNumber = passportNumber;
+      profile.telephone = telephone;
+      profile.birthDate = birthDate;
+      profile.gender = gender;
+      profile.address = address;
+      profile.city = city;
+      profile.postcode = postcode;
+      profile.password = password;
+      createOrUpdate(profile);
     }
   }
-async function createOrUpdate(user: User) {
-    // return await this.userRepository.save(user)
 }
-
+async function createOrUpdate(user: User) {
+  return await this.userRepository.save(user);
+}
