@@ -2,14 +2,14 @@ import { BadRequestException, HttpStatus, HttpException } from "@nestjs/common";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Gender } from "src/common/constrants/gender";
-import { user } from "src/entity/user.entity";
+import { User } from "src/entity/user.entity";
 import { Repository } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 @Injectable()
 export class RegisterService {
   constructor(
-    @InjectRepository(user)
-    private userRepository: Repository<user>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ){}
   register(
     firstName: string,
@@ -30,16 +30,16 @@ export class RegisterService {
     if (!firstName) {
       throw new BadRequestException();
     } else {
-        var profile = new user()
+        var profile = new User()
         profile.id = uuidv4()
-        profile = {
-          firstName, lastName, email, nationality, citizenID, passportNumber, telephone, birthDate, gender, address, city, postcode, password  
-        }
+        // profile = {
+        //   firstName, lastName, email, nationality, citizenID, passportNumber, telephone, birthDate, gender, address, city, postcode, password  
+        // }
         createOrUpdate(profile)
       }
     }
   }
-async function createOrUpdate(user: user) {
-    return await this.userRepository.save(user)
+async function createOrUpdate(user: User) {
+    // return await this.userRepository.save(user)
 }
 

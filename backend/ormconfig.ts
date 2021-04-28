@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { User } from './src/entity/user.entity';
 
 const config: TypeOrmModuleOptions = {
   type: "mariadb",
@@ -7,7 +8,8 @@ const config: TypeOrmModuleOptions = {
   username: "root",
   password: "123456",
   database: "cryptotrade",
-  entities: [],
+  // entities:  ['entity/*.entity.ts'],
+  entities: [User],
   synchronize: true,
 };
 

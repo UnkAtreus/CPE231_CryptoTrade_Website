@@ -1,12 +1,11 @@
-import { Gender } from "src/common/constrants/gender";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
-export class user{
+@Entity("user")
+export class User{
     @PrimaryGeneratedColumn()
     id: string;
 
-    @Column({length: 11})
+    @Column()
     roleID: number;
 
     @Column({length: 64})
@@ -36,8 +35,8 @@ export class user{
     @Column()
     birthDate: Date;
 
-    @Column({length: 1})
-    gender: Gender;
+    @Column()
+    gender: string;
 
     @Column()
     address: string;
@@ -57,6 +56,6 @@ export class user{
     @Column({length: 64})
     token: string;
 
-    @Column({length: 1})
-    verify: number;
+    @Column()
+    verify: boolean;
 }
