@@ -1,31 +1,33 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./user.entity";
 
 @Entity("creditDebitCard")
 export class CreditDebitCard{
     @PrimaryGeneratedColumn()
     cardID: string;
 
-    @PrimaryGeneratedColumn()
-    userID: string;
+    @ManyToOne(() => User, user => User.userID)
+    user: User;
 
     @Column()
-    cardNumber : string
+    cardNumber : string;
 
     @Column()
-    expired : Date
+    expired : Date;
 
     @Column()
-    cvv : string
+    cvv : string;
 
     @Column()
-    address : string
+    address : string;
 
     @Column()
-    postCode : string
+    postCode : string;
 
     @Column()
-    city : string
+    city : string;
 
     @Column()
-    country : string
+    country : string;
+    static cardID: any;
 }

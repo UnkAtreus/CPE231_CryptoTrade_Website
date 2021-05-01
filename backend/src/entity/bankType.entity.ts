@@ -7,4 +7,5 @@ export class BankType{
 
     @Column()
     bankType: string;
+    static bankTypeID: any;
 }

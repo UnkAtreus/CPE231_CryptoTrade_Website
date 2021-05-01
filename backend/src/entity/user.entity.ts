@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("user")
 export class User{
     @PrimaryGeneratedColumn()
-    id: string;
+    userID: string;
 
     @Column()
     roleID: number;
@@ -58,4 +58,6 @@ export class User{
 
     @Column({default:false})
     verify: boolean;
+    static userID: any;
+    static roleID: any;
 }

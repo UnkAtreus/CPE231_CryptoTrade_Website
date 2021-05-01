@@ -1,13 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Wallet } from "./wallet.entity";
 
 @Entity("currency")
 export class Currency{
-    @PrimaryGeneratedColumn()
-    currencyID: string;
+    @ManyToOne(() =>  Wallet , currency => Wallet.currencyID)
+    currency : Wallet;
 
     @Column()
     currencyName: string;
 
     @Column()
-    volumn : number
+    volumn : number;
 }
