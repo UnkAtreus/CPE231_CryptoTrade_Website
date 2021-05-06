@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   HomeStyled,
   Header,
@@ -18,47 +18,87 @@ import { Tab } from "components/Tab";
 import { TabPane } from "components/TabPane";
 import { Button } from "components/Button";
 import { marketController } from "apiService";
-import ClassNames from 'classnames'
-
+import ClassNames from "classnames";
 
 const constants = {
-    "lastUpdateId": 10299107955,
-    "bids": [
-        [
-            "48479.26000000",
-            "18.17293000"
-        ],
-        [
-            "48479.25000000",
-            "0.00413400"
-        ],
-      ],
-       "asks": [
-        [
-            "48479.27000000",
-            "4.39329500"
-        ],
-        [
-            "48480.09000000",
-            "0.10000000"
-        ],
-      ],
-    }
+  lastUpdateId: 10299107955,
+  bids: [
+    ["48479.26000000", "18.17293000"],
+    ["48479.25000000", "0.00413400"],
+  ],
+  asks: [
+    ["48479.27000000", "4.39329500"],
+    ["48480.09000000", "0.10000000"],
+  ],
+};
 
 const HomeContainer = ({ match, ...props }) => {
-  const [price , setPrice ] = useState(0);
-  const [orderbook , setOrderbook] = useState(constants);
-  const [isUpPrice , setIsUpPrice ] = useState(true);
-  const [priceChange , setPriceChange ] = useState(0);
-  const [priceChangePercent , setPriceChangePercent ] = useState(0);
-  const [highPrice , setHighPrice ] = useState(0);
-  const [lowPrice , setLowPrice ] = useState(0);
-  const [volume , setVolume ] = useState(0);
-  const [quoteVolume , setQuoteVolume ] = useState(0);
-  const [trades , setTrades ] = useState([]);
+  const [price, setPrice] = useState(0);
+  const [orderbook, setOrderbook] = useState(constants);
+  const [isUpPrice, setIsUpPrice] = useState(true);
+  const [priceChange, setPriceChange] = useState(0);
+  const [priceChangePercent, setPriceChangePercent] = useState(0);
+  const [highPrice, setHighPrice] = useState(0);
+  const [lowPrice, setLowPrice] = useState(0);
+  const [volume, setVolume] = useState(0);
+  const [quoteVolume, setQuoteVolume] = useState(0);
+  const [trades, setTrades] = useState([]);
 
-  var old_price = 0
-  var new_price = 0
+  var old_price = 0;
+  var new_price = 0;
+
+  const _get24HrTicker = (data) => {
+    let ticker = {}
+    data.forEach(item => {
+      let symbol = item.symbol || item.s;
+      ticker[symbol] = {
+        symbol: symbol,
+        lastPrice: item.lastPrice || item.c,
+        priceChange: item.priceChange || item.p,
+        priceChangePercent: item.priceChangePercent || item.P,
+        highPrice: item.highPrice || item.h,
+        lowPrice: item.lowPrice || item.l,
+        quoteVolume: item.quoteVolume || item.q,
+      }
+    })
+    return ticker;
+  }
+
+  const _filterData = (data) => {
+    if (data.e === "24hrTicker")
+      return _get24HrTicker(data)
+  };
+
+  const _connectSocketStreams = (streams) => {
+    streams = streams.join("/");
+    let connection = btoa(streams);
+    connection = new WebSocket(
+      `wss://stream.binance.com:9443/stream?streams=${streams}`
+    );
+    connection.onmessage = (evt) => {
+      // {e: "24hrTicker", E: 1620001931897, s: "BTCUSDT", p: "-73.69000000", P: "-0.128", …}
+      // let ticker = _filterData(JSON.parse(evt.data).data);
+      console.log('ticker', JSON.parse(evt.data).data);
+    };
+    connection.onerror = (evt) => {
+      console.error(evt);
+    };
+  };
+
+  const _disconnectSocketStreams = (streams) => {
+    streams = streams.join("/");
+    let connection = btoa(streams);
+    if (this[connection].readyState === WebSocket.OPEN) {
+      this[connection].close();
+    }
+  };
+
+  useEffect(() => {
+    _connectSocketStreams(["btcusdt@ticker"]);
+    return () => {
+      _disconnectSocketStreams(["btcusdt@ticker"]);
+    };
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -78,11 +118,16 @@ const HomeContainer = ({ match, ...props }) => {
   }, []);
 
   const convertTwoDegit = (num) => {
-    return (Math.round(num * 100) / 100).toFixed(2)
+    return (Math.round(num * 100) / 100).toFixed(2);
   };
 
   const convertTime = (date) => {
-  return Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' ,hour12: false,}).format(date);
+    return Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    }).format(date);
   };
 
   const GetPrice = async () => {
@@ -94,7 +139,9 @@ const HomeContainer = ({ match, ...props }) => {
   };
 
   const Get24Price = async () => {
-    const crypto_24_price = await marketController().get24Price("symbol=BTCUSDT");
+    const crypto_24_price = await marketController().get24Price(
+      "symbol=BTCUSDT"
+    );
     setPriceChange(convertTwoDegit(crypto_24_price.priceChange));
     setPriceChangePercent(convertTwoDegit(crypto_24_price.priceChangePercent));
     setHighPrice(convertTwoDegit(crypto_24_price.highPrice));
@@ -104,19 +151,21 @@ const HomeContainer = ({ match, ...props }) => {
   };
 
   const GetOrderBook = async () => {
-    const order_book = await marketController().getOrderBook("symbol=BTCUSDT&limit=20");
+    const order_book = await marketController().getOrderBook(
+      "symbol=BTCUSDT&limit=20"
+    );
     setOrderbook(order_book);
   };
 
   const GetTrades = async () => {
-    const trades_data = await marketController().getTrades("symbol=BTCUSDT&limit=32");
+    const trades_data = await marketController().getTrades(
+      "symbol=BTCUSDT&limit=32"
+    );
     trades_data.sort(function (a, b) {
-    return parseInt(b.time) - parseInt(a.time)
-  });
+      return parseInt(b.time) - parseInt(a.time);
+    });
     setTrades(trades_data);
   };
-
-
 
   // const setValue = (value) => {
   //   console.log("test", value);
@@ -154,64 +203,77 @@ const HomeContainer = ({ match, ...props }) => {
 
             <div className="content-column mgb-16">
               {orderbook.bids.map((data, index) => {
-                if(index < 17 )
-                return (
-                  <div className="content-row space-between mgb-2" key={index}>
+                if (index < 17)
+                  return (
                     <div
-                      className="label red align-items-start"
-                      style={{ minWidth: "70px" }}
+                      className="content-row space-between mgb-2"
+                      key={index}
                     >
-                      {convertTwoDegit(data[0])}
+                      <div
+                        className="label red align-items-start"
+                        style={{ minWidth: "70px" }}
+                      >
+                        {convertTwoDegit(data[0])}
+                      </div>
+                      <div
+                        className="label white align-items-end text-right"
+                        style={{ minWidth: "75px" }}
+                      >
+                        {data[1]}
+                      </div>
+                      <div
+                        className="label white align-items-end text-right"
+                        style={{ minWidth: "60px" }}
+                      >
+                        {convertTwoDegit(data[0] * data[1])}
+                      </div>
                     </div>
-                    <div
-                      className="label white align-items-end text-right"
-                      style={{ minWidth: "75px" }}
-                    >
-                      {data[1]}
-                    </div>
-                    <div
-                      className="label white align-items-end text-right"
-                      style={{ minWidth: "60px" }}
-                    >
-                      {convertTwoDegit(data[0] * data[1])}
-                    </div>
-                  </div>
-                );
-                else return null
+                  );
+                else return null;
               })}
             </div>
 
             <div className="content-row align-items-center mgb-16">
-              <div className={ClassNames("paragraph mgr-16",isUpPrice ? "green" : "red")}>{price}</div>
+              <div
+                className={ClassNames(
+                  "paragraph mgr-16",
+                  isUpPrice ? "green" : "red"
+                )}
+              >
+                {price}
+              </div>
               <div className="label gray">${price}</div>
             </div>
 
             <div className="content-column mgb-16">
               {orderbook.asks.map((data, index) => {
-                if(index < 17 )
-                return (
-                  <div className="content-row space-between mgb-2" key={index}>
+                if (index < 17)
+                  return (
                     <div
-                      className="label green align-items-start"
-                      style={{ minWidth: "70px" }}
+                      className="content-row space-between mgb-2"
+                      key={index}
                     >
-                      {convertTwoDegit(data[0])}
+                      <div
+                        className="label green align-items-start"
+                        style={{ minWidth: "70px" }}
+                      >
+                        {convertTwoDegit(data[0])}
+                      </div>
+                      <div
+                        className="label white align-items-end text-right"
+                        style={{ minWidth: "75px" }}
+                      >
+                        {data[1]}
+                      </div>
+                      <div
+                        className="label white align-items-end text-right"
+                        style={{ minWidth: "60px" }}
+                      >
+                        {convertTwoDegit(data[0] * data[1])}
+                      </div>
                     </div>
-                    <div
-                      className="label white align-items-end text-right"
-                      style={{ minWidth: "75px" }}
-                    >
-                      {data[1]}
-                    </div>
-                    <div
-                      className="label white align-items-end text-right"
-                      style={{ minWidth: "60px" }}
-                    >
-                      {convertTwoDegit(data[0] * data[1])}
-                    </div>
-                  </div>
-                );
-                else return null
+                  );
+                else return null;
               })}
             </div>
           </div>
@@ -230,14 +292,35 @@ const HomeContainer = ({ match, ...props }) => {
                   <div className="label gray">Bitcoin</div>
                 </div>
                 <div className="content-column mgr-32">
-                  <div className={ClassNames("paragraph ",isUpPrice ? "green" : "red")}>{price}</div>
+                  <div
+                    className={ClassNames(
+                      "paragraph ",
+                      isUpPrice ? "green" : "red"
+                    )}
+                  >
+                    {price}
+                  </div>
                   <div className="label gray">$ {price}</div>
                 </div>
                 <div className="content-column mgr-16">
                   <div className="label gray">24h Change</div>
                   <div className="content-row">
-                    <div className={ClassNames("label mgr-4" , priceChange > 0 ? "green": "red")}>{priceChange}</div>
-                    <div className={ClassNames("label" , priceChangePercent > 0 ? "green": "red")}>{priceChangePercent}%</div>
+                    <div
+                      className={ClassNames(
+                        "label mgr-4",
+                        priceChange > 0 ? "green" : "red"
+                      )}
+                    >
+                      {priceChange}
+                    </div>
+                    <div
+                      className={ClassNames(
+                        "label",
+                        priceChangePercent > 0 ? "green" : "red"
+                      )}
+                    >
+                      {priceChangePercent}%
+                    </div>
                   </div>
                 </div>
                 <div className="content-column mgr-16">
@@ -416,36 +499,39 @@ const HomeContainer = ({ match, ...props }) => {
             </div>
             <div className="trades-price-container">
               {trades.map((data, index) => {
-                if (index >= 1 && index <= 30){
-                  var prv_data = trades[index-1];
-                return (
-                  <div
-                    className="content-row space-between mgb-2"
-                    style={{ paddingRight: "16px" }}
-                    key={index}
-                  >
+                if (index >= 1 && index <= 30) {
+                  var prv_data = trades[index - 1];
+                  return (
                     <div
-                      // className="label red align-items-start"
-                      className={ClassNames("label align-items-start" ,prv_data.price < data.price ? "green" : "red" )}
-                      style={{ minWidth: "70px" }}
+                      className="content-row space-between mgb-2"
+                      style={{ paddingRight: "16px" }}
+                      key={index}
                     >
-                      {convertTwoDegit(data.price)}
+                      <div
+                        // className="label red align-items-start"
+                        className={ClassNames(
+                          "label align-items-start",
+                          prv_data.price < data.price ? "green" : "red"
+                        )}
+                        style={{ minWidth: "70px" }}
+                      >
+                        {convertTwoDegit(data.price)}
+                      </div>
+                      <div
+                        className="label white align-items-end text-right"
+                        style={{ minWidth: "75px" }}
+                      >
+                        {data.qty}
+                      </div>
+                      <div
+                        className="label white align-items-end text-right"
+                        style={{ minWidth: "60px" }}
+                      >
+                        {convertTime(data.time)}
+                      </div>
                     </div>
-                    <div
-                      className="label white align-items-end text-right"
-                      style={{ minWidth: "75px" }}
-                    >
-                      {data.qty}
-                    </div>
-                    <div
-                      className="label white align-items-end text-right"
-                      style={{ minWidth: "60px" }}
-                    >
-                      {convertTime(data.time)}
-                    </div>
-                  </div>
-                );
-                }else return null
+                  );
+                } else return null;
               })}
             </div>
           </div>
@@ -541,7 +627,7 @@ const HomeContainer = ({ match, ...props }) => {
       </Profile>
       <OrderHistory name="orderHistory">
         <Tab active={"Open Order"}>
-          <TabPane name="Open Order" key="1" >
+          <TabPane name="Open Order" key="1">
             <div className="open-order-container">
               <div className="content-row space-between mgb-8">
                 <div

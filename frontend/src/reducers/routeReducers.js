@@ -1,14 +1,12 @@
-import {
-  ACTION_TYPES,
-} from 'actions'
+import { ACTION_TYPES } from "actions";
 
-const initialState = {}
+const initialState = {};
 
 export const routeHistoryRedux = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case ACTION_TYPES.SET_ROUTE_HISTORY:
-      return action.payload
+      return action.payload;
     default:
-      return state
+      return state;
   }
-}
+};
