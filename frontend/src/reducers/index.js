@@ -1,18 +1,20 @@
-import {
-  combineReducers,
-} from 'redux'
-import {
-  routeHistoryRedux,
-} from './routeReducers'
+import { combineReducers } from "redux";
+import { routeHistoryRedux } from "./routeReducers";
 import {
   userReduxList,
   userAuthRedux,
-} from './userReducers'
+  Ticker,
+  Depth,
+  Trades,
+  Symbols,
+} from "./userReducers";
 
 export const rootReducer = () => {
   return combineReducers({
     routeHistoryRedux,
-    userReduxList,
-    userAuthRedux,
-  })
-}
+    ticker: Ticker,
+    depth: Depth,
+    trades: Trades,
+    symbols: Symbols,
+  });
+};
