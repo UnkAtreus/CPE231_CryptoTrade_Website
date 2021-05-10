@@ -31,7 +31,7 @@ export class RegisterService {
       throw new BadRequestException();
     } else {
       var profile = new User();
-      profile.id = uuidv4();
+      profile.userID = uuidv4();
       profile.firstName = firstName;
       profile.lastName = lastName;
       profile.email = email;
