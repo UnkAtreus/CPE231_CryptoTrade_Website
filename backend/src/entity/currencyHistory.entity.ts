@@ -1,26 +1,27 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Currency } from "./currency.entity";
 import { Wallet } from "./wallet.entity";
 
 @Entity("currencHistory")
-export class CurrencHistory{
-    @PrimaryGeneratedColumn()
-    currencyHistoryID: string;
+export class CurrencHistory {
+  @PrimaryGeneratedColumn()
+  currencyHistoryID: string;
 
-    @ManyToOne(() =>  Wallet, currency => Wallet.currencyID)
-    currency : Wallet;
-    
-    @Column()
-    DateTime : Date;
+  @ManyToOne(() => Currency, (currency) => currency.currencyID)
+  currency: Currency;
 
-    @Column()
-    open : number;
+  @Column()
+  DateTime: Date;
 
-    @Column()
-    close : number;
+  @Column()
+  open: number;
 
-    @Column()
-    high : number;
+  @Column()
+  close: number;
 
-    @Column()
-    low : number;
+  @Column()
+  high: number;
+
+  @Column()
+  low: number;
 }

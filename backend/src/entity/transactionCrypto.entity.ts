@@ -1,32 +1,32 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Currency } from "./currency.entity";
 import { TransactionMethod } from "./transactionMethod.entity";
 import { User } from "./user.entity";
 import { Wallet } from "./wallet.entity";
 
 @Entity("transactionCrypto")
-export class TransactionCrypto{
-    @PrimaryGeneratedColumn()
-    transactionID: string;
+export class TransactionCrypto {
+  @PrimaryGeneratedColumn()
+  transactionID: string;
 
-    @ManyToOne(() => User, user => User.userID)
-    user: User;
+  @ManyToOne(() => User, (user) => User.userID)
+  user: User;
 
-    @ManyToOne(() => TransactionMethod, method => TransactionMethod.methodID)
-    methodID : TransactionMethod;
+  @ManyToOne(() => TransactionMethod, (method) => method.methodID)
+  methodID: TransactionMethod;
 
-    @ManyToOne(() =>  Wallet, currency => Wallet.currencyID)
-    currency : Wallet;
-    
-    @Column()
-    walletAddress : string;
+  @ManyToOne(() => Currency, (currency) => currency.currencyID)
+  currency: Currency;
 
-    @Column()
-    DateTime : Date;
+  @Column()
+  walletAddress: string;
 
-    @Column()
-    amount : number;
+  @Column()
+  DateTime: Date;
 
-    @Column()
-    totalBalance : number;
+  @Column()
+  amount: number;
 
+  @Column()
+  totalBalance: number;
 }
