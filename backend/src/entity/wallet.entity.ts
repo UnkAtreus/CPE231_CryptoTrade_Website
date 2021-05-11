@@ -5,11 +5,11 @@ import {
   OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-} from "typeorm";
-import { User } from "./user.entity";
-import { Currency } from "./currency.entity";
+} from 'typeorm';
+import { User } from './user.entity';
+import { Currency } from './currency.entity';
 
-@Entity("wallet")
+@Entity('wallet')
 export class Wallet {
   @PrimaryColumn()
   @ManyToOne(() => User, (user) => User.userID)
