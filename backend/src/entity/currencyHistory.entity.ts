@@ -1,8 +1,8 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Currency } from "./currency.entity";
-import { Wallet } from "./wallet.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Currency } from './currency.entity';
+import { Wallet } from './wallet.entity';
 
-@Entity("currencHistory")
+@Entity('currencHistory')
 export class CurrencHistory {
   @PrimaryGeneratedColumn()
   currencyHistoryID: string;
