@@ -21,7 +21,7 @@ export const Radio = (props) => {
     });
     setRadioHeader(headers);
     setActive(headers[0]);
-    console.log(headers);
+    // console.log(headers);
   }, [props, children]);
 
   const changeTab = (name) => {
@@ -35,19 +35,19 @@ export const Radio = (props) => {
     // }else if (pos === "column") {
     //   return "display-column";
     // }
-    
-    if (pos === "row"){
+
+    if (pos === "row") {
       return {
         display: "inline-flex",
         columnGap: props.gap,
         width: "100%",
-        alignItems: "center"
-      }
-    }else if (pos === "column")
+        alignItems: "center",
+      };
+    } else if (pos === "column")
       return {
         display: "grid",
         gap: props.gap,
-      }
+      };
   };
 
   return (
@@ -55,7 +55,7 @@ export const Radio = (props) => {
       <RadioHeader style={changePostion(props.position)}>
         {radioHeader.map((item, index) => (
           <RadioChildStyle
-            className={ClassNames(item === active ? "active" : "") }
+            className={ClassNames(item === active ? "active" : "")}
             onClick={() => changeTab(item)}
             key={index}
           >

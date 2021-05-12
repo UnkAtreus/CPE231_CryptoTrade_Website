@@ -35,7 +35,7 @@ export const Dropdown = (props) => {
       childCnt[name] = element.props.children;
     });
     setChildContent({ ...childCnt });
-    console.log(childCnt);
+    // console.log(childCnt);
   }, [props, children]);
 
   return (

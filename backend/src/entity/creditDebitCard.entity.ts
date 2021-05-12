@@ -2,32 +2,32 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "./user.entity";
 
 @Entity("creditDebitCard")
-export class CreditDebitCard{
-    @PrimaryGeneratedColumn()
-    cardID: string;
+export class CreditDebitCard {
+  @PrimaryGeneratedColumn()
+  cardID: string;
 
-    @ManyToOne(() => User, user => User.userID)
-    user: User;
+  @ManyToOne(() => User, (user) => user.userID)
+  user: User;
 
-    @Column()
-    cardNumber : string;
+  @Column()
+  cardNumber: string;
 
-    @Column()
-    expired : Date;
+  @Column()
+  expired: Date;
 
-    @Column()
-    cvv : string;
+  @Column()
+  cvv: string;
 
-    @Column()
-    address : string;
+  @Column()
+  address: string;
 
-    @Column()
-    postCode : string;
+  @Column()
+  postCode: string;
 
-    @Column()
-    city : string;
+  @Column()
+  city: string;
 
-    @Column()
-    country : string;
-    static cardID: any;
+  @Column()
+  country: string;
+  static cardID: any;
 }
