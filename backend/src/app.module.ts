@@ -1,15 +1,20 @@
 import { Module } from "@nestjs/common";
+import { GraphQLModule } from "@nestjs/graphql";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { GraphQLModule } from "@nestjs/graphql";
+import { BookModule } from "./book/book.module";
+import { UserModule } from "./user/user.module";
+import { RepoModule } from "./repo/repo.module";
+import graphql_config from "./config/graphql.config";
+import typeorm_config from "./config/orm.config";
 @Module({
   imports: [
-    GraphQLModule.forRoot({
-      installSubscriptionHandlers: true,
-      autoSchemaFile: "schema.gql",
-      debug: false,
-      playground: true,
-    }),
+    GraphQLModule.forRoot(graphql_config),
+    TypeOrmModule.forRoot(typeorm_config),
+    RepoModule,
+    BookModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

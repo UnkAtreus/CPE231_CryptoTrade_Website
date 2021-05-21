@@ -1,0 +1,84 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Book {
+  id: ID!
+  name: String
+  description: String
+  price: Float
+  writer: [String!]
+}
+
+type User {
+  id: ID!
+  role: Role!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phone: String!
+  nationality: String!
+  citizenID: String!
+  passportNumber: String!
+  birthDate: DateTime!
+  gender: Float!
+  address: String!
+  city: String!
+  postcode: String!
+  password: String!
+  pincode: String!
+  token: String!
+  verify: Boolean!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Role {
+  id: Float!
+  role: String!
+  user: [User!]!
+}
+
+type Query {
+  getHello: String!
+  getBook: Book!
+  getTest: String!
+  getTest2: String!
+}
+
+type Mutation {
+  createBook(input: InputBook!): Book!
+  registerUser(registerInput: RegisterInput!): User!
+}
+
+input InputBook {
+  name: String!
+  price: Float
+  description: String
+  writer: [String!]!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  profileInput: ProfileInput!
+}
+
+input ProfileInput {
+  firstName: String!
+  lastName: String!
+  phone: String!
+  nationality: String!
+  citizenID: String
+  passportNumber: String
+  birthDate: DateTime!
+  gender: Float!
+  address: String!
+  city: String!
+  postcode: String!
+}
