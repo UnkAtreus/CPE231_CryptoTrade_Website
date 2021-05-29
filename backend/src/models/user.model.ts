@@ -9,7 +9,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { ObjectType, Field, ID } from "@nestjs/graphql";
-import { Gender } from "src/enum/enum";
+import { Gender } from "src/static/enum";
 import { Role } from "./role.model";
 import { Wallet } from "./wallet.model";
 import { CreditCard } from "./creditcard.model";

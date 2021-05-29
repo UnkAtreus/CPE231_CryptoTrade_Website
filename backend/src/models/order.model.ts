@@ -1,5 +1,5 @@
 import { Field, Float, ID, ObjectType } from "@nestjs/graphql";
-import { TranasctionMethod } from "src/enum/enum";
+import { TranasctionMethod } from "src/static/enum";
 import {
   Column,
   Entity,
