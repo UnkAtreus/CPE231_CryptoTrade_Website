@@ -1,6 +1,9 @@
-// import { Role } from "src/models/role.model";
+import { Role } from 'src/models/role.model';
 
-// export default class AllRole {
-//   const customer = new Role();
-
-// }
+export default class AllRole {
+  RoleState: Role = {
+    id: 1,
+    role: '',
+    user: [],
+  };
+}
