@@ -7,6 +7,7 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
+<<<<<<< HEAD
 } from "typeorm";
 import { ObjectType, Field, ID } from "@nestjs/graphql";
 import { Gender } from "src/enum/enum";
@@ -14,12 +15,22 @@ import { Role } from "./role.model";
 import { Wallet } from "./wallet.model";
 import { CreditCard } from "./creditcard.model";
 import { TransactionFiat } from "./transactionFiat.model";
+=======
+} from 'typeorm';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Gender } from 'src/enum/enum';
+import { Role } from './role.model';
+>>>>>>> 82c1ec5acb062973f512147c6436451ca2056819
 
 @ObjectType()
 @Entity()
 export class User {
   @Field((type) => ID)
+<<<<<<< HEAD
   @PrimaryGeneratedColumn()
+=======
+  @PrimaryGeneratedColumn('uuid')
+>>>>>>> 82c1ec5acb062973f512147c6436451ca2056819
   id: string;
 
   @Field(() => Role)
@@ -34,6 +45,7 @@ export class User {
   @Column({ length: 64 })
   lastName?: string;
 
+<<<<<<< HEAD
   @Field(() => String)
   @Column("text", { nullable: false, unique: true })
   email?: string;
@@ -41,6 +53,15 @@ export class User {
   @Field(() => String)
   @Column("varchar", { length: 15 })
   phone?: string;
+=======
+  @Field()
+  @Column('text', { nullable: false, unique: true })
+  email: string;
+
+  @Field()
+  @Column('varchar', { length: 15 })
+  phone: string;
+>>>>>>> 82c1ec5acb062973f512147c6436451ca2056819
 
   @Field(() => String)
   @Column({ length: 64 })
@@ -58,6 +79,7 @@ export class User {
   @Column()
   birthDate?: Date;
 
+<<<<<<< HEAD
   @Field(() => String)
   @Column({ type: "enum", enum: Gender })
   gender?: Gender;
@@ -65,11 +87,21 @@ export class User {
   @Field(() => String)
   @Column("text")
   address?: string;
+=======
+  @Field()
+  @Column({ type: 'enum', enum: Gender })
+  gender: Gender;
+
+  @Field()
+  @Column('text')
+  address: string;
+>>>>>>> 82c1ec5acb062973f512147c6436451ca2056819
 
   @Field(() => String)
   @Column({ length: 64 })
   city?: string;
 
+<<<<<<< HEAD
   @Field(() => String)
   @Column({ type: "varchar", length: 6 })
   postcode?: string;
@@ -77,6 +109,15 @@ export class User {
   @Field(() => String)
   @Column({ type: "varchar", length: 64 })
   password?: string;
+=======
+  @Field()
+  @Column({ type: 'varchar', length: 6 })
+  postcode: string;
+
+  @Field()
+  @Column({ type: 'varchar', length: 64 })
+  password: string;
+>>>>>>> 82c1ec5acb062973f512147c6436451ca2056819
 
   @Field(() => String)
   @Column({ nullable: true, length: 6 })

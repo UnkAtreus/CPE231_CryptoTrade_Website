@@ -1,6 +1,6 @@
-import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./user.model";
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from './user.model';
 @ObjectType()
 @Entity()
 export class Role {

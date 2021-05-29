@@ -1,7 +1,7 @@
-import { GqlModuleOptions } from "@nestjs/graphql";
+import { GqlModuleOptions } from '@nestjs/graphql';
 const graphql_config: GqlModuleOptions = {
   installSubscriptionHandlers: true,
-  autoSchemaFile: "schema.gql",
+  autoSchemaFile: 'schema.gql',
   debug: false,
   playground: true,
 };

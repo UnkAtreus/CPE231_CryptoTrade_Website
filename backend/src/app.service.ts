@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import { Query } from "@nestjs/graphql";
+import { Injectable } from '@nestjs/common';
+import { Query } from '@nestjs/graphql';
 
 @Injectable()
 export class AppService {
   @Query(() => String)
   async getHello(): Promise<string> {
-    return "Hello World!";
+    return 'Hello World!';
   }
 }
