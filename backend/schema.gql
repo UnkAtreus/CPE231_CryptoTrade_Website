@@ -139,8 +139,6 @@ type Role {
 type Query {
   getHello: String!
   getBook: Book!
-  getTest: String!
-  getTest2: String!
   getAllUser: [User!]!
 }
 

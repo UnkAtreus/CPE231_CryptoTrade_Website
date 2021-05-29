@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { Gender } from 'src/enum/enum';
+import { Gender } from 'src/static/enum';
 
 @InputType()
 class ProfileInput {
