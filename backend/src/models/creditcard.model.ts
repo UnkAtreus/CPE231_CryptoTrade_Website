@@ -1,13 +1,13 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
   Column,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-} from "typeorm";
-import { TransactionFiat } from "./transactionFiat.model";
-import { User } from "./user.model";
+} from 'typeorm';
+import { TransactionFiat } from './transactionFiat.model';
+import { User } from './user.model';
 @ObjectType()
 @Entity()
 export class CreditCard {
@@ -20,23 +20,23 @@ export class CreditCard {
   user?: User;
 
   @Field(() => String)
-  @Column("varchar", { length: 16 })
+  @Column('varchar', { length: 16 })
   cardNumber?: string;
 
   @Field(() => String)
-  @Column("varchar", { length: 2 })
+  @Column('varchar', { length: 2 })
   expiredDate?: string;
 
   @Field(() => String)
-  @Column("varchar", { length: 2 })
+  @Column('varchar', { length: 2 })
   expiredMonth?: string;
 
   @Field(() => String)
-  @Column("varchar", { length: 3 })
+  @Column('varchar', { length: 3 })
   cvv?: string;
 
   @Field(() => String)
-  @Column("text", { nullable: true })
+  @Column('text', { nullable: true })
   address?: string;
 
   @Field(() => String)
@@ -54,7 +54,7 @@ export class CreditCard {
   @Field(() => [TransactionFiat])
   @OneToMany(
     () => TransactionFiat,
-    (transactionFiat) => transactionFiat.creditCard
+    (transactionFiat) => transactionFiat.creditCard,
   )
   transactionFiat?: TransactionFiat[];
 }

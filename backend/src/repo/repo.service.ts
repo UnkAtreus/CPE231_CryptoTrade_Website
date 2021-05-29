@@ -1,16 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Bank } from "src/models/bank.model";
-import { CreditCard } from "src/models/creditcard.model";
-import { Currency } from "src/models/currency.model";
-import { Order } from "src/models/order.model";
-import { PtoP } from "src/models/ptop.model";
-import { Role } from "src/models/role.model";
-import { TransactionFiat } from "src/models/transactionFiat.model";
-import { User } from "src/models/user.model";
-import { Wallet } from "src/models/wallet.model";
-import { Repository } from "typeorm";
-import { TransactionCrypto } from "../models/transactionCrypto.model";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Bank } from 'src/models/bank.model';
+import { CreditCard } from 'src/models/creditcard.model';
+import { Currency } from 'src/models/currency.model';
+import { Order } from 'src/models/order.model';
+import { PtoP } from 'src/models/ptop.model';
+import { Role } from 'src/models/role.model';
+import { TransactionFiat } from 'src/models/transactionFiat.model';
+import { User } from 'src/models/user.model';
+import { Wallet } from 'src/models/wallet.model';
+import { Repository } from 'typeorm';
+import { TransactionCrypto } from '../models/transactionCrypto.model';
 
 @Injectable()
 export class RepoService {
@@ -28,6 +28,6 @@ export class RepoService {
     public readonly transactionCryptoRepo: Repository<TransactionCrypto>,
     @InjectRepository(TransactionFiat)
     public readonly transactionCryptoFiat: Repository<TransactionFiat>,
-    @InjectRepository(Wallet) public readonly walletRepo: Repository<Wallet>
+    @InjectRepository(Wallet) public readonly walletRepo: Repository<Wallet>,
   ) {}
 }

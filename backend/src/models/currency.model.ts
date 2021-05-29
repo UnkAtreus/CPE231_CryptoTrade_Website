@@ -1,8 +1,8 @@
-import { Field, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { TransactionFiat } from "./transactionFiat.model";
-import { User } from "./user.model";
-import { Wallet } from "./wallet.model";
+import { Field, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { TransactionFiat } from './transactionFiat.model';
+import { User } from './user.model';
+import { Wallet } from './wallet.model';
 @ObjectType()
 @Entity()
 export class Currency {
@@ -15,7 +15,7 @@ export class Currency {
   currency?: string;
 
   @Field()
-  @Column("decimal")
+  @Column('decimal')
   volume?: number;
 
   @Field(() => [User])
@@ -29,7 +29,7 @@ export class Currency {
   @Field(() => [TransactionFiat])
   @OneToMany(
     () => TransactionFiat,
-    (transactionFiat) => transactionFiat.currency
+    (transactionFiat) => transactionFiat.currency,
   )
   transactionFiat?: TransactionFiat[];
 }

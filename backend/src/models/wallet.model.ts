@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType } from '@nestjs/graphql';
 import {
   Column,
   Entity,
@@ -6,12 +6,12 @@ import {
   OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
-} from "typeorm";
-import { User } from "./user.model";
-import { Currency } from "./currency.model";
-import { Order } from "./order.model";
-import { PtoP } from "./ptop.model";
-import { TransactionCrypto } from "./transactionCrypto.model";
+} from 'typeorm';
+import { User } from './user.model';
+import { Currency } from './currency.model';
+import { Order } from './order.model';
+import { PtoP } from './ptop.model';
+import { TransactionCrypto } from './transactionCrypto.model';
 @ObjectType()
 @Entity()
 export class Wallet {
@@ -20,7 +20,7 @@ export class Wallet {
   id: number;
 
   @Field()
-  @Column("decimal")
+  @Column('decimal')
   amount?: number;
 
   @ManyToOne(() => User, (user) => user.wallet)
@@ -45,7 +45,7 @@ export class Wallet {
   @Field(() => [TransactionCrypto])
   @OneToMany(
     () => TransactionCrypto,
-    (transactionCrypto) => transactionCrypto.wallet
+    (transactionCrypto) => transactionCrypto.wallet,
   )
   transactionCrypto?: TransactionCrypto[];
 }
