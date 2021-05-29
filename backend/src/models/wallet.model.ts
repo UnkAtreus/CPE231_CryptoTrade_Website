@@ -1,0 +1,51 @@
+import { Field, ObjectType } from "@nestjs/graphql";
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { User } from "./user.model";
+import { Currency } from "./currency.model";
+import { Order } from "./order.model";
+import { PtoP } from "./ptop.model";
+import { TransactionCrypto } from "./transactionCrypto.model";
+@ObjectType()
+@Entity()
+export class Wallet {
+  @Field()
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Field()
+  @Column("decimal")
+  amount?: number;
+
+  @ManyToOne(() => User, (user) => user.wallet)
+  user?: User;
+
+  @Field()
+  @ManyToOne(() => Currency, (currency) => currency.wallet)
+  currency?: Currency;
+
+  @Field(() => [Order])
+  @OneToMany(() => Order, (order) => order.walletFrom)
+  order?: Order[];
+
+  @Field(() => [PtoP])
+  @OneToMany(() => PtoP, (p2p) => p2p.walletFrom)
+  p2pFrom?: PtoP[];
+
+  @Field(() => [PtoP])
+  @OneToMany(() => PtoP, (p2p) => p2p.walletTo)
+  p2pTo?: PtoP[];
+
+  @Field(() => [TransactionCrypto])
+  @OneToMany(
+    () => TransactionCrypto,
+    (transactionCrypto) => transactionCrypto.wallet
+  )
+  transactionCrypto?: TransactionCrypto[];
+}

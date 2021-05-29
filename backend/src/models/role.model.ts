@@ -6,12 +6,12 @@ import { User } from "./user.model";
 export class Role {
   @Field()
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Field()
   @Column()
-  role: string;
+  role?: string;
 
   @OneToMany(() => User, (user) => user.role)
-  user: User[];
+  user?: User[];
 }

@@ -18,6 +18,10 @@ export class UserResolver {
   async getTest2(): Promise<string> {
     return this.userService.getCountRole();
   }
+  @Query(() => [User])
+  async getAllUser(): Promise<User[]> {
+    return this.userService.getAllUsers();
+  }
   @Mutation(() => User)
   async registerUser(
     @Args("registerInput") input: RegisterInput

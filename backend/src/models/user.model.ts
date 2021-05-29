@@ -11,91 +11,106 @@ import {
 import { ObjectType, Field, ID } from "@nestjs/graphql";
 import { Gender } from "src/enum/enum";
 import { Role } from "./role.model";
+import { Wallet } from "./wallet.model";
+import { CreditCard } from "./creditcard.model";
+import { TransactionFiat } from "./transactionFiat.model";
 
 @ObjectType()
 @Entity()
 export class User {
   @Field((type) => ID)
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Field(() => Role)
   @ManyToOne(() => Role, (role) => role.user)
-  role: Role;
+  role?: Role;
 
-  @Field()
+  @Field(() => String)
   @Column({ length: 64 })
-  firstName: string;
+  firstName?: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ length: 64 })
-  lastName: string;
+  lastName?: string;
 
-  @Field()
+  @Field(() => String)
   @Column("text", { nullable: false, unique: true })
-  email: string;
+  email?: string;
 
-  @Field()
+  @Field(() => String)
   @Column("varchar", { length: 15 })
-  phone: string;
+  phone?: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ length: 64 })
-  nationality: string;
+  nationality?: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ length: 13, nullable: true })
-  citizenID: string;
+  citizenID?: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ length: 8, nullable: true })
-  passportNumber: string;
+  passportNumber?: string;
 
-  @Field()
+  @Field(() => String)
   @Column()
-  birthDate: Date;
+  birthDate?: Date;
 
-  @Field()
+  @Field(() => String)
   @Column({ type: "enum", enum: Gender })
-  gender: Gender;
+  gender?: Gender;
 
-  @Field()
+  @Field(() => String)
   @Column("text")
-  address: string;
+  address?: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ length: 64 })
-  city: string;
+  city?: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ type: "varchar", length: 6 })
-  postcode: string;
+  postcode?: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ type: "varchar", length: 64 })
-  password: string;
+  password?: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ nullable: true, length: 6 })
-  pincode: string;
+  pincode?: string;
 
-  @Field()
+  @Field(() => String)
   @Column({ nullable: true, length: 64 })
-  token: string;
+  token?: string;
 
-  @Field()
+  @Field(() => Boolean)
   @Column({ default: false })
-  verify: boolean;
+  verify?: boolean;
 
   @Field()
   @Column()
   @CreateDateColumn()
-  created_at: Date;
+  created_at?: Date;
 
   @Field()
   @Column()
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at?: Date;
+
+  @Field(() => [Wallet])
+  @OneToMany(() => Wallet, (wallet) => wallet.user)
+  wallet?: Wallet[];
+
+  @Field(() => [CreditCard])
+  @OneToMany(() => CreditCard, (creditCard) => creditCard.user)
+  creditCard?: CreditCard[];
+
+  @Field(() => [TransactionFiat])
+  @OneToMany(() => TransactionFiat, (transactionFiat) => transactionFiat.user)
+  transactionFiat?: TransactionFiat[];
 }
 //   @Field((type) => [InvoiceModel], { nullable: true })
 //   @OneToMany((type) => InvoiceModel, (invoice) => invoice.customer)

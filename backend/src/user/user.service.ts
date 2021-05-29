@@ -16,4 +16,7 @@ export class UserService {
   async createOrUpdate(user: User): Promise<User> {
     return await this.repoService.userRepo.save(user);
   }
+  async getAllUsers(): Promise<User[]> {
+    return await this.repoService.userRepo.find();
+  }
 }
