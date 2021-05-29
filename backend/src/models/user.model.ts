@@ -7,16 +7,16 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
-} from "typeorm";
-import { ObjectType, Field, ID } from "@nestjs/graphql";
-import { Gender } from "src/enum/enum";
-import { Role } from "./role.model";
+} from 'typeorm';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Gender } from 'src/enum/enum';
+import { Role } from './role.model';
 
 @ObjectType()
 @Entity()
 export class User {
   @Field((type) => ID)
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Field(() => Role)
@@ -32,11 +32,11 @@ export class User {
   lastName: string;
 
   @Field()
-  @Column("text", { nullable: false, unique: true })
+  @Column('text', { nullable: false, unique: true })
   email: string;
 
   @Field()
-  @Column("varchar", { length: 15 })
+  @Column('varchar', { length: 15 })
   phone: string;
 
   @Field()
@@ -56,11 +56,11 @@ export class User {
   birthDate: Date;
 
   @Field()
-  @Column({ type: "enum", enum: Gender })
+  @Column({ type: 'enum', enum: Gender })
   gender: Gender;
 
   @Field()
-  @Column("text")
+  @Column('text')
   address: string;
 
   @Field()
@@ -68,11 +68,11 @@ export class User {
   city: string;
 
   @Field()
-  @Column({ type: "varchar", length: 6 })
+  @Column({ type: 'varchar', length: 6 })
   postcode: string;
 
   @Field()
-  @Column({ type: "varchar", length: 64 })
+  @Column({ type: 'varchar', length: 64 })
   password: string;
 
   @Field()

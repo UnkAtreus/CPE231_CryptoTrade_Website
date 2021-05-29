@@ -1,12 +1,12 @@
 export enum Currency {
-  NGN = "NGN",
-  USD = "USD",
-  GBP = "GBP",
-  EUR = " EUR",
+  NGN = 'NGN',
+  USD = 'USD',
+  GBP = 'GBP',
+  EUR = ' EUR',
 }
 export enum PaymentStatus {
-  PAID = "PAID",
-  NOT_PAID = "NOT_PAID",
+  PAID = 'PAID',
+  NOT_PAID = 'NOT_PAID',
 }
 export enum Gender {
   Male,
