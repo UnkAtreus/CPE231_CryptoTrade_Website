@@ -1,16 +1,16 @@
-import { Field, Float, ID, ObjectType } from "@nestjs/graphql";
-import { TranasctionMethod } from "src/static/enum";
+import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
+import { TranasctionMethod } from 'src/static/enum';
 import {
   Column,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-} from "typeorm";
-import { Bank } from "./bank.model";
-import { User } from "./user.model";
-import { Currency } from "./currency.model";
-import { CreditCard } from "./creditcard.model";
+} from 'typeorm';
+import { Bank } from './bank.model';
+import { User } from './user.model';
+import { Currency } from './currency.model';
+import { CreditCard } from './creditcard.model';
 @ObjectType()
 @Entity()
 /// THIS IS FOR TRANSACTION FROM STABLE COIN ONLY !!!
@@ -28,7 +28,7 @@ export class TransactionFiat {
   bank?: Bank;
 
   @Field(() => String)
-  @Column({ type: "enum", enum: TranasctionMethod })
+  @Column({ type: 'enum', enum: TranasctionMethod })
   method?: TranasctionMethod;
 
   @Field(() => Currency)
@@ -44,7 +44,7 @@ export class TransactionFiat {
   datetime?: Date;
 
   @Field(() => Float)
-  @Column("decimal", {})
+  @Column('decimal', {})
   amount?: number;
 
   @Field(() => String)
