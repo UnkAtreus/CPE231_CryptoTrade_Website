@@ -1,15 +1,8 @@
 import { Field, Float, ObjectType } from "@nestjs/graphql";
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { TransactionFiat } from "./transactionFiat.model";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Wallet } from "./wallet.model";
 @ObjectType()
-@Entity("ptop")
+@Entity()
 export class PtoP {
   @Field()
   @PrimaryGeneratedColumn()

@@ -7,6 +7,7 @@ import { User } from "src/models/user.model";
 import AllRole from "src/static/role";
 import { Repository } from "typeorm";
 import { UserService } from "./user.service";
+import LoginInput from "./../models/input/login.input";
 
 @Resolver()
 export class UserResolver {
@@ -15,15 +16,19 @@ export class UserResolver {
   async getAllUser(): Promise<User[]> {
     return this.userService.getAllUsers();
   }
+  @Query(() => User)
+  async login(@Args("login") input: LoginInput): Promise<User> {
+    return this.userService.getUsersByEmailAndPassword(input);
+  }
+
   @Mutation(() => User)
   async registerUser(
     @Args("registerInput") input: RegisterInput
   ): Promise<User> {
     const userInput = new User();
-    const role = new AllRole();
     userInput.firstName = input.profileInput.firstName;
     userInput.lastName = input.profileInput.lastName;
-    userInput.role = role.customer;
+    userInput.role = AllRole.customer;
     userInput.email = input.email;
     userInput.nationality = input.profileInput.nationality;
     userInput.citizenID = input.profileInput.citizenID;

@@ -1,19 +1,19 @@
 import { Role } from "src/models/role.model";
 
 export default class AllRole {
-  customer: Role = {
+  static customer: Role = {
     id: 1,
     role: "customer",
   };
-  staff: Role = {
+  static staff: Role = {
     id: 1,
     role: "staff",
   };
-  owner: Role = {
+  static owner: Role = {
     id: 1,
     role: "owner",
   };
-  admin: Role = {
+  static admin: Role = {
     id: 1,
     role: "admin",
   };
