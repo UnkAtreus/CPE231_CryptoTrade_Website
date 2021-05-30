@@ -8,13 +8,13 @@ import {
   ManyToOne,
   JoinColumn,
   JoinTable,
-} from "typeorm";
-import { ObjectType, Field, ID } from "@nestjs/graphql";
-import { Gender } from "src/static/enum";
-import { Role } from "./role.model";
-import { Wallet } from "./wallet.model";
-import { CreditCard } from "./creditcard.model";
-import { TransactionFiat } from "./transactionFiat.model";
+} from 'typeorm';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Gender } from 'src/static/enum';
+import { Role } from './role.model';
+import { Wallet } from './wallet.model';
+import { CreditCard } from './creditcard.model';
+import { TransactionFiat } from './transactionFiat.model';
 
 @ObjectType()
 @Entity()
@@ -37,11 +37,11 @@ export class User {
   lastName?: string;
 
   @Field(() => String)
-  @Column("text", { nullable: false, unique: true })
+  @Column('text', { nullable: false, unique: true })
   email?: string;
 
   @Field(() => String)
-  @Column("varchar", { length: 15 })
+  @Column('varchar', { length: 15 })
   phone?: string;
 
   @Field(() => String)
@@ -61,11 +61,11 @@ export class User {
   birthDate?: Date;
 
   @Field(() => String)
-  @Column({ type: "enum", enum: Gender })
+  @Column({ type: 'enum', enum: Gender })
   gender?: Gender;
 
   @Field(() => String)
-  @Column("text")
+  @Column('text')
   address?: string;
 
   @Field(() => String)
@@ -73,11 +73,11 @@ export class User {
   city?: string;
 
   @Field(() => String)
-  @Column({ type: "varchar", length: 6 })
+  @Column({ type: 'varchar', length: 6 })
   postcode?: string;
 
   @Field(() => String)
-  @Column({ type: "varchar", length: 64 })
+  @Column({ type: 'varchar', length: 64 })
   password?: string;
 
   @Field(() => String)
