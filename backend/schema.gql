@@ -1,0 +1,164 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Bank {
+  id: Float!
+  bank: String
+  transactionFiat: [TransactionFiat!]!
+}
+
+type CreditCard {
+  id: ID
+  user: User
+  cardNumber: String
+  expiredDate: String
+  expiredMonth: String
+  cvv: String
+  address: String
+  postCode: String
+  city: String
+  country: String
+  transactionFiat: [TransactionFiat!]
+}
+
+type TransactionFiat {
+  id: ID!
+  user: User
+  bank: Bank
+  method: String
+  currency: Currency
+  creditCard: CreditCard
+  datetime: DateTime
+  amount: Float
+  bankNumber: String
+  totalBalance: Float
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Currency {
+  id: Float
+  currency: String
+  volume: Float
+  user: [User!]
+  wallet: [Wallet!]
+  transactionFiat: [TransactionFiat!]
+}
+
+type Order {
+  id: ID!
+  user: User
+  method: String
+  walletFrom: Wallet
+  walletTo: Wallet
+  orderDateTime: DateTime
+  tradeDateTime: DateTime
+  cancel: Boolean
+  filled: Boolean
+  amount: Float
+  targetWallet: String
+  totalBalance: Float
+}
+
+type PtoP {
+  id: Float!
+  bank: String
+  walletFrom: Wallet
+  walletTo: Wallet
+  amount: Float
+  walletFromBalance: Float
+  walletToBalance: Float
+}
+
+type TransactionCrypto {
+  id: ID!
+  user: User
+  wallet: Wallet
+  method: String
+  datetime: DateTime
+  amount: Float
+  targetWallet: String
+  totalBalance: Float
+}
+
+type Wallet {
+  id: Float!
+  amount: Float
+  currency: Currency
+  order: [Order!]
+  p2pFrom: [PtoP!]
+  p2pTo: [PtoP!]
+  transactionCrypto: [TransactionCrypto!]
+  user: User
+}
+
+type User {
+  id: ID!
+  role: Role
+  firstName: String
+  lastName: String
+  email: String
+  phone: String
+  nationality: String
+  citizenID: String
+  passportNumber: String
+  birthDate: String
+  gender: String
+  address: String
+  city: String
+  postcode: String
+  password: String
+  pincode: String
+  token: String
+  verify: Boolean
+  created_at: DateTime
+  updated_at: DateTime
+  wallet: [Wallet!]
+  creditCard: [CreditCard!]
+  transactionFiat: [TransactionFiat!]
+}
+
+type Role {
+  id: Float
+  role: String
+  user: [User!]
+}
+
+type Query {
+  getHello: String!
+  getAllUser: [User!]!
+  login(login: LoginInput!): User!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  registerUser(registerInput: RegisterInput!): User!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  profileInput: ProfileInput!
+}
+
+input ProfileInput {
+  firstName: String!
+  lastName: String!
+  phone: String!
+  nationality: String!
+  citizenID: String
+  passportNumber: String
+  birthDate: DateTime!
+  gender: Float!
+  address: String!
+  city: String!
+  postcode: String!
+}

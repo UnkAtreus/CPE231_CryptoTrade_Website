@@ -9,7 +9,7 @@ node_modules
 
 # production
 frontend/build
-mariadb
+/mariadb
 
 # misc
 .DS_Store
