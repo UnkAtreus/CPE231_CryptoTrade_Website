@@ -4,6 +4,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import RegisterInput from "src/models/input/register.input";
 import { Role } from "src/models/role.model";
 import { User } from "src/models/user.model";
+import AllRole from "src/static/role";
 import { Repository } from "typeorm";
 import { UserService } from "./user.service";
 
@@ -19,12 +20,10 @@ export class UserResolver {
     @Args("registerInput") input: RegisterInput
   ): Promise<User> {
     const userInput = new User();
-    const customerRole = new Role();
-    customerRole.id = 1;
-    customerRole.role = "customer";
+    const role = new AllRole();
     userInput.firstName = input.profileInput.firstName;
     userInput.lastName = input.profileInput.lastName;
-    userInput.role = customerRole;
+    userInput.role = role.customer;
     userInput.email = input.email;
     userInput.nationality = input.profileInput.nationality;
     userInput.citizenID = input.profileInput.citizenID;

@@ -1,9 +1,20 @@
-import { Role } from 'src/models/role.model';
+import { Role } from "src/models/role.model";
 
 export default class AllRole {
-  RoleState: Role = {
+  customer: Role = {
     id: 1,
-    role: '',
-    user: [],
+    role: "customer",
+  };
+  staff: Role = {
+    id: 1,
+    role: "staff",
+  };
+  owner: Role = {
+    id: 1,
+    role: "owner",
+  };
+  admin: Role = {
+    id: 1,
+    role: "admin",
   };
 }
