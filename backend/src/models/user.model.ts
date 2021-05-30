@@ -6,8 +6,6 @@ import {
   UpdateDateColumn,
   OneToMany,
   ManyToOne,
-  JoinColumn,
-  JoinTable,
 } from 'typeorm';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Gender } from 'src/static/enum';
