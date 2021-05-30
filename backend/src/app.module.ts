@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { BookModule } from './book/book.module';
 import { UserModule } from './user/user.module';
 import { RepoModule } from './repo/repo.module';
+import { LoginModule } from './login/login.module';
 import graphql_config from './config/graphql.config';
 import typeorm_config from './config/orm.config';
 @Module({
@@ -15,6 +16,7 @@ import typeorm_config from './config/orm.config';
     RepoModule,
     BookModule,
     UserModule,
+    LoginModule,
   ],
   controllers: [AppController],
   providers: [AppService],

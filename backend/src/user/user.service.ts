@@ -11,6 +11,6 @@ export class UserService {
     return await this.repoService.userRepo.save(user);
   }
   async getAllUsers(): Promise<User[]> {
-    return await this.repoService.userRepo.find();
+    return await this.repoService.userRepo.find({ relations: ["role"] });
   }
 }
