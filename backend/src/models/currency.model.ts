@@ -19,7 +19,7 @@ export class Currency {
   volume?: number;
 
   @Field(() => [User])
-  @OneToMany(() => User, (user) => user.role)
+  @OneToMany(() => User, (user) => user.id)
   user?: User[];
 
   @Field(() => [Wallet])

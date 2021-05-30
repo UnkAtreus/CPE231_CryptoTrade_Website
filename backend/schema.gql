@@ -12,8 +12,8 @@ type CreditCard {
   id: ID
   user: User
   cardNumber: String
-  expiredDate: String
   expiredMonth: String
+  expiredYear: String
   cvv: String
   address: String
   postCode: String
@@ -141,6 +141,7 @@ input LoginInput {
 
 type Mutation {
   registerUser(registerInput: RegisterInput!): User!
+  addCard(cardInput: CardInput!): CreditCard!
 }
 
 input RegisterInput {
@@ -161,4 +162,16 @@ input ProfileInput {
   address: String!
   city: String!
   postcode: String!
+}
+
+input CardInput {
+  cardNumber: String!
+  expiredMonth: String!
+  expiredYear: String!
+  cvv: String!
+  address: String!
+  postcode: String!
+  city: String!
+  country: String!
+  userID: Float!
 }

@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { RepoModule } from './repo/repo.module';
 import { LoginModule } from './login/login.module';
+import { CardResolver } from './card/card.resolver';
+import { CardModule } from './card/card.module';
 import graphql_config from './config/graphql.config';
 import typeorm_config from './config/orm.config';
 @Module({
@@ -15,6 +17,8 @@ import typeorm_config from './config/orm.config';
     RepoModule,
     UserModule,
     LoginModule,
+
+    CardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
