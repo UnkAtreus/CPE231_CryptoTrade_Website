@@ -1,6 +1,6 @@
-import { Field, Float, ObjectType } from "@nestjs/graphql";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Wallet } from "./wallet.model";
+import { Field, Float, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Wallet } from './wallet.model';
 @ObjectType()
 @Entity()
 export class PtoP {
@@ -9,7 +9,7 @@ export class PtoP {
   id: number;
 
   @Field()
-  @Column("varchar", { length: 64 })
+  @Column('varchar', { length: 64 })
   bank?: string;
 
   @Field(() => Wallet)
@@ -21,14 +21,14 @@ export class PtoP {
   walletTo?: Wallet;
 
   @Field(() => Float)
-  @Column("decimal", {})
+  @Column('decimal', {})
   amount?: number;
 
   @Field(() => Float)
-  @Column("decimal", {})
+  @Column('decimal', {})
   walletFromBalance?: number;
 
   @Field(() => Float)
-  @Column("decimal", {})
+  @Column('decimal', {})
   walletToBalance?: number;
 }
