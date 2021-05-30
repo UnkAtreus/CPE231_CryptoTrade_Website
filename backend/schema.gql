@@ -2,14 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Book {
-  id: ID!
-  name: String
-  description: String
-  price: Float
-  writer: [String!]
-}
-
 type Bank {
   id: Float!
   bank: String
@@ -138,20 +130,17 @@ type Role {
 
 type Query {
   getHello: String!
-  getBook: Book!
   getAllUser: [User!]!
+  login(login: LoginInput!): User!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
 
 type Mutation {
-  createBook(input: InputBook!): Book!
   registerUser(registerInput: RegisterInput!): User!
-}
-
-input InputBook {
-  name: String!
-  price: Float
-  description: String
-  writer: [String!]!
 }
 
 input RegisterInput {
