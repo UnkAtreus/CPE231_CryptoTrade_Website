@@ -1,25 +1,21 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { User } from '../user.model';
-
 @InputType()
 class CardInput {
-  @Field()
-  readonly cardNumber: string;
-  @Field()
-  readonly expiredMonth: string;
-  @Field()
-  readonly expiredYear: string;
-  @Field()
-  readonly cvv: string;
-  @Field()
-  readonly address: string;
-  @Field()
-  readonly postcode: string;
-  @Field()
-  readonly city: string;
-  @Field()
-  readonly country: string;
-  @Field()
-  readonly userID: number;
+  @Field(() => String)
+  readonly cardNumber?: string;
+  @Field(() => String)
+  readonly expiredMonth?: string;
+  @Field(() => String)
+  readonly expiredYear?: string;
+  @Field(() => String)
+  readonly cvv?: string;
+  @Field(() => String, { nullable: true })
+  readonly address?: string;
+  @Field(() => String, { nullable: true })
+  readonly postcode?: string;
+  @Field(() => String, { nullable: true })
+  readonly city?: string;
+  @Field(() => String, { nullable: true })
+  readonly country?: string;
 }
 export default CardInput;

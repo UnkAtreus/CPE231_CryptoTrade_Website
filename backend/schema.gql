@@ -167,15 +167,14 @@ input ProfileInput {
 }
 
 input CardInput {
-  cardNumber: String!
-  expiredMonth: String!
-  expiredYear: String!
-  cvv: String!
-  address: String!
-  postcode: String!
-  city: String!
-  country: String!
-  userID: Float!
+  cardNumber: String
+  expiredMonth: String
+  expiredYear: String
+  cvv: String
+  address: String
+  postcode: String
+  city: String
+  country: String
 }
 
 type Subscription {

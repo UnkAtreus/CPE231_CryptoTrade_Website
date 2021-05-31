@@ -2,7 +2,7 @@ import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import RegisterInput from 'src/models/input/register.input';
 import { User } from 'src/models/user.model';
 import { UserService } from './user.service';
-import LoginInput from './../models/input/login.input';
+import LoginInput from '../../models/input/login.input';
 import { Roles } from 'src/middleware/guard/roles.decorator';
 
 @Resolver()

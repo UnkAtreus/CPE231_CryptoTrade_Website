@@ -1,12 +1,11 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
-import { json } from 'express';
 import * as Websocket from 'websocket';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
   onApplicationBootstrap() {
-    this.handleInterval();
+    // this.handleInterval();
   }
   price = 0;
   handleInterval() {
@@ -34,8 +33,9 @@ export class OrderService implements OnApplicationBootstrap {
       '',
     );
   }
+
   @Interval(1000)
   async updateOrder() {
-    console.log(this.price);
+    // console.log(this.price);
   }
 }
