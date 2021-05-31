@@ -4,6 +4,7 @@ import { User } from 'src/models/user.model';
 import { UserService } from './user.service';
 import LoginInput from './../models/input/login.input';
 import { Roles } from 'src/middleware/guard/roles.decorator';
+import { SetMetadata } from '@nestjs/common';
 
 @Resolver()
 export class UserResolver {
@@ -18,16 +19,16 @@ export class UserResolver {
     return this.userService.loginUser(input);
   }
 
-  @Query(() => User)
-  @Roles(['customer', 'staff', 'owner', 'admin'])
-  async getUserByToken(@Context('user') user: User) {
-    return this.userService.getUserByToken(user.id);
-  }
-
   @Mutation(() => String)
   async registerUser(
     @Args('registerInput') input: RegisterInput,
   ): Promise<string> {
     return this.userService.registerUser(input);
+  }
+
+  @Query(() => User)
+  @Roles(['customer', 'staff', 'owner', 'admin'])
+  async getUserByToken(@Context('user') user: User) {
+    return this.userService.getUserByToken(user.id);
   }
 }
