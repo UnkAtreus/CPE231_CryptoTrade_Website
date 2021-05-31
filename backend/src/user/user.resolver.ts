@@ -27,7 +27,7 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  @Roles('customer')
+  @Roles(['admin', 'customer'])
   async getUserByToken(@Context('user') user: User) {
     return user;
   }

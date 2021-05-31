@@ -15,18 +15,23 @@ export class AuthGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
   async canActivate(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context).getContext();
-    const role = this.reflector.get<string>('roles', context.getHandler());
-    console.log(role);
+    const roles = this.reflector.get<string[]>('roles', context.getHandler());
+    console.log(roles);
 
-    if (!role) {
+    if (!roles) {
       return true;
     } else {
       if (!ctx.headers.authorization) {
         throw new UnauthorizedException();
       }
       ctx.user = await this.validateToken(ctx.headers.authorization);
-
-      return ctx.user['roleName'] === role;
+      let b = false;
+      roles.forEach((role) => {
+        if (ctx.user['roleName'] === role) {
+          b = true;
+        }
+      });
+      return b;
     }
   }
 
