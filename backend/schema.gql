@@ -133,6 +133,7 @@ type Query {
   getAllUser: [User!]!
   login(login: LoginInput!): String!
   getUserByToken: User!
+  getUserCByToken: User!
 }
 
 input LoginInput {
@@ -143,6 +144,7 @@ input LoginInput {
 type Mutation {
   registerUser(registerInput: RegisterInput!): String!
   addCard(cardInput: CardInput!): CreditCard!
+  testOrder2: String!
 }
 
 input RegisterInput {
@@ -166,13 +168,16 @@ input ProfileInput {
 }
 
 input CardInput {
-  cardNumber: String!
-  expiredMonth: String!
-  expiredYear: String!
-  cvv: String!
-  address: String!
-  postcode: String!
-  city: String!
-  country: String!
-  userID: Float!
+  cardNumber: String
+  expiredMonth: String
+  expiredYear: String
+  cvv: String
+  address: String
+  postcode: String
+  city: String
+  country: String
+}
+
+type Subscription {
+  testOrder: String!
 }

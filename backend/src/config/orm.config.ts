@@ -10,4 +10,5 @@ const typeorm_config: TypeOrmModuleOptions = {
   synchronize: true,
   entities: ['dist/**/*.model.js'],
 };
+
 export default typeorm_config;
