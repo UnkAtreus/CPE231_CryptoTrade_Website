@@ -1,4 +1,4 @@
-import { Role } from 'src/models/role.model';
+import { Role } from 'src/models/object/role.model';
 
 export default class AllRole {
   static customer: Role = {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/models/user.model';
+import { User } from 'src/models/object/user.model';
 import { RepoService } from 'src/repo/repo.service';
 import LoginInput from '../../models/input/login.input';
 import * as jwt from 'jsonwebtoken';

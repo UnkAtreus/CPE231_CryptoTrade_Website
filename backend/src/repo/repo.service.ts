@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bank } from 'src/models/object/bank.model';
-import { CreditCard } from 'src/models/creditcard.model';
-import { Currency } from 'src/models/currency.model';
-import { Order } from 'src/models/order.model';
-import { PtoP } from 'src/models/ptop.model';
-import { Role } from 'src/models/role.model';
-import { TransactionFiat } from 'src/models/transactionFiat.model';
-import { User } from 'src/models/user.model';
-import { Wallet } from 'src/models/wallet.model';
+import { CreditCard } from 'src/models/object/creditcard.model';
+import { Currency } from 'src/models/object/currency.model';
+import { Order } from 'src/models/object/order.model';
+import { PtoP } from 'src/models/object/ptop.model';
+import { Role } from 'src/models/object/role.model';
+import { TransactionFiat } from 'src/models/object/transactionFiat.model';
+import { User } from 'src/models/object/user.model';
+import { Wallet } from 'src/models/object/wallet.model';
 import { Repository } from 'typeorm';
-import { TransactionCrypto } from '../models/transactionCrypto.model';
+import { TransactionCrypto } from '../models/object/transactionCrypto.model';
 
 @Injectable()
 export class RepoService {

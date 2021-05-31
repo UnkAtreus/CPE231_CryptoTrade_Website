@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreditCard } from 'src/models/creditcard.model';
-import { User } from 'src/models/user.model';
+import { CreditCard } from 'src/models/object/creditcard.model';
+import { User } from 'src/models/object/user.model';
 import { RepoService } from 'src/repo/repo.service';
 import { UserService } from 'src/modules/user/user.service';
 import CardInput from '../../models/input/card.input';
