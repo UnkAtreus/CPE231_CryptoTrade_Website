@@ -133,6 +133,7 @@ type Query {
   getAllUser: [User!]!
   login(login: LoginInput!): String!
   getUserByToken: User!
+  getUserCByToken: User!
 }
 
 input LoginInput {
