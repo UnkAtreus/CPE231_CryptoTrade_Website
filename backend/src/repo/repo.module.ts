@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Bank } from 'src/models/bank.model';
+import { Bank } from 'src/models/object/bank.model';
 import { CreditCard } from 'src/models/creditcard.model';
 import { Currency } from 'src/models/currency.model';
 import { Order } from 'src/models/order.model';
