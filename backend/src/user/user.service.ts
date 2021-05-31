@@ -6,7 +6,6 @@ import * as jwt from 'jsonwebtoken';
 import RegisterInput from './../models/input/register.input';
 import AllRole from 'src/static/role';
 import { IncorrectPassword, UserNotFound } from 'src/utils/error-handling';
-import { lstat } from 'node:fs';
 
 import { Hash } from './helper/hash';
 @Injectable()

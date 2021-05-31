@@ -4,7 +4,6 @@ import { User } from 'src/models/user.model';
 import { UserService } from './user.service';
 import LoginInput from './../models/input/login.input';
 import { Roles } from 'src/middleware/guard/roles.decorator';
-import { SetMetadata } from '@nestjs/common';
 
 @Resolver()
 export class UserResolver {

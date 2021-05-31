@@ -143,6 +143,7 @@ input LoginInput {
 type Mutation {
   registerUser(registerInput: RegisterInput!): String!
   addCard(cardInput: CardInput!): CreditCard!
+  testOrder2: String!
 }
 
 input RegisterInput {
@@ -175,4 +176,8 @@ input CardInput {
   city: String!
   country: String!
   userID: Float!
+}
+
+type Subscription {
+  testOrder: String!
 }
