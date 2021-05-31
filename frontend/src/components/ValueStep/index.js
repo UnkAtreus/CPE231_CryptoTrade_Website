@@ -8,7 +8,8 @@ export const ValueStep = ({ match, ...props }) => {
   const [rangeStep] = useState(["25", "50", "75", "100"]);
 
   const changeStep = (step) => {
-    setActive(step);
+    if (step === active) setActive(0);
+    else setActive(step);
   };
 
   return (
@@ -23,21 +24,21 @@ export const ValueStep = ({ match, ...props }) => {
               key={index}
               className={ClassNames(
                 "content-column text-center",
-                index === active ? "active" : ""
+                index + 1 === active ? "active" : ""
               )}
               style={{ width: "100%", cursor: "pointer" }}
-              onClick={() => changeStep(index)}
+              onClick={() => changeStep(index + 1)}
             >
               <div
                 className={ClassNames(
                   "step mgb-2",
-                  index <= active ? "bg-purple" : "bg-gray"
+                  index + 1 <= active ? "bg-purple" : "bg-gray"
                 )}
               />
               <div
                 className={ClassNames(
                   "label",
-                  index === active ? "white" : "gray"
+                  index + 1 === active ? "white" : "gray"
                 )}
               >
                 {data} %

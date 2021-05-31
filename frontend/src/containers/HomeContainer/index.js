@@ -21,6 +21,7 @@ import { marketController } from "apiService";
 import ClassNames from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import BigNumber from "bignumber.js";
+import { isEqualType } from "graphql";
 
 const constants = {
   lastUpdateId: 10299107955,
@@ -36,15 +37,7 @@ const constants = {
 
 const HomeContainer = (props) => {
   const [price, setPrice] = useState(0);
-  const [orderbook, setOrderbook] = useState(constants);
   const [isUpPrice, setIsUpPrice] = useState(true);
-  const [priceChange, setPriceChange] = useState(0);
-  const [priceChangePercent, setPriceChangePercent] = useState(0);
-  const [highPrice, setHighPrice] = useState(0);
-  const [lowPrice, setLowPrice] = useState(0);
-  const [volume, setVolume] = useState(0);
-  const [quoteVolume, setQuoteVolume] = useState(0);
-  const [trades, setTrades] = useState([]);
   const [streams] = useState(["@ticker", "@depth20", "@trade"]);
 
   const SYMBOL = props.match.params.symbol
@@ -53,10 +46,14 @@ const HomeContainer = (props) => {
 
   const TRADES_COUNT = 32;
 
-  const dispatch = useDispatch();
-  const arg = useSelector((state) => state);
+  const isEqual = (l, r) => {
+    if (l.ticker.c !== r.ticker.c)
+      if (l.ticker.c >= r.ticker.c) setIsUpPrice(true);
+      else setIsUpPrice(false);
+  };
 
-  var old_price = 0;
+  const dispatch = useDispatch();
+  const arg = useSelector((state) => state, isEqual);
 
   const _connectSocketStreams = (streams) => {
     streams = streams.join("/");
@@ -68,7 +65,6 @@ const HomeContainer = (props) => {
       let eventData = JSON.parse(evt.data);
 
       if (eventData.stream.endsWith("@ticker")) {
-        eventData.data.lastc = arg.ticker ? arg.ticker.c : 0;
         dispatch({
           type: "SET_TICKER",
           data: eventData.data,
@@ -89,7 +85,6 @@ const HomeContainer = (props) => {
           data: trades,
         });
       }
-      // console.log("ticker", JSON.parse(evt.data).data);
     };
     connection.onerror = (evt) => {
       console.error(evt);
@@ -111,27 +106,6 @@ const HomeContainer = (props) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     old_price = new_price;
-  //     GetPrice();
-  //     Get24Price();
-  //     GetTrades();
-  //   }, 200);
-  //   return () => clearInterval(interval);
-  // }, []);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     GetOrderBook();
-  //   }, 2000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
-  const convertTwoDegit = (num) => {
-    return (Math.round(num * 100) / 100).toFixed(2);
-  };
-
   const convertTime = (date) => {
     return Intl.DateTimeFormat("en-US", {
       hour: "2-digit",
@@ -140,47 +114,6 @@ const HomeContainer = (props) => {
       hour12: false,
     }).format(date);
   };
-
-  // const GetPrice = async () => {
-  //   const crypto_price = await marketController().getPrice("symbol=BTCUSDT");
-  //   var cur_price = (Math.round(crypto_price.price * 100) / 100).toFixed(2);
-  //   setPrice(cur_price);
-  //   new_price = cur_price;
-  //   cur_price >= old_price ? setIsUpPrice(true) : setIsUpPrice(false);
-  // };
-
-  const Get24Price = async () => {
-    const crypto_24_price = await marketController().get24Price(
-      "symbol=BTCUSDT"
-    );
-    setPriceChange(convertTwoDegit(crypto_24_price.priceChange));
-    setPriceChangePercent(convertTwoDegit(crypto_24_price.priceChangePercent));
-    setHighPrice(convertTwoDegit(crypto_24_price.highPrice));
-    setLowPrice(convertTwoDegit(crypto_24_price.lowPrice));
-    setVolume(convertTwoDegit(crypto_24_price.volume));
-    setQuoteVolume(convertTwoDegit(crypto_24_price.quoteVolume));
-  };
-
-  const GetOrderBook = async () => {
-    const order_book = await marketController().getOrderBook(
-      "symbol=BTCUSDT&limit=20"
-    );
-    setOrderbook(order_book);
-  };
-
-  const GetTrades = async () => {
-    const trades_data = await marketController().getTrades(
-      "symbol=BTCUSDT&limit=32"
-    );
-    trades_data.sort(function (a, b) {
-      return parseInt(b.time) - parseInt(a.time);
-    });
-    setTrades(trades_data);
-  };
-
-  // const setValue = (value) => {
-  //   console.log("test", value);
-  // };
 
   return (
     <HomeStyled>
@@ -392,8 +325,8 @@ const HomeContainer = (props) => {
                   <div className="label gray">Cardano</div>
                 </div>
                 <div className="content-column mgr-32">
-                  <div className="paragraph green">{price}</div>
-                  <div className="label gray">${price}</div>
+                  <div className="paragraph green">{arg.ticker.c}</div>
+                  <div className="label gray">${arg.ticker.c}</div>
                 </div>
                 <div className="content-column mgr-16">
                   <div className="label gray">24h Change</div>
