@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { OrderResolver } from './order/order.resolver';
+import { OrderResolver } from './modules/order/order.resolver';
 import { TestResolver } from './test/test.resolver';
 
 async function bootstrap() {

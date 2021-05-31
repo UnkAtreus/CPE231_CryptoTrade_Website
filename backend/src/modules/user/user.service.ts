@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/models/user.model';
 import { RepoService } from 'src/repo/repo.service';
-import LoginInput from './../models/input/login.input';
+import LoginInput from '../../models/input/login.input';
 import * as jwt from 'jsonwebtoken';
-import RegisterInput from './../models/input/register.input';
+import RegisterInput from '../../models/input/register.input';
 import AllRole from 'src/static/role';
 import { IncorrectPassword, UserNotFound } from 'src/utils/error-handling';
 
