@@ -1,13 +1,12 @@
-import { Inject } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import RegisterInput from 'src/models/input/register.input';
-import { Role } from 'src/models/role.model';
 import { User } from 'src/models/user.model';
 import AllRole from 'src/static/role';
-import { Repository } from 'typeorm';
 import { UserService } from './user.service';
 import LoginInput from './../models/input/login.input';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../middleware/guard/auth.guard';
+import { Roles } from 'src/middleware/guard/roles.decorator';
 
 @Resolver()
 export class UserResolver {
@@ -16,9 +15,21 @@ export class UserResolver {
   async getAllUser(): Promise<User[]> {
     return this.userService.getAllUsers();
   }
+
   @Query(() => User)
   async login(@Args('login') input: LoginInput): Promise<User> {
     return this.userService.getUsersByEmailAndPassword(input);
+  }
+
+  @Query(() => String)
+  async login2(@Args('login') input: LoginInput): Promise<string> {
+    return this.userService.getUserByEmail(input);
+  }
+
+  @Query(() => User)
+  @Roles('customer')
+  async getUserByToken(@Context('user') user: User) {
+    return user;
   }
 
   @Mutation(() => User)

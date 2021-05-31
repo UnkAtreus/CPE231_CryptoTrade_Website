@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Role {
+  id: Float
+  role: String
+  user: [User!]
+}
+
 type Bank {
   id: Float!
   bank: String
@@ -122,16 +128,12 @@ type User {
   transactionFiat: [TransactionFiat!]
 }
 
-type Role {
-  id: Float
-  role: String
-  user: [User!]
-}
-
 type Query {
   getHello: String!
   getAllUser: [User!]!
   login(login: LoginInput!): User!
+  login2(login: LoginInput!): String!
+  getUserByToken: User!
 }
 
 input LoginInput {
