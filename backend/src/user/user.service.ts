@@ -3,11 +3,12 @@ import { User } from 'src/models/user.model';
 import { RepoService } from 'src/repo/repo.service';
 import LoginInput from './../models/input/login.input';
 import * as jwt from 'jsonwebtoken';
-import * as bcrypt from 'bcryptjs';
 import RegisterInput from './../models/input/register.input';
 import AllRole from 'src/static/role';
 import { IncorrectPassword, UserNotFound } from 'src/utils/error-handling';
 import { lstat } from 'node:fs';
+
+import { Hash } from './helper/hash';
 @Injectable()
 export class UserService {
   constructor(private readonly repoService: RepoService) {}
@@ -43,9 +44,17 @@ export class UserService {
     return user;
   }
   async registerUser(registerInput: RegisterInput): Promise<string> {
-    return bcrypt
-      .hash(registerInput.password, 1)
-      .then(async (password: string) => {
+    // const user: User = {
+    //   email: registerInput.email,
+    //   password: await Hash.encrypt(registerInput.password),
+    //   ...registerInput.profileInput,
+    //   role: AllRole.customer,
+    // };
+    // const result = await this.createOrUpdate(user); // สร้างเสร็จ
+    // if (result) return await this.createToken(result); // GEN TOKEN
+
+    return Hash.encrypt(registerInput.password).then(
+      async (password: string) => {
         const user: User = {
           email: registerInput.email,
           password: password,
@@ -54,20 +63,21 @@ export class UserService {
         };
         const result = await this.createOrUpdate(user); // สร้างเสร็จ
         if (result) return await this.createToken(result); // GEN TOKEN
-      });
+      },
+    );
   }
 
   async loginUser(input: LoginInput): Promise<string> {
     const user = await this.getUserByEmail(input);
 
-    return bcrypt
-      .compare(input.password, user.password)
-      .then(async (result: boolean) => {
+    return Hash.compare(input.password, user.password).then(
+      async (result: boolean) => {
         if (result) {
           return await this.createToken(user);
         } else {
           throw IncorrectPassword;
         }
-      });
+      },
+    );
   }
 }
