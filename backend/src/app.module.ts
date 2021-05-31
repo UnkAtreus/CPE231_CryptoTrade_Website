@@ -5,7 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { RepoModule } from './repo/repo.module';
-
+import { CardResolver } from './card/card.resolver';
+import { CardModule } from './card/card.module';
 import graphql_config from './config/graphql.config';
 import typeorm_config from './config/orm.config';
 import { APP_GUARD } from '@nestjs/core';
@@ -14,9 +15,9 @@ import { AuthGuard } from './middleware/guard/auth.guard';
   imports: [
     GraphQLModule.forRoot(graphql_config),
     TypeOrmModule.forRoot(typeorm_config),
-
     RepoModule,
     UserModule,
+    CardModule,
   ],
   controllers: [AppController],
   providers: [

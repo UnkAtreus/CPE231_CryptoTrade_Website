@@ -25,11 +25,11 @@ export class CreditCard {
 
   @Field(() => String)
   @Column('varchar', { length: 2 })
-  expiredDate?: string;
+  expiredMonth?: string;
 
   @Field(() => String)
   @Column('varchar', { length: 2 })
-  expiredMonth?: string;
+  expiredYear?: string;
 
   @Field(() => String)
   @Column('varchar', { length: 3 })

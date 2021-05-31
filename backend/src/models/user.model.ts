@@ -19,11 +19,10 @@ import { TransactionFiat } from './transactionFiat.model';
 export class User {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Field(() => Role)
   @ManyToOne(() => Role, (role) => role.user)
-  // @JoinColumn({ referencedColumnName: "role" })
   role?: Role;
 
   @Field(() => String)
