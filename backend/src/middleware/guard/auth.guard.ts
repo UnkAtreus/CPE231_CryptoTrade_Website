@@ -4,11 +4,11 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import * as jwt from 'jsonwebtoken';
+import { AuthenticationRequired } from 'src/utils/error-handling';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -16,15 +16,15 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context).getContext();
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
-    console.log(roles);
 
     if (!roles) {
       return true;
     } else {
       if (!ctx.headers.authorization) {
-        throw new UnauthorizedException();
+        throw AuthenticationRequired;
       }
       ctx.user = await this.validateToken(ctx.headers.authorization);
+
       let b = false;
       roles.forEach((role) => {
         if (ctx.user['roleName'] === role) {

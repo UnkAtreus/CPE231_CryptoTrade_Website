@@ -103,7 +103,7 @@ type Wallet {
 }
 
 type User {
-  id: ID!
+  id: ID
   role: Role
   firstName: String
   lastName: String
@@ -131,8 +131,7 @@ type User {
 type Query {
   getHello: String!
   getAllUser: [User!]!
-  login(login: LoginInput!): User!
-  login2(login: LoginInput!): String!
+  login(login: LoginInput!): String!
   getUserByToken: User!
 }
 
@@ -142,7 +141,7 @@ input LoginInput {
 }
 
 type Mutation {
-  registerUser(registerInput: RegisterInput!): User!
+  registerUser(registerInput: RegisterInput!): String!
   addCard(cardInput: CardInput!): CreditCard!
 }
 

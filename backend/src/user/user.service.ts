@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/models/user.model';
 import { RepoService } from 'src/repo/repo.service';
-import { Repository } from 'typeorm';
 import LoginInput from './../models/input/login.input';
 import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcryptjs';
+import RegisterInput from './../models/input/register.input';
+import AllRole from 'src/static/role';
+import { IncorrectPassword, UserNotFound } from 'src/utils/error-handling';
 @Injectable()
 export class UserService {
   constructor(private readonly repoService: RepoService) {}
-  async createOrUpdate(user: User): Promise<User> {
-    return await this.repoService.userRepo.save(user);
-  }
+
   async getAllUsers(): Promise<User[]> {
     return await this.repoService.userRepo.find({ relations: ['role'] });
   }
@@ -19,29 +19,53 @@ export class UserService {
     return jwt.sign({ id, roleName }, 'secret');
   }
 
+  async createOrUpdate(user: User): Promise<User> {
+    return await this.repoService.userRepo.save(user);
+  }
+
   async getUserByToken(id: number): Promise<User> {
     return await this.repoService.userRepo.findOne({
       where: { id: id },
       relations: ['role'],
     });
   }
-  async getUsersByEmailAndPassword(input: LoginInput): Promise<User> {
-    return await this.repoService.userRepo.findOne({
-      select: ['id', 'email', 'password'],
-      where: { email: input.email },
-      relations: ['role'],
-    });
-  }
 
-  async getUserByEmail(input: LoginInput): Promise<string> {
+  async getUserByEmail(input: LoginInput): Promise<User> {
     const user = await this.repoService.userRepo.findOne({
       select: ['id', 'email', 'password'],
       where: { email: input.email },
       relations: ['role'],
     });
     if (!user) {
-      return '';
+      throw UserNotFound;
     }
-    return await this.createToken(user);
+    return user;
+  }
+  async registerUser(registerInput: RegisterInput): Promise<string> {
+    return bcrypt.hash(registerInput.password, 1).then(async (password) => {
+      const user: User = {
+        email: registerInput.email,
+        password: password,
+        ...registerInput.profileInput,
+        role: AllRole.customer,
+      };
+      console.log(user);
+      const result = await this.createOrUpdate(user);
+      if (result) return await this.createToken(result);
+    });
+  }
+
+  async loginUser(input: LoginInput): Promise<string> {
+    const user = await this.getUserByEmail(input);
+
+    return bcrypt
+      .compare(input.password, user.password)
+      .then(async (result) => {
+        if (result) {
+          return await this.createToken(user);
+        } else {
+          throw IncorrectPassword;
+        }
+      });
   }
 }
