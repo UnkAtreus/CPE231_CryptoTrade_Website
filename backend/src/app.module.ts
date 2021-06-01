@@ -17,6 +17,7 @@ import { WalletModule } from './modules/wallet/wallet.module';
 import { CurrencyModule } from './modules/currency/currency.module';
 import { TransactionFiatModule } from './modules/transaction-fiat/transaction-fiat.module';
 import { BankModule } from './modules/bank/bank.module';
+import { TransactionCryptoModule } from './modules/transaction-crypto/transaction-crypto.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { BankModule } from './modules/bank/bank.module';
     CurrencyModule,
     TransactionFiatModule,
     BankModule,
+    TransactionCryptoModule,
   ],
   controllers: [AppController],
   providers: [

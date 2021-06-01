@@ -166,6 +166,7 @@ type Mutation {
   createOrder(input: OrderInput!): Order!
   cancelOrder(id: ID!): Order!
   createFiat(fiatInput: FiatInput!): TransactionFiat!
+  createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
 }
 
 input RegisterInput {
@@ -211,6 +212,13 @@ input FiatInput {
   method: Float
   amount: Float
   bankNumber: String
+}
+
+input CryptoInput {
+  method: Float
+  amount: Float
+  targetWallet: String
+  shortName: String
 }
 
 type Subscription {
