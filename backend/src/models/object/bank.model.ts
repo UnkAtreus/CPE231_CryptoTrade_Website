@@ -6,7 +6,7 @@ import { TransactionFiat } from './transactionFiat.model';
 export class Bank {
   @Field()
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Field()
   @Column('varchar', { length: 64 })

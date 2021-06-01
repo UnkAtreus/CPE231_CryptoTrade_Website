@@ -1,13 +1,23 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
+import { Order } from 'src/models/object/order.model';
 import * as Websocket from 'websocket';
+import { WalletService } from '../wallet/wallet.service';
+import { RepoService } from '../../repo/repo.service';
+import OrderInput from 'src/models/input/order.input';
+import { UserService } from '../user/user.service';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
+  constructor(
+    private readonly walletService: WalletService,
+    private readonly repoService: RepoService,
+    private readonly userService: UserService,
+  ) {}
+  private price: number;
   onApplicationBootstrap() {
     // this.handleInterval();
   }
-  price = 0;
   handleInterval() {
     const client = new webClient();
     client.on('connectFailed', function (error) {
@@ -34,8 +44,14 @@ export class OrderService implements OnApplicationBootstrap {
     );
   }
 
-  @Interval(1000)
+  async createOrder(userId: number, input: OrderInput): Promise<Order> {
+    const user = this.userService.getUserByToken(userId);
+    // const walletFrom =
+    return;
+  }
+
+  // @Interval(1000)
   async updateOrder() {
-    // console.log(this.price);
+    console.log(this.price);
   }
 }

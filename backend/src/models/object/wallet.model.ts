@@ -16,7 +16,7 @@ import { TransactionCrypto } from './transactionCrypto.model';
 export class Wallet {
   @Field()
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Field()
   @Column('decimal')

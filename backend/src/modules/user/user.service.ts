@@ -8,9 +8,13 @@ import AllRole from 'src/static/role';
 import { IncorrectPassword, UserNotFound } from 'src/utils/error-handling';
 
 import { Hash } from './helper/hash';
+import { WalletService } from '../wallet/wallet.service';
 @Injectable()
 export class UserService {
-  constructor(private readonly repoService: RepoService) {}
+  constructor(
+    private readonly repoService: RepoService,
+    private readonly walletService: WalletService,
+  ) {}
 
   async getAllUsers(): Promise<User[]> {
     return await this.repoService.userRepo.find({ relations: ['role'] });
@@ -43,15 +47,6 @@ export class UserService {
     return user;
   }
   async registerUser(registerInput: RegisterInput): Promise<string> {
-    // const user: User = {
-    //   email: registerInput.email,
-    //   password: await Hash.encrypt(registerInput.password),
-    //   ...registerInput.profileInput,
-    //   role: AllRole.customer,
-    // };
-    // const result = await this.createOrUpdate(user); // สร้างเสร็จ
-    // if (result) return await this.createToken(result); // GEN TOKEN
-
     return Hash.encrypt(registerInput.password).then(
       async (password: string) => {
         const user: User = {
@@ -61,7 +56,10 @@ export class UserService {
           role: AllRole.customer,
         };
         const result = await this.createOrUpdate(user); // สร้างเสร็จ
-        if (result) return await this.createToken(result); // GEN TOKEN
+        if (result) {
+          await this.walletService.createAllWalletForUser(result);
+          return await this.createToken(result);
+        } // GEN TOKEN
       },
     );
   }

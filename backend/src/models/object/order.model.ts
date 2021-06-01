@@ -1,31 +1,28 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
-import { TranasctionMethod } from 'src/static/enum';
+import { OrderMethod } from 'src/static/enum';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Bank } from './bank.model';
 import { User } from './user.model';
-import { Currency } from './currency.model';
-import { CreditCard } from './creditcard.model';
 import { Wallet } from './wallet.model';
 @ObjectType()
 @Entity()
 export class Order {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.transactionFiat)
   user?: User;
 
   @Field(() => String)
-  @Column({ type: 'enum', enum: TranasctionMethod })
-  method?: TranasctionMethod;
+  @Column({ type: 'enum', enum: OrderMethod })
+  method?: OrderMethod;
 
   @Field(() => Wallet)
   @ManyToOne(() => Wallet, (walletFrom) => walletFrom.order)
@@ -35,13 +32,17 @@ export class Order {
   @ManyToOne(() => Wallet, (walletTo) => walletTo.order)
   walletTo?: Wallet;
 
-  @Field(() => Date)
+  @Field(() => Float)
   @Column()
-  orderDateTime?: Date;
+  price?: number;
 
-  @Field(() => Date)
+  @Field(() => Float)
+  @Column('decimal', {})
+  amount?: number;
+
+  @Field(() => Float)
   @Column()
-  tradeDateTime?: Date;
+  totalBalance?: number;
 
   @Field(() => Boolean)
   @Column()
@@ -51,17 +52,13 @@ export class Order {
   @Column()
   filled?: boolean;
 
-  @Field(() => Float)
-  @Column('decimal', {})
-  amount?: number;
+  @Field(() => Date)
+  @CreateDateColumn()
+  created_at?: Date;
 
-  @Field(() => String)
+  @Field(() => Date)
   @Column()
-  targetWallet?: string;
-
-  @Field(() => Float)
-  @Column()
-  totalBalance?: number;
+  tradeDateTime?: Date;
 
   //   @OneToMany(() => User, (user) => user.role)
   //   user: User[];

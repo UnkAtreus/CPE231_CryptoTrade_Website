@@ -46,14 +46,14 @@ export class CardService {
     //   ...input,
     // };
     const card = await this.repoService.creditCardRepo.findOne(id);
-    card.cardNumber = input.cardNumber;
-    card.cvv = input.cvv;
-    card.expiredMonth = input.expiredMonth;
-    card.expiredYear = input.expiredYear;
-    card.address = input.address;
-    card.city = input.city;
-    card.country = input.country;
-    card.postCode = input.postcode;
+    card.cardNumber = input.cardNumber ?? card.cardNumber;
+    card.cvv = input.cvv ?? card.cvv;
+    card.expiredMonth = input.expiredMonth ?? card.expiredMonth;
+    card.expiredYear = input.expiredYear ?? card.expiredYear;
+    card.address = input.address ?? card.address;
+    card.city = input.city ?? card.city;
+    card.country = input.country ?? card.country;
+    card.postCode = input.postcode ?? card.postCode;
     return await this.repoService.creditCardRepo.save(card);
   }
 

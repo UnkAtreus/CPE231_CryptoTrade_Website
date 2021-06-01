@@ -7,3 +7,8 @@ export enum TranasctionMethod {
   Deposit,
   Withdraw,
 }
+
+export enum OrderMethod {
+  Sell,
+  Buy,
+}

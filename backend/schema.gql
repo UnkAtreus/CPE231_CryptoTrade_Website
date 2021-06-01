@@ -9,7 +9,7 @@ type Role {
 }
 
 type Bank {
-  id: Float!
+  id: Float
   bank: String
   transactionFiat: [TransactionFiat!]!
 }
@@ -29,7 +29,7 @@ type CreditCard {
 }
 
 type TransactionFiat {
-  id: ID!
+  id: ID
   user: User
   bank: Bank
   method: String
@@ -57,7 +57,7 @@ type Currency {
 }
 
 type Order {
-  id: ID!
+  id: ID
   user: User
   method: String
   walletFrom: Wallet
@@ -72,7 +72,7 @@ type Order {
 }
 
 type PtoP {
-  id: Float!
+  id: Float
   bank: String
   walletFrom: Wallet
   walletTo: Wallet
@@ -82,7 +82,7 @@ type PtoP {
 }
 
 type TransactionCrypto {
-  id: ID!
+  id: ID
   user: User
   wallet: Wallet
   method: String
@@ -93,7 +93,7 @@ type TransactionCrypto {
 }
 
 type Wallet {
-  id: Float!
+  id: Float
   amount: Float
   currency: Currency
   order: [Order!]
@@ -134,11 +134,11 @@ type Query {
   getAllUser: [User!]!
   login(login: LoginInput!): String!
   getUserByToken: User!
+  getAllCurrency: [Currency!]!
+  getCurrencyId(id: ID!): Currency!
   getAllCard: [CreditCard!]!
   getCardByID(idcardInput: Float!): CreditCard!
   getCardByToken: [CreditCard!]!
-  getAllCurrency: [Currency!]!
-  getCurrencyId(id: ID!): Currency!
 }
 
 input LoginInput {
@@ -149,14 +149,14 @@ input LoginInput {
 type Mutation {
   registerUser(registerInput: RegisterInput!): String!
   seedUser: String!
-  addCard(cardInput: CardInput!): CreditCard!
-  updateCard(cardInput: CardInput!, id: Float!): CreditCard!
-  deleteCard(id: Float!): CreditCard!
-  testOrder2: String!
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!
   deleteCurrency(id: ID!): String!
   updateCurrency(volume: Float, shortName: String, name: String, id: ID!): Currency!
+  addCard(cardInput: CardInput!): CreditCard!
+  updateCard(cardInput: CardInput!, id: Float!): CreditCard!
+  deleteCard(id: Float!): CreditCard!
+  testOrder2: String!
 }
 
 input RegisterInput {
