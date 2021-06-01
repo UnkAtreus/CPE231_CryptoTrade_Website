@@ -13,7 +13,6 @@ import { AuthGuard } from './middleware/guard/auth.guard';
 import { OrderModule } from './modules/order/order.module';
 import { PubSub } from 'graphql-subscriptions';
 import { ScheduleModule } from '@nestjs/schedule';
-import { TestResolver } from './test/test.resolver';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { CurrencyModule } from './modules/currency/currency.module';
 @Module({
@@ -39,7 +38,6 @@ import { CurrencyModule } from './modules/currency/currency.module';
       provide: 'PUB_SUB',
       useValue: new PubSub(),
     },
-    TestResolver,
   ],
 })
 export class AppModule {}

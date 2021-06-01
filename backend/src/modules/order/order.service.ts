@@ -4,10 +4,10 @@ import * as Websocket from 'websocket';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
+  private price: number;
   onApplicationBootstrap() {
     // this.handleInterval();
   }
-  price = 0;
   handleInterval() {
     const client = new webClient();
     client.on('connectFailed', function (error) {
@@ -34,8 +34,8 @@ export class OrderService implements OnApplicationBootstrap {
     );
   }
 
-  @Interval(1000)
+  // @Interval(1000)
   async updateOrder() {
-    // console.log(this.price);
+    console.log(this.price);
   }
 }

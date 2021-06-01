@@ -17,7 +17,7 @@ import { Wallet } from './wallet.model';
 export class Order {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.transactionFiat)

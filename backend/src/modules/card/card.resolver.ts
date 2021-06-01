@@ -5,7 +5,6 @@ import { CardService } from 'src/modules/card/card.service';
 import { User } from 'src/models/object/user.model';
 import CardInput from 'src/models/input/card.input';
 import { Roles } from 'src/middleware/guard/roles.decorator';
-import { number } from 'yargs';
 
 @Resolver()
 export class CardResolver {
@@ -23,7 +22,7 @@ export class CardResolver {
 
   @Query(() => [CreditCard])
   @Roles(['customer'])
-  async getCardByToken(@Context('user') user: User){
+  async getCardByToken(@Context('user') user: User) {
     return this.cardService.getCardByToken(user.id);
   }
 
@@ -48,5 +47,4 @@ export class CardResolver {
   async deleteCard(@Args('id') id: number): Promise<DeleteResult> {
     return this.cardService.deleteCardByID(id);
   }
-
 }

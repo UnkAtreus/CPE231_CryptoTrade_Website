@@ -6,7 +6,7 @@ import { Wallet } from './wallet.model';
 export class PtoP {
   @Field()
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Field()
   @Column('varchar', { length: 64 })

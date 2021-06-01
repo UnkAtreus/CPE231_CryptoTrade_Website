@@ -17,7 +17,7 @@ import { CreditCard } from './creditcard.model';
 export class TransactionFiat {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.transactionFiat)
