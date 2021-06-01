@@ -16,6 +16,12 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { TestResolver } from './test/test.resolver';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { CurrencyModule } from './modules/currency/currency.module';
+import { TransactionFiatModule } from './transaction-fiat/transaction-fiat.module';
+import { BankModule } from './bank/bank.module';
+import { TransactionFiatResolver } from './no--spec/transaction-fiat/transaction-fiat.resolver';
+import { TransactionFiatResolver } from './no--spec/transaction-fiat/transaction-fiat.resolver';
+import { TransactionFiatResolver } from './transaction-fiat/transaction-fiat.resolver';
+import { TransactionFiatModule } from './transaction-fiat/transaction-fiat.module';
 @Module({
   imports: [
     GraphQLModule.forRoot(graphql_config),
@@ -27,6 +33,8 @@ import { CurrencyModule } from './modules/currency/currency.module';
     OrderModule,
     WalletModule,
     CurrencyModule,
+    TransactionFiatModule,
+    BankModule,
   ],
   controllers: [AppController],
   providers: [
@@ -40,6 +48,7 @@ import { CurrencyModule } from './modules/currency/currency.module';
       useValue: new PubSub(),
     },
     TestResolver,
+    TransactionFiatResolver,
   ],
 })
 export class AppModule {}

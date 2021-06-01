@@ -3,6 +3,6 @@ import { WalletResolver } from './wallet.resolver';
 import { WalletService } from './wallet.service';
 
 @Module({
-  providers: [WalletResolver, WalletService]
+  providers: [WalletResolver, WalletService],
 })
 export class WalletModule {}

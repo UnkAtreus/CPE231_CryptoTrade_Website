@@ -1,21 +1,21 @@
 import { Field, InputType } from '@nestjs/graphql';
 @InputType()
 class CardInput {
-  @Field(() => String)
+  @Field()
   readonly cardNumber?: string;
-  @Field(() => String)
+  @Field()
   readonly expiredMonth?: string;
-  @Field(() => String)
+  @Field()
   readonly expiredYear?: string;
-  @Field(() => String)
+  @Field()
   readonly cvv?: string;
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   readonly address?: string;
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   readonly postcode?: string;
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   readonly city?: string;
-  @Field(() => String, { nullable: true })
+  @Field({ nullable: true })
   readonly country?: string;
 }
 export default CardInput;

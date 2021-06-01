@@ -27,7 +27,7 @@ export class RepoService {
     @InjectRepository(TransactionCrypto)
     public readonly transactionCryptoRepo: Repository<TransactionCrypto>,
     @InjectRepository(TransactionFiat)
-    public readonly transactionCryptoFiat: Repository<TransactionFiat>,
+    public readonly transactionFiatRepo: Repository<TransactionFiat>,
     @InjectRepository(Wallet) public readonly walletRepo: Repository<Wallet>,
   ) {}
 }
