@@ -9,5 +9,9 @@ const typeorm_config: TypeOrmModuleOptions = {
   database: 'crypto',
   synchronize: true,
   entities: ['dist/**/*.model.js'],
+  migrations: ['src/migration/**/*.ts'],
+  cli: {
+    migrationsDir: 'src/migration',
+  },
 };
 export default typeorm_config;
