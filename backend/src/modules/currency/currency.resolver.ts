@@ -1,8 +1,9 @@
-import { Args, Mutation, Resolver, Query, ID } from '@nestjs/graphql';
+import { Args, Mutation, Resolver, Query, ID, Context } from '@nestjs/graphql';
 import { Roles } from 'src/middleware/guard/roles.decorator';
 import { Currency } from 'src/models/object/currency.model';
 import { CurrencyService } from '../currency/currency.service';
 import { DeleteResult } from 'typeorm';
+import { User } from 'src/models/object/user.model';
 
 @Resolver()
 export class CurrencyResolver {
@@ -57,5 +58,13 @@ export class CurrencyResolver {
     @Args('id', { type: () => ID }) id: number,
   ): Promise<Currency> {
     return await this.currencyService.getCurrencyByID(id);
+  }
+
+  @Query(() => Currency)
+  async getCurrencyByShortName(
+    @Context('user') user: User,
+    @Args('shortName') shortName: string,
+  ): Promise<Currency> {
+    return await this.currencyService.getCurrencyByShortName(shortName);
   }
 }

@@ -141,6 +141,7 @@ type Query {
   getWalletById(id: ID!): Wallet!
   getAllCurrency: [Currency!]!
   getCurrencyId(id: ID!): Currency!
+  getCurrencyByShortName(shortName: String!): Currency!
   getAllCard: [CreditCard!]!
   getCardByID(idcardInput: Float!): CreditCard!
   getCardByToken: [CreditCard!]!

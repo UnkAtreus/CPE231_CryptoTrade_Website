@@ -68,4 +68,12 @@ export class CurrencyService {
   async deleteCurrency(id: number): Promise<DeleteResult> {
     return await this.repoService.currencyRepo.delete(id);
   }
+
+  async getCurrencyByShortName(shortName: string): Promise<Currency> {
+    return await this.repoService.currencyRepo.findOne({
+      where: {
+        currencyShortName: shortName,
+      },
+    });
+  }
 }

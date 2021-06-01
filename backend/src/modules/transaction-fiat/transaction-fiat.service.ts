@@ -1,3 +1,4 @@
+import { CurrencyService } from './../currency/currency.service';
 import { User } from 'src/models/object/user.model';
 import { UserService } from 'src/modules/user/user.service';
 import { RepoService } from 'src/repo/repo.service';
@@ -14,6 +15,7 @@ export class TransactionFiatService {
     private readonly RepoService: RepoService,
     private readonly walletService: WalletService,
     private readonly userService: UserService,
+    private readonly currencyService: CurrencyService,
   ) {}
   async createFiat(input: FiatInput, user: User): Promise<TransactionFiat> {
     const fiat = new TransactionFiat();
@@ -23,7 +25,11 @@ export class TransactionFiatService {
 
     const getuser = await this.userService.getUserByToken(user.id);
     fiat.user = getuser;
-    const balance = await this.walletService.getWalletByCurrency(getuser.id, 6);
+    const curreny = await this.currencyService.getCurrencyByShortName('USDT');
+    const balance = await this.walletService.getWalletByCurrency(
+      user.id,
+      curreny.id,
+    );
     const temp1 = Number(balance.amount);
     const temp2 = Number(fiat.amount);
 
