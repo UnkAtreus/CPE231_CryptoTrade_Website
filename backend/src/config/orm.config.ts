@@ -14,4 +14,5 @@ const typeorm_config: TypeOrmModuleOptions = {
     migrationsDir: 'src/migration',
   },
 };
+
 export default typeorm_config;

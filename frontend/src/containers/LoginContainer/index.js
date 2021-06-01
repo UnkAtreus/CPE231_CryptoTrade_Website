@@ -1,14 +1,20 @@
 import * as React from "react";
 import { LoginStyled, Header, LoginForm, LoginFormContainer } from "./styled";
-import {
-  Container,
-  Button,
-  Input,
-  NavBar,
-} from "components";
+import { Container, Button, Input, NavBar } from "components";
 
+import { useQuery, gql } from "@apollo/client";
 
 const LoginContainer = ({ match, ...props }) => {
+  const EXCHANGE_RATES = gql`
+    query {
+      getHello
+    }
+  `;
+
+  const { loading, error, data } = useQuery(EXCHANGE_RATES);
+
+  console.log(data);
+
   return (
     <LoginStyled>
       <Header name="header">

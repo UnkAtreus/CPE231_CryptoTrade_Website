@@ -34,9 +34,9 @@ export const getCreateStore = () => {
   const historyMiddleware = routerMiddleware(history);
   const store = createStore(
     rootReducer(history),
-    applyMiddleware(logger)
-    // composeWithDevTools(applyMiddleware(sagaMiddleware, historyMiddleware))
+    // applyMiddleware(logger)
+    composeWithDevTools(applyMiddleware(sagaMiddleware, historyMiddleware))
   );
-  // sagaMiddleware.run(rootSaga);
+  sagaMiddleware.run(rootSaga);
   return store;
 };
