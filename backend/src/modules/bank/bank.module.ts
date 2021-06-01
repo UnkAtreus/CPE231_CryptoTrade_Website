@@ -3,6 +3,6 @@ import { BankResolver } from './bank.resolver';
 import { BankService } from './bank.service';
 
 @Module({
-  providers: [BankResolver, BankService]
+  providers: [BankResolver, BankService],
 })
 export class BankModule {}

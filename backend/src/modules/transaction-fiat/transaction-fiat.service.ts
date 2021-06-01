@@ -23,15 +23,18 @@ export class TransactionFiatService {
 
     const getuser = await this.userService.getUserByToken(user.id);
     fiat.user = getuser;
-    const balance = await this.walletService.getWalletByCurrency(getuser.id, 7);
+    const balance = await this.walletService.getWalletByCurrency(getuser.id, 6);
+    const temp1 = Number(balance.amount);
+    const temp2 = Number(fiat.amount);
 
     if (input.method == TranasctionMethod.Deposit) {
-      fiat.totalBalance = balance.amount + fiat.amount;
+      fiat.totalBalance = temp1 + temp2;
       await this.walletService.updateWallet(balance.id, fiat.totalBalance);
     } else {
       fiat.totalBalance = balance.amount - fiat.amount;
       await this.walletService.updateWallet(balance.id, fiat.totalBalance);
     }
     return await this.RepoService.transactionFiatRepo.save(fiat);
+    return;
   }
 }

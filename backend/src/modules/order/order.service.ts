@@ -22,7 +22,7 @@ export class OrderService implements OnApplicationBootstrap {
     private readonly userService: UserService,
   ) {}
   onApplicationBootstrap() {
-    this.handleInterval();
+    // this.handleInterval();
   }
   private readonly price: number = 0;
   handleInterval() {
@@ -91,7 +91,7 @@ export class OrderService implements OnApplicationBootstrap {
     }
   }
 
-  @Interval(2000)
+  // @Interval(2000)
   async fillOrder() {
     console.log(this.price);
     const orderLists = await this.repoService.orderRepo.find({

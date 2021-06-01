@@ -2,10 +2,12 @@ import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { TranasctionMethod } from 'src/static/enum';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Bank } from './bank.model';
 import { User } from './user.model';
@@ -39,9 +41,15 @@ export class TransactionFiat {
   @ManyToOne(() => CreditCard, (creditCard) => creditCard.transactionFiat)
   creditCard?: CreditCard;
 
-  @Field(() => Date)
+  @Field()
   @Column()
-  datetime?: Date;
+  @CreateDateColumn()
+  created_at?: Date;
+
+  @Field()
+  @Column()
+  @UpdateDateColumn()
+  updated_at?: Date;
 
   @Field(() => Float)
   @Column('decimal', {})

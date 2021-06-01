@@ -50,6 +50,7 @@ export class WalletService {
 
   async updateWallet(id: number, amount: number): Promise<Wallet> {
     const wallet = await this.getWalletById(id);
+    console.log(amount);
     wallet.amount = amount;
     return await this.repoService.walletRepo.save(wallet);
   }

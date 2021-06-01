@@ -35,7 +35,8 @@ type TransactionFiat {
   method: String
   currency: Currency
   creditCard: CreditCard
-  datetime: DateTime
+  created_at: DateTime
+  updated_at: DateTime
   amount: Float
   bankNumber: String
   totalBalance: Float
@@ -86,7 +87,8 @@ type TransactionCrypto {
   user: User
   wallet: Wallet
   method: String
-  datetime: DateTime
+  created_at: DateTime
+  updated_at: DateTime
   amount: Float
   targetWallet: String
   totalBalance: Float
@@ -162,6 +164,7 @@ type Mutation {
   testOrder2: String!
   createOrder(input: OrderInput!): Order!
   cancelOrder(id: ID!): Order!
+  createFiat(fiatInput: FiatInput!): TransactionFiat!
 }
 
 input RegisterInput {
@@ -201,6 +204,12 @@ input OrderInput {
   currenyIDTo: ID!
   price: Float!
   amount: Float!
+}
+
+input FiatInput {
+  method: Float
+  amount: Float
+  bankNumber: String
 }
 
 type Subscription {
