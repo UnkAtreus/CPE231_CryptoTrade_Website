@@ -30,6 +30,17 @@ export class WalletService {
     return await this.repoService.walletRepo.find();
   }
 
+  async getWalletByCurrency(
+    userId: number,
+    currencyId: number,
+  ): Promise<Wallet> {
+    return await this.repoService.walletRepo.findOne({
+      where: {
+        user: userId,
+        currency: currencyId,
+      },
+    });
+  }
   async getWalletById(id: number): Promise<Wallet> {
     return await this.repoService.walletRepo.findOne(id);
   }
