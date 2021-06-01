@@ -31,7 +31,7 @@ export class TransactionFiatService {
       fiat.totalBalance = temp1 + temp2;
       await this.walletService.updateWallet(balance.id, fiat.totalBalance);
     } else {
-      fiat.totalBalance = balance.amount - fiat.amount;
+      fiat.totalBalance = temp1 - temp2;
       await this.walletService.updateWallet(balance.id, fiat.totalBalance);
     }
     return await this.RepoService.transactionFiatRepo.save(fiat);
