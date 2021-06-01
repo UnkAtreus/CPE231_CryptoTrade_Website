@@ -45,7 +45,13 @@ export class OrderService implements OnApplicationBootstrap {
   }
 
   async createOrder(userId: number, input: OrderInput): Promise<Order> {
-    const user = this.userService.getUserByToken(userId);
+    const user = await this.userService.getUserByToken(userId);
+    const walletFrom = await this.walletService.getWalletById(userId);
+    const walletTo = await this.userService.getUserByToken(userId);
+    const order: Order = {
+      user: user,
+      method: input.method,
+    };
     // const walletFrom =
     return;
   }

@@ -57,7 +57,7 @@ export class Order {
   created_at?: Date;
 
   @Field(() => Date)
-  @Column()
+  @Column({ nullable: true })
   tradeDateTime?: Date;
 
   //   @OneToMany(() => User, (user) => user.role)
