@@ -3,12 +3,15 @@ import { User } from 'src/models/object/user.model';
 import { Wallet } from 'src/models/object/wallet.model';
 import { RepoService } from 'src/repo/repo.service';
 import { CurrencyService } from '../currency/currency.service';
+import { UserService } from '../user/user.service';
+import { OrderMethod } from 'src/static/enum';
 
 @Injectable()
 export class WalletService {
   constructor(
     private readonly repoService: RepoService,
     private readonly currencyService: CurrencyService,
+    private readonly userService: UserService,
   ) {}
   async createAllWalletForUser(user: User): Promise<Wallet[]> {
     const currencyLists = await this.currencyService.getAllCurrency();
@@ -22,5 +25,35 @@ export class WalletService {
       walletLists.push(wallet);
     });
     return await this.repoService.walletRepo.save(walletLists);
+  }
+  async getAllWallet(): Promise<Wallet[]> {
+    return await this.repoService.walletRepo.find();
+  }
+
+  async getWalletById(id: number): Promise<Wallet> {
+    return await this.repoService.walletRepo.findOne(id);
+  }
+
+  async getWalletByToken(userId: number): Promise<Wallet[]> {
+    return await this.repoService.walletRepo.find({ where: { user: userId } });
+  }
+
+  async updateWallet(id: number, amount: number): Promise<Wallet> {
+    const wallet = await this.repoService.walletRepo.findOne(id);
+    wallet.amount = amount;
+    return await this.repoService.walletRepo.save(wallet);
+  }
+
+  async BuyAndSell(
+    id: number,
+    amount: number,
+    idTarget: number,
+    targetAmount: number,
+  ): Promise<Wallet[]> {
+    const walletFrom = await this.repoService.walletRepo.findOne(id);
+    const walletTo = await this.repoService.walletRepo.findOne(idTarget);
+    walletFrom.amount -= amount;
+    walletTo.amount += targetAmount;
+    return await this.repoService.walletRepo.save([walletFrom, walletTo]);
   }
 }
