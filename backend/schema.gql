@@ -62,13 +62,13 @@ type Order {
   method: String
   walletFrom: Wallet
   walletTo: Wallet
-  orderDateTime: DateTime
-  tradeDateTime: DateTime
+  price: Float
+  amount: Float
+  totalBalance: Float
   cancel: Boolean
   filled: Boolean
-  amount: Float
-  targetWallet: String
-  totalBalance: Float
+  created_at: DateTime
+  tradeDateTime: DateTime
 }
 
 type PtoP {
@@ -134,6 +134,9 @@ type Query {
   getAllUser: [User!]!
   login(login: LoginInput!): String!
   getUserByToken: User!
+  getAllWallet: [Wallet!]!
+  getUserWallet: [Wallet!]!
+  getWalletById(id: ID!): Wallet!
   getAllCurrency: [Currency!]!
   getCurrencyId(id: ID!): Currency!
   getAllCard: [CreditCard!]!
@@ -157,6 +160,8 @@ type Mutation {
   updateCard(cardInput: CardInput!, id: Float!): CreditCard!
   deleteCard(id: Float!): CreditCard!
   testOrder2: String!
+  createOrder(input: OrderInput!): Order!
+  cancelOrder(id: ID!): Order!
 }
 
 input RegisterInput {
@@ -188,6 +193,14 @@ input CardInput {
   postcode: String
   city: String
   country: String
+}
+
+input OrderInput {
+  method: Float!
+  currenyIDFrom: ID!
+  currenyIDTo: ID!
+  price: Float!
+  amount: Float!
 }
 
 type Subscription {

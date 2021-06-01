@@ -1,4 +1,9 @@
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  OnApplicationBootstrap,
+} from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { Order } from 'src/models/object/order.model';
 import * as Websocket from 'websocket';
@@ -16,10 +21,10 @@ export class OrderService implements OnApplicationBootstrap {
     private readonly repoService: RepoService,
     private readonly userService: UserService,
   ) {}
-  private price: number;
   onApplicationBootstrap() {
-    // this.handleInterval();
+    this.handleInterval();
   }
+  private readonly price: number = 0;
   handleInterval() {
     const client = new webClient();
     client.on('connectFailed', function (error) {
@@ -86,7 +91,7 @@ export class OrderService implements OnApplicationBootstrap {
     }
   }
 
-  // @Interval(1000)
+  @Interval(2000)
   async fillOrder() {
     console.log(this.price);
     const orderLists = await this.repoService.orderRepo.find({
