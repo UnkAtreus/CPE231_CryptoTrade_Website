@@ -15,12 +15,9 @@ import { PubSub } from 'graphql-subscriptions';
 import { ScheduleModule } from '@nestjs/schedule';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { CurrencyModule } from './modules/currency/currency.module';
-import { TransactionFiatModule } from './transaction-fiat/transaction-fiat.module';
-import { BankModule } from './bank/bank.module';
-import { TransactionFiatResolver } from './no--spec/transaction-fiat/transaction-fiat.resolver';
-import { TransactionFiatResolver } from './no--spec/transaction-fiat/transaction-fiat.resolver';
-import { TransactionFiatResolver } from './transaction-fiat/transaction-fiat.resolver';
-import { TransactionFiatModule } from './transaction-fiat/transaction-fiat.module';
+import { TransactionFiatModule } from './modules/transaction-fiat/transaction-fiat.module';
+import { BankModule } from './modules/bank/bank.module';
+
 @Module({
   imports: [
     GraphQLModule.forRoot(graphql_config),
