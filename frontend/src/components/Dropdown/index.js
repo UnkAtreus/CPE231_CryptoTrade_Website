@@ -25,6 +25,7 @@ export const Dropdown = (props) => {
   const handleItemClick = (key) => {
     selectedItem === key ? setSelectedItem(null) : setSelectedItem(key);
     setOpen(!isOpen);
+    props.onChange(selectedItem === key ? null : childContent[key]);
   };
 
   useEffect(() => {
