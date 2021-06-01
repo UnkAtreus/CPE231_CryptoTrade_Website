@@ -14,6 +14,8 @@ import { OrderModule } from './modules/order/order.module';
 import { PubSub } from 'graphql-subscriptions';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TestResolver } from './test/test.resolver';
+import { WalletModule } from './modules/wallet/wallet.module';
+import { CurrencyModule } from './modules/currency/currency.module';
 @Module({
   imports: [
     GraphQLModule.forRoot(graphql_config),
@@ -23,6 +25,8 @@ import { TestResolver } from './test/test.resolver';
     UserModule,
     CardModule,
     OrderModule,
+    WalletModule,
+    CurrencyModule,
   ],
   controllers: [AppController],
   providers: [

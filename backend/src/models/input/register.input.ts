@@ -4,27 +4,27 @@ import { Gender } from 'src/static/enum';
 @InputType()
 class ProfileInput {
   @Field()
-  readonly firstName: string;
+  readonly firstName?: string;
   @Field()
-  readonly lastName: string;
+  readonly lastName?: string;
   @Field()
-  readonly phone: string;
+  readonly phone?: string;
   @Field()
-  readonly nationality: string;
+  readonly nationality?: string;
   @Field({ nullable: true })
   readonly citizenID: string;
   @Field({ nullable: true })
-  readonly passportNumber: string;
+  readonly passportNumber?: string;
   @Field()
-  readonly birthDate: Date;
+  readonly birthDate?: Date;
   @Field()
-  readonly gender: Gender;
+  readonly gender?: Gender;
   @Field()
-  readonly address: string;
+  readonly address?: string;
   @Field()
-  readonly city: string;
+  readonly city?: string;
   @Field()
-  readonly postcode: string;
+  readonly postcode?: string;
 }
 @InputType()
 class RegisterInput {

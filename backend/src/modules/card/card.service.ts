@@ -11,15 +11,12 @@ export class CardService {
     private readonly repoService: RepoService,
     private readonly userService: UserService,
   ) {}
-  async getUserID(id: number): Promise<User> {
-    return await this.repoService.userRepo.findOne(id);
-  }
   async createCard(input: CardInput, user: User): Promise<CreditCard> {
     const card: CreditCard = {
       ...input,
       user: await this.userService.getUserByToken(user.id),
     };
-    // card.user = await this.userService.getUserByToken(user.id);
     return await this.repoService.creditCardRepo.save(card);
   }
+
 }

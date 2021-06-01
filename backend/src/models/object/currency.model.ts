@@ -12,6 +12,10 @@ export class Currency {
 
   @Field()
   @Column()
+  currencyShortName?: string;
+
+  @Field()
+  @Column()
   currency?: string;
 
   @Field()
