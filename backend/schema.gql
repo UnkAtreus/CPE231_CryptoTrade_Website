@@ -134,6 +134,9 @@ type Query {
   getAllUser: [User!]!
   login(login: LoginInput!): String!
   getUserByToken: User!
+  getAllCard: [CreditCard!]!
+  getCardByID(idcardInput: Float!): CreditCard!
+  getCardByToken: [CreditCard!]!
   getAllCurrency: [Currency!]!
   getCurrencyId(id: ID!): Currency!
 }
@@ -147,6 +150,8 @@ type Mutation {
   registerUser(registerInput: RegisterInput!): String!
   seedUser: String!
   addCard(cardInput: CardInput!): CreditCard!
+  updateCard(cardInput: CardInput!, id: Float!): CreditCard!
+  deleteCard(id: Float!): CreditCard!
   testOrder2: String!
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!

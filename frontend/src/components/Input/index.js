@@ -14,6 +14,12 @@ export const Input = ({ match, ...props }) => {
     type: PropTypes.string,
   };
 
+  const onNameChange = (data) => {
+    // for a date field, the value is passed into the change handler
+    props.onChange(data);
+    // console.log(props);
+  };
+
   return (
     <InputStyle className={ClassNames(props.className)} style={props.style}>
       <div className="content-row">
@@ -32,6 +38,7 @@ export const Input = ({ match, ...props }) => {
             autoComplete="new-password"
             onChange={(e) => {
               setname(e.target.value);
+              onNameChange(e.target.value);
             }}
           />
           <div className="suffix-container mgr-16 white">{props.suffix}</div>
