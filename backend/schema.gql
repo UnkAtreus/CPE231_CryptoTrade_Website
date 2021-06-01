@@ -133,6 +133,9 @@ type Query {
   getAllUser: [User!]!
   login(login: LoginInput!): String!
   getUserByToken: User!
+  getAllCard: [CreditCard!]!
+  getCardByID(idcardInput: Float!): CreditCard!
+  getCardByToken: [CreditCard!]!
 }
 
 input LoginInput {
@@ -143,6 +146,8 @@ input LoginInput {
 type Mutation {
   registerUser(registerInput: RegisterInput!): String!
   addCard(cardInput: CardInput!): CreditCard!
+  updateCard(cardInput: CardInput!, id: Float!): CreditCard!
+  deleteCard(id: Float!): CreditCard!
   testOrder2: String!
 }
 
