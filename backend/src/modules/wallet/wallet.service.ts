@@ -56,4 +56,15 @@ export class WalletService {
     walletTo.amount += targetAmount;
     return await this.repoService.walletRepo.save([walletFrom, walletTo]);
   }
+  async playerToPlayer(
+    id: number,
+    amount: number,
+    idTarget: number,
+  ): Promise<Wallet[]> {
+    const walletFrom = await this.repoService.walletRepo.findOne(id);
+    const walletTo = await this.repoService.walletRepo.findOne(idTarget);
+    walletFrom.amount -= amount;
+    walletTo.amount += amount;
+    return await this.repoService.walletRepo.save([walletFrom, walletTo]);
+  }
 }
