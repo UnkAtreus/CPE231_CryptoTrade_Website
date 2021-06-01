@@ -41,10 +41,19 @@ export class CardService {
   }
 
   async updateCardByID(id: number, input: CardInput): Promise<CreditCard> {
-    const card: CreditCard = {
-      id: id,
-      ...input,
-    };
+    // const card: CreditCard = {
+    //   id: id,
+    //   ...input,
+    // };
+    const card = await this.repoService.creditCardRepo.findOne(id);
+    card.cardNumber = input.cardNumber ?? card.cardNumber;
+    card.cvv = input.cvv ?? card.cvv;
+    card.expiredMonth = input.expiredMonth ?? card.expiredMonth;
+    card.expiredYear = input.expiredYear ?? card.expiredYear;
+    card.address = input.address ?? card.address;
+    card.city = input.city ?? card.city;
+    card.country = input.country ?? card.country;
+    card.postCode = input.postcode ?? card.postCode;
     return await this.repoService.creditCardRepo.save(card);
   }
 
