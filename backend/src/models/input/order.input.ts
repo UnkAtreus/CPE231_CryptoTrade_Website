@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, ID, InputType, Float } from '@nestjs/graphql';
 import { OrderMethod } from 'src/static/enum';
 
 @InputType()
@@ -6,16 +6,16 @@ class OrderInput {
   @Field()
   readonly method: OrderMethod;
 
-  @Field()
-  readonly currenyIDFrom: string;
+  @Field(() => ID)
+  readonly currenyIDFrom: number;
 
-  @Field()
-  readonly currenyIDTo: string;
+  @Field(() => ID)
+  readonly currenyIDTo: number;
 
-  @Field()
+  @Field(() => Float)
   readonly price: number;
 
-  @Field()
+  @Field(() => Float)
   readonly amount: number;
 }
 export default OrderInput;

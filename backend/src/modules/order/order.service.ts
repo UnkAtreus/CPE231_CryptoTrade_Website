@@ -6,6 +6,8 @@ import { WalletService } from '../wallet/wallet.service';
 import { RepoService } from '../../repo/repo.service';
 import OrderInput from 'src/models/input/order.input';
 import { UserService } from '../user/user.service';
+import { OrderMethod } from 'src/static/enum';
+import { Unauthorized } from '../../utils/error-handling';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
@@ -46,18 +48,58 @@ export class OrderService implements OnApplicationBootstrap {
 
   async createOrder(userId: number, input: OrderInput): Promise<Order> {
     const user = await this.userService.getUserByToken(userId);
-    const walletFrom = await this.walletService.getWalletById(userId);
-    const walletTo = await this.userService.getUserByToken(userId);
+    const walletFrom = await this.walletService.getWalletByCurrency(
+      userId,
+      input.currenyIDFrom,
+    );
+    const walletTo = await this.walletService.getWalletByCurrency(
+      userId,
+      input.currenyIDTo,
+    );
     const order: Order = {
       user: user,
       method: input.method,
+      walletFrom: walletFrom,
+      walletTo: walletTo,
+      price: input.price,
+      amount: input.amount,
+      totalBalance: input.price * input.amount,
+      cancel: false,
+      filled: false,
     };
-    // const walletFrom =
-    return;
+    await this.walletService.Sell(order.walletFrom.id, order.totalBalance);
+    return await this.repoService.orderRepo.save(order);
+  }
+  async getOrderById(orderId: number): Promise<Order> {
+    return await this.repoService.orderRepo.findOne(orderId, {
+      relations: ['user', 'walletFrom', 'walletTo'],
+    });
+  }
+  async cancelOrder(userId: number, orderId: number): Promise<Order> {
+    const order = await this.getOrderById(orderId);
+    if (order.user.id == userId) {
+      await this.walletService.Buy(order.walletFrom.id, order.totalBalance);
+      order.cancel = true;
+      return await this.repoService.orderRepo.save(order);
+    } else {
+      throw Unauthorized;
+    }
   }
 
   // @Interval(1000)
-  async updateOrder() {
+  async fillOrder() {
     console.log(this.price);
+    const orderLists = await this.repoService.orderRepo.find({
+      where: {
+        price: this.price,
+        filled: false,
+        cancel: false,
+      },
+      relations: ['walletTo'],
+    });
+    orderLists.forEach(async (order) => {
+      await this.walletService.Buy(order.walletTo.id, order.amount);
+      /// TRIGGER TO SUBSCRIPTION
+    });
   }
 }

@@ -55,17 +55,16 @@ export class WalletService {
     return await this.repoService.walletRepo.save(wallet);
   }
 
-  async BuyAndSell(
-    id: number,
-    amount: number,
-    idTarget: number,
-    targetAmount: number,
-  ): Promise<Wallet[]> {
-    const walletFrom = await this.repoService.walletRepo.findOne(id);
-    const walletTo = await this.repoService.walletRepo.findOne(idTarget);
-    walletFrom.amount -= amount;
-    walletTo.amount += targetAmount;
-    return await this.repoService.walletRepo.save([walletFrom, walletTo]);
+  async Buy(id: number, amount: number): Promise<Wallet[]> {
+    const wallet = await this.repoService.walletRepo.findOne(id);
+    wallet.amount += amount;
+    return await this.repoService.walletRepo.save([wallet]);
+  }
+
+  async Sell(id: number, amount: number): Promise<Wallet[]> {
+    const wallet = await this.repoService.walletRepo.findOne(id);
+    wallet.amount -= amount;
+    return await this.repoService.walletRepo.save([wallet]);
   }
   async playerToPlayer(
     id: number,
