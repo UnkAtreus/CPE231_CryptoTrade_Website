@@ -23,10 +23,9 @@ import {
 import { useMutation, gql } from "@apollo/client";
 
 const RegisterContainer = ({ match, ...props }) => {
-  const [params, setParams] = useState({
+  const [userParams, setUserParams] = useState({
     email: "",
     password: "",
-    profileInput: {},
   });
   const [profileParams, setProfileParams] = useState({
     firstName: "",
@@ -40,6 +39,12 @@ const RegisterContainer = ({ match, ...props }) => {
     address: "",
     city: "",
     postcode: "",
+  });
+
+  const [params, setParams] = useState({
+    email: "",
+    password: "",
+    profileInput: {},
   });
   const [checkPass, setCheckPass] = useState();
   const [birthDate, setBirthDate] = useState({
@@ -67,10 +72,18 @@ const RegisterContainer = ({ match, ...props }) => {
 
   useEffect(() => {
     console.log(profileParams);
+    setParams({
+      ...userParams,
+      profileInput: profileParams,
+    });
   }, [profileParams]);
   useEffect(() => {
-    console.log(params);
-  }, [params]);
+    console.log(userParams);
+    setParams({
+      ...userParams,
+      profileInput: profileParams,
+    });
+  }, [userParams]);
 
   const CREATE_USER = gql`
     mutation RegisterUser($input: RegisterInput!) {
@@ -99,31 +112,10 @@ const RegisterContainer = ({ match, ...props }) => {
     .map((_v, idx) => now - idx);
 
   const [createPost, { loading, error }] = useMutation(CREATE_USER);
-  // const [createLink] = useMutation(CREATE_USER, {
-  //   variables: {
-  //     registerInput: DATA_MOCK,
-  //   },
-  //   update: (cache, { data: { post } }) => {
-  //     const take = LINKS_PER_PAGE;
-  //     const skip = 0;
-  //     const orderBy = { createdAt: 'desc' };
-
-  //     const data = cache.readQuery({
-  //       query: FEED_QUERY,
-  //       variables: {
-  //         take,
-  //         skip,
-  //         orderBy
-  //       }
-  //     });
 
   const handleCreatePost = (event) => {
     event.preventDefault();
-    setParams({
-      ...params,
-      profileInput: profileParams,
-    });
-    createPost({ variables: { input: DATA_MOCK } });
+    createPost({ variables: { input: params } });
   };
 
   useEffect(() => {
@@ -220,8 +212,8 @@ const RegisterContainer = ({ match, ...props }) => {
                     title="Email"
                     placeholder="test@gmail.com"
                     onChange={(e) =>
-                      setParams({
-                        ...params,
+                      setUserParams({
+                        ...userParams,
                         email: e,
                       })
                     }
@@ -375,8 +367,8 @@ const RegisterContainer = ({ match, ...props }) => {
                     placeholder="**********"
                     onChange={(e) =>
                       checkPass === e
-                        ? setParams({
-                            ...params,
+                        ? setUserParams({
+                            ...userParams,
                             password: e,
                           })
                         : 0
