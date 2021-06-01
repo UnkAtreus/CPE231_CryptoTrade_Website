@@ -6,8 +6,8 @@ import { CurrencyModule } from '../currency/currency.module';
 import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [CurrencyModule, UserModule],
-  providers: [WalletResolver, WalletService, CurrencyService],
+  imports: [CurrencyModule],
+  providers: [WalletResolver, WalletService],
   exports: [WalletService],
 })
 export class WalletModule {}

@@ -10,8 +10,7 @@ import { OrderMethod } from 'src/static/enum';
 export class WalletService {
   constructor(
     private readonly repoService: RepoService,
-    private readonly currencyService: CurrencyService,
-    private readonly userService: UserService,
+    private readonly currencyService: CurrencyService, // private readonly userService: UserService,
   ) {}
   async createAllWalletForUser(user: User): Promise<Wallet[]> {
     const currencyLists = await this.currencyService.getAllCurrency();
@@ -50,19 +49,19 @@ export class WalletService {
   }
 
   async updateWallet(id: number, amount: number): Promise<Wallet> {
-    const wallet = await this.repoService.walletRepo.findOne(id);
+    const wallet = await this.getWalletById(id);
     wallet.amount = amount;
     return await this.repoService.walletRepo.save(wallet);
   }
 
   async Buy(id: number, amount: number): Promise<Wallet[]> {
-    const wallet = await this.repoService.walletRepo.findOne(id);
+    const wallet = await this.getWalletById(id);
     wallet.amount += amount;
     return await this.repoService.walletRepo.save([wallet]);
   }
 
   async Sell(id: number, amount: number): Promise<Wallet[]> {
-    const wallet = await this.repoService.walletRepo.findOne(id);
+    const wallet = await this.getWalletById(id);
     wallet.amount -= amount;
     return await this.repoService.walletRepo.save([wallet]);
   }
