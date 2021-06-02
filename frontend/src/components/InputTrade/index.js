@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ClassNames from "classnames";
 import { InputTradeStyle } from "./styled";
 
-export const InputTrade = ({ match, ...props }) => {
+export const InputTrade = React.memo(({ match, ...props }) => {
   const [name, setname] = useState(props.value || "0");
+  const [isLoading, setIsLoading] = useState(true);
+  const onNameChange = (data) => {
+    props.onChange(data);
+  };
+
+  useEffect(() => {
+    setname(props.value);
+  }, [props.value]);
 
   return (
     <InputTradeStyle className={ClassNames(props.className)}>
@@ -18,6 +26,7 @@ export const InputTrade = ({ match, ...props }) => {
           placeholder={props.placeholder || "0"}
           value={name}
           onChange={(e) => {
+            onNameChange(e.target.value);
             setname(e.target.value);
           }}
         />
@@ -25,4 +34,4 @@ export const InputTrade = ({ match, ...props }) => {
       </div>
     </InputTradeStyle>
   );
-};
+});

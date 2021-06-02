@@ -38,11 +38,26 @@ const constants = {
 
 const HomeContainer = (props) => {
   const [price, setPrice] = useState(0);
+  const [priceSell, setPriceSell] = useState(0);
+  const [priceBuy, setPriceBuy] = useState(0);
   const [isUpPrice, setIsUpPrice] = useState(true);
   const [streams] = useState(["@ticker", "@depth20", "@trade"]);
   const [isLoading, setIsLoading] = useState(true);
   const [cryptoSign, setCryptoSign] = useState("Bitcoin");
   const [cryptoSymbol, setCryptoSymbol] = useState("BTC");
+  const [valueAmountSell, setValueAmountSell] = useState(0);
+  const [valueTotalSell, setValueTotalSell] = useState(0);
+  const [valueAmountBuy, setValueAmountBuy] = useState(0);
+  const [valueTotalBuy, setValueTotalBuy] = useState(0);
+
+  const MOCK_USER_CURRENCY = {
+    btc: 0.00000091,
+    ada: 129.3349,
+    eth: 0.00138437,
+    bch: 0,
+    dot: 0,
+    usdt: 49657.01,
+  };
 
   const FORMAT_DECIMAL = {
     prefix: "",
@@ -100,12 +115,16 @@ const HomeContainer = (props) => {
   const arg = useSelector((state) => state, isEqual);
 
   const GetPrice = async () => {
-    const crypto_price = await marketController().getPrice("symbol=BTCUSDT");
+    const crypto_price = await marketController().getPrice(
+      "symbol=" + SYMBOL.toUpperCase()
+    );
     dispatch({
       type: "SET_CUR_PRICE",
       data: crypto_price,
     });
     setPrice(BigNumber(crypto_price.price).toFormat(2, FORMAT_DECIMAL));
+    setPriceSell(BigNumber(crypto_price.price).toFormat(2, FORMAT_DECIMAL));
+    setPriceBuy(BigNumber(crypto_price.price).toFormat(2, FORMAT_DECIMAL));
     setIsLoading(false);
   };
 
@@ -151,6 +170,56 @@ const HomeContainer = (props) => {
     if (connection.readyState === WebSocket.OPEN) {
       connection.close();
     }
+  };
+
+  const calPriceSell = (fun, data) => {
+    switch (fun) {
+      case "amount":
+        setValueTotalSell(
+          BigNumber(data * priceSell).toFormat(2, FORMAT_DECIMAL)
+        );
+        break;
+      case "total":
+        setValueAmountSell(
+          BigNumber(data / priceSell).toFormat(2, FORMAT_DECIMAL)
+        );
+        break;
+      case "cryptoPrice":
+        setValueTotalSell(
+          BigNumber(valueAmountSell * priceSell).toFormat(2, FORMAT_DECIMAL)
+        );
+        break;
+
+      default:
+        break;
+    }
+
+    // console.log(valueAmountSell);
+  };
+  const calPriceBuy = (fun, data) => {
+    switch (fun) {
+      case "amount":
+        setValueTotalBuy(
+          BigNumber(data * priceBuy).toFormat(2, FORMAT_DECIMAL)
+        );
+        break;
+      case "total":
+        setValueAmountBuy(
+          BigNumber(data / priceBuy).toFormat(2, FORMAT_DECIMAL)
+        );
+        break;
+      case "cryptoPrice":
+        console.log(valueAmountBuy, priceBuy);
+        setValueTotalBuy(
+          BigNumber(valueAmountBuy * priceBuy).toFormat(2, FORMAT_DECIMAL)
+        );
+        break;
+
+      default:
+        break;
+    }
+
+    // console.log(valueAmountSell);
   };
 
   useEffect(() => {
@@ -755,8 +824,60 @@ const HomeContainer = (props) => {
                       <div className="content-row space-between mgb-2">
                         <div className="title white">Buy {cryptoSymbol}</div>
                         <div className="content-row">
-                          <div className="label gray">0.15143617</div>
+                          <div className="label gray">
+                            {BigNumber(MOCK_USER_CURRENCY["usdt"]).toFormat(
+                              FORMAT_DECIMAL
+                            )}
+                          </div>
                           <div className="label gray mgl-8">USDT</div>
+                        </div>
+                      </div>
+
+                      <InputTrade
+                        prefix="Price"
+                        suffix="USDT"
+                        value={BigNumber(arg.cur_price.price).toFormat(
+                          2,
+                          FORMAT_DECIMAL
+                        )}
+                        onChange={(e) => {
+                          setPriceBuy(e);
+                          calPriceBuy("cryptoPrice", e);
+                        }}
+                      />
+                      <InputTrade
+                        prefix="Amount"
+                        suffix={cryptoSymbol}
+                        value={valueAmountBuy}
+                        onChange={(e) => {
+                          setValueAmountBuy(e);
+                          calPriceBuy("amount", e);
+                        }}
+                      />
+                      <ValueStep value={(e) => console.log(e)} />
+                      <InputTrade
+                        prefix="Total"
+                        suffix="USDT"
+                        value={valueTotalBuy}
+                        onChange={(e) => {
+                          setValueTotalBuy(e);
+                          calPriceBuy("total", e);
+                        }}
+                      />
+
+                      <Button label="Buy BTC" color="green" />
+                    </div>
+
+                    <div className="content-column" style={{ flex: "1 1 0%" }}>
+                      <div className="content-row space-between mgb-2">
+                        <div className="title white">Sell {cryptoSymbol}</div>
+                        <div className="content-row">
+                          <div className="label gray">
+                            {BigNumber(
+                              MOCK_USER_CURRENCY[cryptoSymbol.toLowerCase()]
+                            ).toFormat(FORMAT_DECIMAL)}
+                          </div>
+                          <div className="label gray mgl-8">{cryptoSymbol}</div>
                         </div>
                       </div>
                       <InputTrade
@@ -766,25 +887,30 @@ const HomeContainer = (props) => {
                           2,
                           FORMAT_DECIMAL
                         )}
+                        onChange={(e) => {
+                          setPriceSell(e);
+                          calPriceSell("cryptoPrice", e);
+                        }}
                       />
-                      <InputTrade prefix="Amount" suffix={cryptoSymbol} />
-                      <ValueStep />
-                      <InputTrade prefix="Total" suffix="USDT" />
-                      <Button label="Buy BTC" color="green" />
-                    </div>
-
-                    <div className="content-column" style={{ flex: "1 1 0%" }}>
-                      <div className="content-row space-between mgb-2">
-                        <div className="title white">Sell {cryptoSymbol}</div>
-                        <div className="content-row">
-                          <div className="label gray">0.00000091</div>
-                          <div className="label gray mgl-8">{cryptoSymbol}</div>
-                        </div>
-                      </div>
-                      <InputTrade prefix="Price" suffix="USDT" />
-                      <InputTrade prefix="Amount" suffix={cryptoSymbol} />
-                      <ValueStep />
-                      <InputTrade prefix="Total" suffix="USDT" />
+                      <InputTrade
+                        prefix="Amount"
+                        suffix={cryptoSymbol}
+                        value={valueAmountSell}
+                        onChange={(e) => {
+                          setValueAmountSell(e);
+                          calPriceSell("amount", e);
+                        }}
+                      />
+                      <ValueStep value={(e) => console.log(e)} />
+                      <InputTrade
+                        prefix="Total"
+                        suffix="USDT"
+                        value={valueTotalSell}
+                        onChange={(e) => {
+                          setValueTotalSell(e);
+                          calPriceSell("total", e);
+                        }}
+                      />
                       <Button label="Sell BTC" color="red" />
                     </div>
                   </div>
