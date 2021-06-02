@@ -144,6 +144,7 @@ type Query {
   getAllCurrency: [Currency!]!
   getCurrencyId(id: ID!): Currency!
   getCurrencyByShortName(shortName: String!): Currency!
+  getAllCurrencyWithNoStatic: [Currency!]!
   getAllCard: [CreditCard!]!
   getCardByID(idcardInput: Float!): CreditCard!
   getCardByToken: [CreditCard!]!
@@ -174,8 +175,8 @@ type Mutation {
   createFiat(fiatInput: FiatInput!): TransactionFiat!
   updateFiatStatus(id: ID!, status: Float!): TransactionFiat!
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
-  createP2P(p2pInput: PtoPInput!): PtoP!
   updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
+  createP2P(p2pInput: PtoPInput!): PtoP!
 }
 
 input RegisterInput {

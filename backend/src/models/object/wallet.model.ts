@@ -31,7 +31,9 @@ export class Wallet {
   user?: User;
 
   @Field()
-  @ManyToOne(() => Currency, (currency) => currency.wallet)
+  @ManyToOne(() => Currency, (currency) => currency.wallet, {
+    onDelete: 'CASCADE',
+  })
   currency?: Currency;
 
   @Field(() => [Order])
