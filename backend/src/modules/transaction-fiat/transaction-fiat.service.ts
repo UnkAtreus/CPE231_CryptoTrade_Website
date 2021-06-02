@@ -27,12 +27,13 @@ export class TransactionFiatService {
     fiat.user = getuser;
 
     const curreny = await this.currencyService.getCurrencyByShortName('USDT');
-    fiat.currency = curreny;
-
     const wallet = await this.walletService.getWalletByCurrency(
       user.id,
       curreny.id,
     );
+    fiat.wallet = wallet;
+
+    console.log(wallet.amount);
     const temp1 = Number(wallet.amount);
     const temp2 = Number(fiat.amount);
 
