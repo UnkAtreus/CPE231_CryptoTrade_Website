@@ -52,6 +52,7 @@ type TransactionCrypto {
   user: User
   wallet: Wallet
   method: String
+  status: String
   created_at: DateTime
   updated_at: DateTime
   amount: Float
@@ -83,6 +84,7 @@ type TransactionFiat {
   id: ID
   user: User
   bank: Bank
+  status: String
   method: String
   wallet: Wallet
   creditCard: CreditCard
@@ -146,6 +148,10 @@ type Query {
   getAllCard: [CreditCard!]!
   getCardByID(idcardInput: Float!): CreditCard!
   getCardByToken: [CreditCard!]!
+  getAllFiat: [TransactionFiat!]!
+  getAllFiatByUser: [TransactionFiat!]!
+  getAllCrypto: [TransactionCrypto!]!
+  getAllCryptoByUser: [TransactionCrypto!]!
 }
 
 input LoginInput {
@@ -167,7 +173,9 @@ type Mutation {
   createOrder(input: OrderInput!): Order!
   cancelOrder(id: ID!): Order!
   createFiat(fiatInput: FiatInput!): TransactionFiat!
+  updateFiatStatus(id: ID!, status: Float!): TransactionFiat!
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
+  updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
 }
 
 input RegisterInput {

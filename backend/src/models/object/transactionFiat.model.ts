@@ -1,5 +1,5 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
-import { TranasctionMethod } from 'src/static/enum';
+import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
 import {
   Column,
   CreateDateColumn,
@@ -29,6 +29,10 @@ export class TransactionFiat {
   @Field(() => Bank)
   @ManyToOne(() => Bank, (bank) => bank.transactionFiat)
   bank?: Bank;
+
+  @Field(() => String)
+  @Column({ type: 'enum', enum: TransactionStatus })
+  status?: TransactionStatus;
 
   @Field(() => String)
   @Column({ type: 'enum', enum: TranasctionMethod })
