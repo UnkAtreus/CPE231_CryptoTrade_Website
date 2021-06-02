@@ -10,8 +10,8 @@ type Role {
 
 type Currency {
   id: Float
-  currencyShortName: String
   currency: String
+  currencyLongName: String
   volume: Float
   user: [User!]
   wallet: [Wallet!]
@@ -39,7 +39,6 @@ scalar DateTime
 
 type PtoP {
   id: Float
-  bank: String
   walletFrom: Wallet
   walletTo: Wallet
   amount: Float
@@ -138,7 +137,7 @@ type Query {
   login(login: LoginInput!): String!
   getUserByToken: User!
   getAllWallet: [Wallet!]!
-  getUserWallet: [Wallet!]!
+  getUserWalletByToken: [Wallet!]!
   getWalletById(id: ID!): Wallet!
   getAllCurrency: [Currency!]!
   getCurrencyId(id: ID!): Currency!
@@ -168,6 +167,7 @@ type Mutation {
   cancelOrder(id: ID!): Order!
   createFiat(fiatInput: FiatInput!): TransactionFiat!
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
+  createP2P(p2pInput: PtoPInput!): PtoP!
 }
 
 input RegisterInput {
@@ -220,6 +220,12 @@ input CryptoInput {
   amount: Float
   targetWallet: String
   shortName: String
+}
+
+input PtoPInput {
+  amount: Float
+  targetUser: Float
+  currency: String
 }
 
 type Subscription {

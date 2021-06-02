@@ -8,10 +8,6 @@ export class PtoP {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Field()
-  @Column('varchar', { length: 64 })
-  bank?: string;
-
   @Field(() => Wallet)
   @ManyToOne(() => Wallet, (wallet) => wallet.p2pFrom)
   walletFrom?: Wallet;

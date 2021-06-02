@@ -1,4 +1,4 @@
-import { Args, Context, Query, Resolver, ID } from '@nestjs/graphql';
+import { Args, Context, Query, Resolver, ID, Mutation } from '@nestjs/graphql';
 import { Roles } from 'src/middleware/guard/roles.decorator';
 import { User } from 'src/models/object/user.model';
 import { Wallet } from 'src/models/object/wallet.model';
@@ -15,7 +15,7 @@ export class WalletResolver {
 
   @Query(() => [Wallet])
   @Roles(['customer'])
-  async getUserWallet(@Context('user') user: User): Promise<Wallet[]> {
+  async getUserWalletByToken(@Context('user') user: User): Promise<Wallet[]> {
     return await this.walletService.getWalletByToken(user.id);
   }
 

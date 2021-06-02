@@ -8,8 +8,8 @@ export class CurrencyService {
   constructor(private readonly repoService: RepoService) {}
   async createCurrency(currencyName: string, currencyShortName: string) {
     const currency: Currency = {
-      currency: currencyName,
-      currencyShortName: currencyShortName,
+      currencyLongName: currencyName,
+      currency: currencyShortName,
       volume: 0,
     };
     return await this.repoService.currencyRepo.save(currency);
@@ -35,8 +35,8 @@ export class CurrencyService {
     ];
     for (let index = 0; index < currencyNames.length; index++) {
       const currency: Currency = {
-        currency: currencyNames[index],
-        currencyShortName: currencyShortNames[index],
+        currencyLongName: currencyNames[index],
+        currency: currencyShortNames[index],
         volume: 0,
       };
       await this.repoService.currencyRepo.save(currency);
@@ -51,8 +51,8 @@ export class CurrencyService {
     volume?: number,
   ): Promise<Currency> {
     const currency = await this.repoService.currencyRepo.findOne(id);
-    currency.currency = name ?? currency.currency;
-    currency.currencyShortName = shortName ?? currency.currencyShortName;
+    currency.currencyLongName = name ?? currency.currencyLongName;
+    currency.currency = shortName ?? currency.currency;
     currency.volume = volume ?? currency.volume;
     return await this.repoService.currencyRepo.save(currency);
   }
@@ -72,7 +72,7 @@ export class CurrencyService {
   async getCurrencyByShortName(shortName: string): Promise<Currency> {
     return await this.repoService.currencyRepo.findOne({
       where: {
-        currencyShortName: shortName,
+        currency: shortName,
       },
     });
   }

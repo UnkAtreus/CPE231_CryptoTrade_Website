@@ -12,11 +12,11 @@ export class Currency {
 
   @Field()
   @Column()
-  currencyShortName?: string;
+  currency?: string;
 
   @Field()
   @Column()
-  currency?: string;
+  currencyLongName?: string;
 
   @Field()
   @Column('decimal')
