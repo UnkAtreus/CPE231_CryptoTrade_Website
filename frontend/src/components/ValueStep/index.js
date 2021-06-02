@@ -8,8 +8,13 @@ export const ValueStep = ({ match, ...props }) => {
   const [rangeStep] = useState(["25", "50", "75", "100"]);
 
   const changeStep = (step) => {
-    if (step === active) setActive(0);
-    else setActive(step);
+    if (step === active) {
+      setActive(0);
+      props.value(0);
+    } else {
+      setActive(step);
+      props.value(step);
+    }
   };
 
   return (
