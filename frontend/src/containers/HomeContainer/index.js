@@ -42,6 +42,7 @@ const HomeContainer = (props) => {
   const [streams] = useState(["@ticker", "@depth20", "@trade"]);
   const [isLoading, setIsLoading] = useState(true);
   const [cryptoSign, setCryptoSign] = useState("Bitcoin");
+  const [cryptoSymbol, setCryptoSymbol] = useState("BTC");
 
   const FORMAT_DECIMAL = {
     prefix: "",
@@ -62,21 +63,27 @@ const HomeContainer = (props) => {
     switch (symbol) {
       case "btcusdt":
         setCryptoSign("Bitcoin");
+        setCryptoSymbol("BTC");
         break;
       case "adausdt":
         setCryptoSign("Cardano");
+        setCryptoSymbol("ADA");
         break;
       case "ethusdt":
         setCryptoSign("Ethereum");
+        setCryptoSymbol("ETH");
         break;
       case "dotusdt":
         setCryptoSign("Polkadot");
+        setCryptoSymbol("DOT");
         break;
       case "bchusdt":
         setCryptoSign("Bitcoin Cash");
+        setCryptoSymbol("BCH");
         break;
       default:
         setCryptoSign("Bitcoin");
+        setCryptoSymbol("BTC");
         break;
     }
   };
@@ -187,7 +194,7 @@ const HomeContainer = (props) => {
                     className="label gray align-items-end "
                     style={{ minWidth: "75px" }}
                   >
-                    Amount(BTC)
+                    Amount({cryptoSymbol})
                   </div>
                   <div
                     className="label gray align-items-end text-right"
@@ -280,7 +287,7 @@ const HomeContainer = (props) => {
             </div>
           </OrderBook>
           <Chartstyle name="chart" id="chart">
-            <Chart />
+            <Chart symbol={SYMBOL} />
           </Chartstyle>
           <SubHeader name="subHeader">
             <TabWithLink active={cryptoSign}>
@@ -381,47 +388,358 @@ const HomeContainer = (props) => {
                     style={{ alignItems: "flex-end" }}
                   >
                     <div className="content-column mgr-32">
-                      <div className="paragraph white">ADA/USDT</div>
-                      <div className="label gray">Cardano</div>
+                      <div className="paragraph white">
+                        {arg.symbols[SYMBOL].symbol}
+                      </div>
+                      <div className="label gray">
+                        {arg.symbols[SYMBOL].name}
+                      </div>
                     </div>
-                    <div className="content-column mgr-32">
-                      <div className="paragraph green">{arg.ticker.c}</div>
-                      <div className="label gray">${arg.ticker.c}</div>
+                    <div
+                      className="content-column mgr-32"
+                      style={{ minWidth: "96px" }}
+                    >
+                      <div
+                        className={ClassNames(
+                          "paragraph ",
+                          isUpPrice ? "green" : "red"
+                        )}
+                      >
+                        {new BigNumber(arg.ticker.c).toFormat(2)}
+                      </div>
+                      <div className="label gray">
+                        $ {new BigNumber(arg.ticker.c).toFormat(2)}
+                      </div>
                     </div>
-                    <div className="content-column mgr-16">
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "96px" }}
+                    >
                       <div className="label gray">24h Change</div>
                       <div className="content-row">
-                        <div className="label red mgr-4">-3,261.80</div>
-                        <div className="label red">-6.00%</div>
+                        <div
+                          className={ClassNames(
+                            "label mgr-4",
+                            arg.ticker.p > 0 ? "green" : "red"
+                          )}
+                        >
+                          {new BigNumber(arg.ticker.p).toFormat(2)}
+                        </div>
+                        <div
+                          className={ClassNames(
+                            "label",
+                            arg.ticker.P > 0 ? "green" : "red"
+                          )}
+                        >
+                          {new BigNumber(arg.ticker.P).toFormat(2)}%
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h High</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.h).toFormat(2)}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h Low</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.l).toFormat(2)}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h Volume(ADA)</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.v).toFormat(2)}
                       </div>
                     </div>
                     <div className="content-column mgr-16">
-                      <div className="label gray">24h High</div>
-                      <div className="label white">55,542.69</div>
-                    </div>
-                    <div className="content-column mgr-16">
-                      <div className="label gray">24h Low</div>
-                      <div className="label white">50,427.56</div>
-                    </div>
-                    <div className="content-column mgr-16">
-                      <div className="label gray">24h Volume(BTC)</div>
-                      <div className="label white">103,777.03</div>
-                    </div>
-                    <div className="content-column mgr-16">
                       <div className="label gray">24h Volume(USDT)</div>
-                      <div className="label white">5,423,653,561.61</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.q).toFormat(2)}
+                      </div>
                     </div>
                   </div>
                 </div>
               </TabPane>
               <TabPane name="Ethereum" key="3" link="/trades/ethusdt">
-                Content of Tab Pane 3
+                <div className="subHeader-container">
+                  <div
+                    className="content-row"
+                    style={{ alignItems: "flex-end" }}
+                  >
+                    <div className="content-column mgr-32">
+                      <div className="paragraph white">
+                        {arg.symbols[SYMBOL].symbol}
+                      </div>
+                      <div className="label gray">
+                        {arg.symbols[SYMBOL].name}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-32"
+                      style={{ minWidth: "96px" }}
+                    >
+                      <div
+                        className={ClassNames(
+                          "paragraph ",
+                          isUpPrice ? "green" : "red"
+                        )}
+                      >
+                        {new BigNumber(arg.ticker.c).toFormat(2)}
+                      </div>
+                      <div className="label gray">
+                        $ {new BigNumber(arg.ticker.c).toFormat(2)}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "96px" }}
+                    >
+                      <div className="label gray">24h Change</div>
+                      <div className="content-row">
+                        <div
+                          className={ClassNames(
+                            "label mgr-4",
+                            arg.ticker.p > 0 ? "green" : "red"
+                          )}
+                        >
+                          {new BigNumber(arg.ticker.p).toFormat(2)}
+                        </div>
+                        <div
+                          className={ClassNames(
+                            "label",
+                            arg.ticker.P > 0 ? "green" : "red"
+                          )}
+                        >
+                          {new BigNumber(arg.ticker.P).toFormat(2)}%
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h High</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.h).toFormat(2)}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h Low</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.l).toFormat(2)}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h Volume(ETH)</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.v).toFormat(2)}
+                      </div>
+                    </div>
+                    <div className="content-column mgr-16">
+                      <div className="label gray">24h Volume(USDT)</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.q).toFormat(2)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </TabPane>
               <TabPane name="Bitcoin Cash" key="4" link="/trades/bchusdt">
-                Content of Tab Pane 4
+                <div className="subHeader-container">
+                  <div
+                    className="content-row"
+                    style={{ alignItems: "flex-end" }}
+                  >
+                    <div className="content-column mgr-32">
+                      <div className="paragraph white">
+                        {arg.symbols[SYMBOL].symbol}
+                      </div>
+                      <div className="label gray">
+                        {arg.symbols[SYMBOL].name}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-32"
+                      style={{ minWidth: "96px" }}
+                    >
+                      <div
+                        className={ClassNames(
+                          "paragraph ",
+                          isUpPrice ? "green" : "red"
+                        )}
+                      >
+                        {new BigNumber(arg.ticker.c).toFormat(2)}
+                      </div>
+                      <div className="label gray">
+                        $ {new BigNumber(arg.ticker.c).toFormat(2)}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "96px" }}
+                    >
+                      <div className="label gray">24h Change</div>
+                      <div className="content-row">
+                        <div
+                          className={ClassNames(
+                            "label mgr-4",
+                            arg.ticker.p > 0 ? "green" : "red"
+                          )}
+                        >
+                          {new BigNumber(arg.ticker.p).toFormat(2)}
+                        </div>
+                        <div
+                          className={ClassNames(
+                            "label",
+                            arg.ticker.P > 0 ? "green" : "red"
+                          )}
+                        >
+                          {new BigNumber(arg.ticker.P).toFormat(2)}%
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h High</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.h).toFormat(2)}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h Low</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.l).toFormat(2)}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h Volume(BCH)</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.v).toFormat(2)}
+                      </div>
+                    </div>
+                    <div className="content-column mgr-16">
+                      <div className="label gray">24h Volume(USDT)</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.q).toFormat(2)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </TabPane>
               <TabPane name="Polkadot" key="5" link="/trades/dotusdt">
-                Content of Tab Pane 5
+                <div className="subHeader-container">
+                  <div
+                    className="content-row"
+                    style={{ alignItems: "flex-end" }}
+                  >
+                    <div className="content-column mgr-32">
+                      <div className="paragraph white">
+                        {arg.symbols[SYMBOL].symbol}
+                      </div>
+                      <div className="label gray">
+                        {arg.symbols[SYMBOL].name}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-32"
+                      style={{ minWidth: "96px" }}
+                    >
+                      <div
+                        className={ClassNames(
+                          "paragraph ",
+                          isUpPrice ? "green" : "red"
+                        )}
+                      >
+                        {new BigNumber(arg.ticker.c).toFormat(2)}
+                      </div>
+                      <div className="label gray">
+                        $ {new BigNumber(arg.ticker.c).toFormat(2)}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "96px" }}
+                    >
+                      <div className="label gray">24h Change</div>
+                      <div className="content-row">
+                        <div
+                          className={ClassNames(
+                            "label mgr-4",
+                            arg.ticker.p > 0 ? "green" : "red"
+                          )}
+                        >
+                          {new BigNumber(arg.ticker.p).toFormat(2)}
+                        </div>
+                        <div
+                          className={ClassNames(
+                            "label",
+                            arg.ticker.P > 0 ? "green" : "red"
+                          )}
+                        >
+                          {new BigNumber(arg.ticker.P).toFormat(2)}%
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h High</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.h).toFormat(2)}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h Low</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.l).toFormat(2)}
+                      </div>
+                    </div>
+                    <div
+                      className="content-column mgr-16"
+                      style={{ minWidth: "64px" }}
+                    >
+                      <div className="label gray">24h Volume(DOT)</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.v).toFormat(2)}
+                      </div>
+                    </div>
+                    <div className="content-column mgr-16">
+                      <div className="label gray">24h Volume(USDT)</div>
+                      <div className="label white">
+                        {new BigNumber(arg.ticker.q).toFormat(2)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </TabPane>
             </TabWithLink>
           </SubHeader>
@@ -435,7 +753,7 @@ const HomeContainer = (props) => {
                       style={{ marginRight: "7%", flex: "1 1 0%" }}
                     >
                       <div className="content-row space-between mgb-2">
-                        <div className="title white">Buy BTC</div>
+                        <div className="title white">Buy {cryptoSymbol}</div>
                         <div className="content-row">
                           <div className="label gray">0.15143617</div>
                           <div className="label gray mgl-8">USDT</div>
@@ -449,7 +767,7 @@ const HomeContainer = (props) => {
                           FORMAT_DECIMAL
                         )}
                       />
-                      <InputTrade prefix="Amount" suffix="BTC" />
+                      <InputTrade prefix="Amount" suffix={cryptoSymbol} />
                       <ValueStep />
                       <InputTrade prefix="Total" suffix="USDT" />
                       <Button label="Buy BTC" color="green" />
@@ -457,14 +775,14 @@ const HomeContainer = (props) => {
 
                     <div className="content-column" style={{ flex: "1 1 0%" }}>
                       <div className="content-row space-between mgb-2">
-                        <div className="title white">Sell BTC</div>
+                        <div className="title white">Sell {cryptoSymbol}</div>
                         <div className="content-row">
                           <div className="label gray">0.00000091</div>
-                          <div className="label gray mgl-8">BTC</div>
+                          <div className="label gray mgl-8">{cryptoSymbol}</div>
                         </div>
                       </div>
                       <InputTrade prefix="Price" suffix="USDT" />
-                      <InputTrade prefix="Amount" suffix="BTC" />
+                      <InputTrade prefix="Amount" suffix={cryptoSymbol} />
                       <ValueStep />
                       <InputTrade prefix="Total" suffix="USDT" />
                       <Button label="Sell BTC" color="red" />
@@ -480,7 +798,7 @@ const HomeContainer = (props) => {
                       style={{ marginRight: "7%", flex: "1 1 0%" }}
                     >
                       <div className="content-row space-between mgb-2">
-                        <div className="title white">Buy BTC</div>
+                        <div className="title white">Buy {cryptoSymbol}</div>
                         <div className="content-row">
                           <div className="label gray">0.15143617</div>
                           <div className="label gray mgl-8">USDT</div>
@@ -492,17 +810,17 @@ const HomeContainer = (props) => {
                         disabled={true}
                         suffix="USDT"
                       />
-                      <InputTrade prefix="Amount" suffix="BTC" />
+                      <InputTrade prefix="Amount" suffix={cryptoSymbol} />
                       <ValueStep value={(e) => console.log(e)} />
                       <Button label="Buy BTC" color="green" />
                     </div>
 
                     <div className="content-column" style={{ flex: "1 1 0%" }}>
                       <div className="content-row space-between mgb-2">
-                        <div className="title white">Sell BTC</div>
+                        <div className="title white">Sell {cryptoSymbol}</div>
                         <div className="content-row">
                           <div className="label gray">0.00000091</div>
-                          <div className="label gray mgl-8">BTC</div>
+                          <div className="label gray mgl-8">{cryptoSymbol}</div>
                         </div>
                       </div>
                       <InputTrade
@@ -511,7 +829,7 @@ const HomeContainer = (props) => {
                         disabled={true}
                         suffix="USDT"
                       />
-                      <InputTrade prefix="Amount" suffix="BTC" />
+                      <InputTrade prefix="Amount" suffix={cryptoSymbol} />
                       <ValueStep value={(e) => console.log(e)} />
                       <Button label="Sell BTC" color="red" />
                     </div>
@@ -538,7 +856,7 @@ const HomeContainer = (props) => {
                     className="label gray align-items-end "
                     style={{ minWidth: "75px" }}
                   >
-                    Amount(BTC)
+                    Amount({cryptoSymbol})
                   </div>
                   <div
                     className="label gray align-items-end text-right"
@@ -785,7 +1103,7 @@ const HomeContainer = (props) => {
                       className="label white text-center"
                       style={{ minWidth: "64px" }}
                     >
-                      BTC/USDT
+                      {cryptoSymbol}/USDT
                     </div>
                     <div
                       className="label white text-center"
@@ -842,7 +1160,7 @@ const HomeContainer = (props) => {
                       className="label white text-center"
                       style={{ minWidth: "64px" }}
                     >
-                      BTC/USDT
+                      {cryptoSymbol}/USDT
                     </div>
                     <div
                       className="label white text-center"
@@ -899,7 +1217,7 @@ const HomeContainer = (props) => {
                       className="label white text-center"
                       style={{ minWidth: "64px" }}
                     >
-                      BTC/USDT
+                      {cryptoSymbol}/USDT
                     </div>
                     <div
                       className="label white text-center"
