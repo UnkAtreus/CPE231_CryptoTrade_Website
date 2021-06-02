@@ -39,7 +39,9 @@ export const TabWithLink = React.memo(
             <a href={tabLink[index]} key={index}>
               <li
                 onClick={() => changeTab(item)}
-                className={item === active ? "active" : ""}
+                className={
+                  item.toLowerCase() === active.toLowerCase() ? "active" : ""
+                }
               >
                 {item}
               </li>
@@ -48,7 +50,7 @@ export const TabWithLink = React.memo(
         </TabHeader>
         <div className="tab-content">
           {Object.keys(childContent).map((key, index) => {
-            if (key === active) {
+            if (key.toLowerCase() === active.toLowerCase()) {
               return (
                 <div className="tab-child" key={index}>
                   {childContent[key]}

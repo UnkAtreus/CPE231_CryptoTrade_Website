@@ -66,7 +66,7 @@ export const DepositTypeContainer = styled.div`
     filter: invert(22%) sepia(27%) saturate(914%) hue-rotate(202deg)
       brightness(89%) contrast(89%);
     background-blend-mode: overlay;
-    border-radius: 0px 0px 30px 0px;
+    border-radius: 0px 0px 16px 0px;
     background-size: 297px 297px;
     background-image: url(${SHARDS["bitcoin-overlay.svg"]});
     &.crypto {
@@ -107,6 +107,11 @@ export const DepositDetail = styled.div`
 
 export const CoinDropdown = styled.div`
   margin-bottom: 8px;
+  .inline-flex {
+    display: inline-flex;
+    column-gap: 8px;
+    width: 100%;
+  }
 `;
 
 export const DepositHistory = styled.div`

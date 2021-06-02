@@ -65,8 +65,11 @@ export const Dropdown = (props) => {
           </div>
         </div>
       </DropdownHeader>
-      <DropdownField className={ClassNames(isOpen && "open")}>
-        <DropdownContent>
+      <DropdownField
+        className={ClassNames(isOpen && "open")}
+        style={props.isHeightAuto && { height: "auto" }}
+      >
+        <DropdownContent style={props.isHeightAuto && { height: "auto" }}>
           {Object.keys(childContent).map((key, index) => {
             return (
               <div
