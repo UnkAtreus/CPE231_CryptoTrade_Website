@@ -5,14 +5,13 @@ import { RepoService } from 'src/repo/repo.service';
 import { TransactionFiat } from 'src/models/object/transactionFiat.model';
 import { Injectable } from '@nestjs/common';
 import FiatInput from 'src/models/input/fiat.input';
-import { TranasctionMethod } from 'src/static/enum';
-import e from 'express';
+import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
 import { WalletService } from '../wallet/wallet.service';
 
 @Injectable()
 export class TransactionFiatService {
   constructor(
-    private readonly RepoService: RepoService,
+    private readonly repoService: RepoService,
     private readonly walletService: WalletService,
     private readonly userService: UserService,
     private readonly currencyService: CurrencyService,
@@ -22,7 +21,7 @@ export class TransactionFiatService {
     fiat.bankNumber = input.bankNumber;
     fiat.method = input.method;
     fiat.amount = input.amount;
-
+    fiat.status = TransactionStatus.Pending;
     const getuser = await this.userService.getUserByToken(user.id);
     fiat.user = getuser;
 
@@ -43,6 +42,29 @@ export class TransactionFiatService {
       fiat.totalBalanceLeft = temp1 - temp2;
     }
     await this.walletService.updateWallet(wallet.id, fiat.totalBalanceLeft);
-    return await this.RepoService.transactionFiatRepo.save(fiat);
+    return await this.repoService.transactionFiatRepo.save(fiat);
+  }
+
+  async getFiatByID(id: number): Promise<TransactionFiat> {
+    return await this.repoService.transactionFiatRepo.findOne(id);
+  }
+  async getAllFiat(): Promise<TransactionFiat[]> {
+    return await this.repoService.transactionFiatRepo.find();
+  }
+
+  async getAllFiatByUser(user: User): Promise<TransactionFiat[]> {
+    return await this.repoService.transactionFiatRepo.find({
+      where: {
+        user: user.id,
+      },
+    });
+  }
+  async updateFiat(
+    id: number,
+    status: TransactionStatus,
+  ): Promise<TransactionFiat> {
+    const fiat = await this.getFiatByID(id);
+    fiat.status = status;
+    return await this.repoService.transactionFiatRepo.save(fiat);
   }
 }

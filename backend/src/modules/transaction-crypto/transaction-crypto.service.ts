@@ -7,12 +7,12 @@ import { UserService } from '../user/user.service';
 import { User } from 'src/models/object/user.model';
 import CryptoInput from 'src/models/input/crypto.input';
 import { CurrencyService } from '../currency/currency.service';
-import { TranasctionMethod } from 'src/static/enum';
+import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
 
 @Injectable()
 export class TransactionCryptoService {
   constructor(
-    private readonly RepoService: RepoService,
+    private readonly repoService: RepoService,
     private readonly walletService: WalletService,
     private readonly userService: UserService,
     private readonly currencyService: CurrencyService,
@@ -47,6 +47,28 @@ export class TransactionCryptoService {
       crypto.totalBalanceLeft = temp1 - temp2;
     }
     await this.walletService.updateWallet(wallet.id, crypto.totalBalanceLeft);
-    return this.RepoService.transactionCryptoRepo.save(crypto);
+    return this.repoService.transactionCryptoRepo.save(crypto);
+  }
+  async getCryptoByID(id: number): Promise<TransactionCrypto> {
+    return await this.repoService.transactionCryptoRepo.findOne(id);
+  }
+  async getAllCrypto(): Promise<TransactionCrypto[]> {
+    return await this.repoService.transactionCryptoRepo.find();
+  }
+
+  async getAllCryptoByUser(user: User): Promise<TransactionCrypto[]> {
+    return await this.repoService.transactionCryptoRepo.find({
+      where: {
+        user: user.id,
+      },
+    });
+  }
+  async updateCrypto(
+    id: number,
+    status: TransactionStatus,
+  ): Promise<TransactionCrypto> {
+    const crypto = await this.getCryptoByID(id);
+    crypto.status = status;
+    return await this.repoService.transactionCryptoRepo.save(crypto);
   }
 }

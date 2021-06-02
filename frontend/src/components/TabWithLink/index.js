@@ -36,13 +36,14 @@ export const TabWithLink = React.memo(
       <TabStyle>
         <TabHeader>
           {tabHeader.map((item, index) => (
-            <li
-              onClick={() => changeTab(item)}
-              key={index}
-              className={item === active ? "active" : ""}
-            >
-              <a href={tabLink[index]}>{item}</a>
-            </li>
+            <a href={tabLink[index]} key={index}>
+              <li
+                onClick={() => changeTab(item)}
+                className={item === active ? "active" : ""}
+              >
+                {item}
+              </li>
+            </a>
           ))}
         </TabHeader>
         <div className="tab-content">
