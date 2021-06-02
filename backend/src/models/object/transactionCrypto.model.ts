@@ -57,7 +57,7 @@ export class TransactionCrypto {
 
   @Field(() => Float)
   @Column({ type: 'decimal', precision: 7, scale: 4 })
-  totalBalance?: number;
+  totalBalanceLeft?: number;
 
   //   @OneToMany(() => User, (user) => user.role)
   //   user: User[];

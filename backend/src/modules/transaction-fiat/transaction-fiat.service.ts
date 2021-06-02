@@ -38,11 +38,11 @@ export class TransactionFiatService {
     const temp2 = Number(fiat.amount);
 
     if (input.method == TranasctionMethod.Deposit) {
-      fiat.totalBalance = temp1 + temp2;
+      fiat.totalBalanceLeft = temp1 + temp2;
     } else {
-      fiat.totalBalance = temp1 - temp2;
+      fiat.totalBalanceLeft = temp1 - temp2;
     }
-    await this.walletService.updateWallet(wallet.id, fiat.totalBalance);
+    await this.walletService.updateWallet(wallet.id, fiat.totalBalanceLeft);
     return await this.RepoService.transactionFiatRepo.save(fiat);
     return;
   }

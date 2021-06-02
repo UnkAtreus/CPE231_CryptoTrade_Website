@@ -42,7 +42,7 @@ export class Order {
 
   @Field(() => Float)
   @Column()
-  totalBalance?: number;
+  totalBalanceLeft?: number;
 
   @Field(() => Boolean)
   @Column()
