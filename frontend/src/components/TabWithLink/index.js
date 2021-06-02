@@ -3,23 +3,28 @@ import { TabPane } from "../TabPane";
 
 import { TabStyle, TabHeader } from "./styled";
 
-export const Tab = React.memo(
+export const TabWithLink = React.memo(
   (props) => {
     const { children } = props;
     const [tabHeader, setTabHeader] = useState([]);
+    const [tabLink, setTabLink] = useState([]);
     const [childContent, setChildConent] = useState({});
     const [active, setActive] = useState(props.active);
 
     useEffect(() => {
       const headers = [];
+      const links = [];
       const childCnt = {};
       React.Children.forEach(children, (element) => {
         if (!React.isValidElement(element)) return;
         const { name } = element.props;
+        const { link } = element.props;
         headers.push(name);
+        links.push(link);
         childCnt[name] = element.props.children;
       });
       setTabHeader(headers);
+      setTabLink(links);
       setChildConent({ ...childCnt });
     }, [props, children]);
 
@@ -36,7 +41,7 @@ export const Tab = React.memo(
               key={index}
               className={item === active ? "active" : ""}
             >
-              {item}
+              <a href={tabLink[index]}>{item}</a>
             </li>
           ))}
         </TabHeader>
@@ -64,7 +69,7 @@ export const Tab = React.memo(
   }
 );
 
-Tab.propTypes = {
+TabWithLink.propTypes = {
   children: function (props, propName, componentName) {
     const prop = props[propName];
 

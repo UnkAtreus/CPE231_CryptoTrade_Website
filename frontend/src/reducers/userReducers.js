@@ -40,6 +40,14 @@ export const Ticker = (state = {}, action) => {
       return state;
   }
 };
+export const Price = (state = {}, action) => {
+  switch (action.type) {
+    case "SET_CUR_PRICE":
+      return Object.assign({}, action.data);
+    default:
+      return state;
+  }
+};
 
 export const Depth = (state = {}, action) => {
   switch (action.type) {
