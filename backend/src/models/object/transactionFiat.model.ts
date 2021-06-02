@@ -1,5 +1,5 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
-import { TranasctionMethod } from 'src/static/enum';
+import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
 import {
   Column,
   CreateDateColumn,
@@ -31,15 +31,23 @@ export class TransactionFiat {
   bank?: Bank;
 
   @Field(() => String)
+  @Column({ type: 'enum', enum: TransactionStatus })
+  status?: TransactionStatus;
+
+  @Field(() => String)
   @Column({ type: 'enum', enum: TranasctionMethod })
   method?: TranasctionMethod;
 
   @Field(() => Wallet)
-  @ManyToOne(() => Wallet, (wallet) => wallet.transactionFiat)
+  @ManyToOne(() => Wallet, (wallet) => wallet.transactionFiat, {
+    onDelete: 'CASCADE',
+  })
   wallet?: Wallet;
 
   @Field(() => CreditCard)
-  @ManyToOne(() => CreditCard, (creditCard) => creditCard.transactionFiat)
+  @ManyToOne(() => CreditCard, (creditCard) => creditCard.transactionFiat, {
+    onDelete: 'CASCADE',
+  })
   creditCard?: CreditCard;
 
   @Field()
@@ -53,7 +61,7 @@ export class TransactionFiat {
   updated_at?: Date;
 
   @Field(() => Float)
-  @Column({ type: 'decimal', precision: 10, scale: 10 })
+  @Column({ type: 'decimal', precision: 7, scale: 4 })
   amount?: number;
 
   @Field(() => String)
@@ -61,7 +69,7 @@ export class TransactionFiat {
   bankNumber?: string;
 
   @Field(() => Float)
-  @Column({ type: 'decimal', precision: 10, scale: 10 })
+  @Column({ type: 'decimal', precision: 7, scale: 4 })
   totalBalanceLeft?: number;
 
   //   @OneToMany(() => User, (user) => user.role)

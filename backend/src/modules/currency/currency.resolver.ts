@@ -67,7 +67,6 @@ export class CurrencyResolver {
   ): Promise<Currency> {
     return await this.currencyService.getCurrencyByShortName(shortName);
   }
-
   @Query(() => [Currency])
   async getAllCurrencyWithNoStatic(): Promise<Currency[]> {
     return await this.currencyService.getAllCurrencyNoStatic();

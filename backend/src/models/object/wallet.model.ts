@@ -20,18 +20,20 @@ export class Wallet {
   id?: number;
 
   @Field()
-  @Column({ type: 'decimal', precision: 10, scale: 10 })
+  @Column({ type: 'decimal', precision: 7, scale: 4 })
   amount?: number;
 
   @Field()
-  @Column({ type: 'decimal', precision: 10, scale: 10 })
+  @Column({ type: 'decimal', precision: 7, scale: 4 })
   inOrder?: number;
 
   @ManyToOne(() => User, (user) => user.wallet)
   user?: User;
 
   @Field()
-  @ManyToOne(() => Currency, (currency) => currency.wallet)
+  @ManyToOne(() => Currency, (currency) => currency.wallet, {
+    onDelete: 'CASCADE',
+  })
   currency?: Currency;
 
   @Field(() => [Order])

@@ -1,5 +1,5 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
-import { TranasctionMethod } from 'src/static/enum';
+import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
 import {
   Column,
   CreateDateColumn,
@@ -33,6 +33,9 @@ export class TransactionCrypto {
   @Column({ type: 'enum', enum: TranasctionMethod })
   method?: TranasctionMethod;
 
+  @Field(() => String)
+  @Column({ type: 'enum', enum: TransactionStatus })
+  status?: TransactionStatus;
   //   @Field(() => Currency)
   //   @ManyToOne(() => Currency, (currency) => currency.transactionFiat)
   //   currency?: Currency;
@@ -48,7 +51,7 @@ export class TransactionCrypto {
   updated_at?: Date;
 
   @Field(() => Float)
-  @Column({ type: 'decimal', precision: 10, scale: 10 })
+  @Column({ type: 'decimal', precision: 7, scale: 4 })
   amount?: number;
 
   @Field(() => String)
@@ -56,7 +59,7 @@ export class TransactionCrypto {
   targetWallet?: string;
 
   @Field(() => Float)
-  @Column({ type: 'decimal', precision: 10, scale: 10 })
+  @Column({ type: 'decimal', precision: 7, scale: 4 })
   totalBalanceLeft?: number;
 
   //   @OneToMany(() => User, (user) => user.role)

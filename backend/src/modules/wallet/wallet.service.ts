@@ -19,6 +19,7 @@ export class WalletService {
       const wallet: Wallet = {
         user: user,
         currency: currency,
+        inOrder: 0,
         amount: 0,
       };
       walletLists.push(wallet);
