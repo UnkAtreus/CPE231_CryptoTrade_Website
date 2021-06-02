@@ -41,8 +41,8 @@ export class Order {
   amount?: number;
 
   @Field(() => Float)
-  @Column()
-  totalBalanceLeft?: number;
+  @Column({ type: 'decimal', precision: 10, scale: 10 })
+  totalBalance?: number;
 
   @Field(() => Boolean)
   @Column()
