@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   DeopsitStyled,
   Header,
@@ -22,8 +23,33 @@ import {
   Tab,
   TabPane,
 } from "components";
+import { useQuery, gql } from "@apollo/client";
 
 const DeopsitContainer = ({ match, ...props }) => {
+  const [coinSymbol, setCoinSymbol] = useState([
+    {
+      __typename: "Currency",
+      currencyShortName: "BTC",
+      currency: "Bitcoin",
+    },
+  ]);
+  const GET_ALL_SYMBOL = gql`
+    query {
+      getAllCurrency {
+        currencyShortName
+        currency
+      }
+    }
+  `;
+
+  const { loading, error, data } = useQuery(GET_ALL_SYMBOL);
+
+  useEffect(() => {
+    if (data && data.getAllCurrency) {
+      setCoinSymbol(data.getAllCurrency);
+    }
+  }, [data]);
+
   return (
     <DeopsitStyled>
       <Header name="header">
@@ -35,7 +61,7 @@ const DeopsitContainer = ({ match, ...props }) => {
         </SubHeader>
         <div className="content-row mgb-8">
           <DepositType>
-            <Tab>
+            <Tab active="Cypto">
               <TabPane name="Cypto">
                 <DepositTypeContainer>
                   <div className="content-column Input-container">
@@ -48,13 +74,32 @@ const DeopsitContainer = ({ match, ...props }) => {
                           Coin
                         </div>
                       </div>
-                      <Dropdown style={{ marginTop: "12px" }}>
-                        <DropdownChild name={"BTC"}>
-                          <div className="content-row align-items-end">
-                            <div className="label white mgr-8">BTC</div>
-                            <div className="text-9 gray">Bitcoin</div>
-                          </div>
-                        </DropdownChild>
+                      <Dropdown
+                        style={{ marginTop: "12px" }}
+                        active="BTC"
+                        onChange={(e) => {
+                          console.log(e);
+                        }}
+                        isSelect={true}
+                      >
+                        {coinSymbol.map((data, index) => {
+                          console.log(data);
+                          return (
+                            <DropdownChild
+                              name={data.currencyShortName}
+                              key={index}
+                            >
+                              <div className="content-row align-items-end">
+                                <div className="label white mgr-8">
+                                  {data.currencyShortName}
+                                </div>
+                                <div className="text-9 gray">
+                                  {data.currency}
+                                </div>
+                              </div>
+                            </DropdownChild>
+                          );
+                        })}
                       </Dropdown>
                     </CoinDropdown>
                     <div className="content-row space-between mgb-8">
