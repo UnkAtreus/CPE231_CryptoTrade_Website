@@ -53,7 +53,7 @@ export class TransactionFiat {
   updated_at?: Date;
 
   @Field(() => Float)
-  @Column({ type: 'decimal', precision: 7, scale: 4 })
+  @Column({ type: 'decimal', precision: 10, scale: 10 })
   amount?: number;
 
   @Field(() => String)
@@ -61,7 +61,7 @@ export class TransactionFiat {
   bankNumber?: string;
 
   @Field(() => Float)
-  @Column({ type: 'decimal', precision: 7, scale: 4 })
+  @Column({ type: 'decimal', precision: 10, scale: 10 })
   totalBalanceLeft?: number;
 
   //   @OneToMany(() => User, (user) => user.role)

@@ -25,7 +25,7 @@ type Order {
   walletTo: Wallet
   price: Float
   amount: Float
-  totalBalanceLeft: Float
+  totalBalance: Float
   cancel: Boolean
   filled: Boolean
   created_at: DateTime
@@ -96,6 +96,7 @@ type TransactionFiat {
 type Wallet {
   id: Float
   amount: Float
+  inOrder: Float
   currency: Currency
   order: [Order!]
   p2pFrom: [PtoP!]

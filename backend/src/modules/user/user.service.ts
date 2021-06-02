@@ -31,7 +31,7 @@ export class UserService {
   async getUserByToken(id: number): Promise<User> {
     return await this.repoService.userRepo.findOne({
       where: { id: id },
-      relations: ['role'],
+      relations: ['role', 'wallet', 'creditCard'],
     });
   }
 
