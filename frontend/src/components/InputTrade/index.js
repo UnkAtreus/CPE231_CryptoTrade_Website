@@ -23,8 +23,8 @@ export const InputTrade = React.memo(({ match, ...props }) => {
         <input
           disabled={props.disabled || false}
           type="text"
-          placeholder={props.placeholder || "0"}
-          value={name}
+          placeholder={props.placeholder || ""}
+          value={name || ""}
           onChange={(e) => {
             onNameChange(e.target.value);
             setname(e.target.value);
