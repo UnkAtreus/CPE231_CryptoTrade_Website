@@ -55,15 +55,28 @@ export class WalletService {
     return await this.repoService.walletRepo.save(wallet);
   }
 
-  async Buy(id: number, amount: number): Promise<Wallet[]> {
-    const wallet = await this.getWalletById(id);
+  async Buy(
+    walletIDTarget: number,
+    inOrder: number,
+    amount: number,
+  ): Promise<Wallet[]> {
+    const wallet = await this.getWalletById(walletIDTarget);
     wallet.amount += amount;
+    wallet.inOrder -= inOrder;
     return await this.repoService.walletRepo.save([wallet]);
   }
 
-  async Sell(id: number, amount: number): Promise<Wallet[]> {
-    const wallet = await this.getWalletById(id);
+  async Sell(walletIDFrom: number, amount: number): Promise<Wallet[]> {
+    const wallet = await this.getWalletById(walletIDFrom);
     wallet.amount -= amount;
+    wallet.inOrder += amount;
+    return await this.repoService.walletRepo.save([wallet]);
+  }
+
+  async cancelOrder(walletIDFrom: number, amount: number): Promise<Wallet[]> {
+    const wallet = await this.getWalletById(walletIDFrom);
+    wallet.amount += amount;
+    wallet.inOrder -= amount;
     return await this.repoService.walletRepo.save([wallet]);
   }
   async playerToPlayer(

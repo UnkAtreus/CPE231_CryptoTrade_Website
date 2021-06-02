@@ -8,8 +8,8 @@ const typeorm_config: TypeOrmModuleOptions = {
   password: '123456',
   database: 'crypto',
   synchronize: true,
-  entities: ['dist/**/*.model.js'],
-  // migrations: ['src/migration/**/*.ts'],
+  entities: ['../**/*.model.js'],
+  // migrations: ['src/migration/*.ts'],
   // cli: {
   //   migrationsDir: 'src/migration',
   // },

@@ -44,6 +44,5 @@ export class TransactionFiatService {
     }
     await this.walletService.updateWallet(wallet.id, fiat.totalBalanceLeft);
     return await this.RepoService.transactionFiatRepo.save(fiat);
-    return;
   }
 }

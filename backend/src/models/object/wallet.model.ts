@@ -20,8 +20,12 @@ export class Wallet {
   id?: number;
 
   @Field()
-  @Column({ type: 'decimal', precision: 7, scale: 4 })
+  @Column({ type: 'decimal', precision: 10, scale: 10 })
   amount?: number;
+
+  @Field()
+  @Column({ type: 'decimal', precision: 10, scale: 10 })
+  inOrder?: number;
 
   @ManyToOne(() => User, (user) => user.wallet)
   user?: User;
