@@ -29,11 +29,4 @@ export class Currency {
   @Field(() => [Wallet])
   @OneToMany(() => Wallet, (wallet) => wallet.currency)
   wallet?: Wallet[];
-
-  @Field(() => [TransactionFiat])
-  @OneToMany(
-    () => TransactionFiat,
-    (transactionFiat) => transactionFiat.currency,
-  )
-  transactionFiat?: TransactionFiat[];
 }

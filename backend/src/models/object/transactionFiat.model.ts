@@ -13,6 +13,7 @@ import { Bank } from './bank.model';
 import { User } from './user.model';
 import { Currency } from './currency.model';
 import { CreditCard } from './creditcard.model';
+import { Wallet } from './wallet.model';
 @ObjectType()
 @Entity()
 /// THIS IS FOR TRANSACTION FROM STABLE COIN ONLY !!!
@@ -33,9 +34,9 @@ export class TransactionFiat {
   @Column({ type: 'enum', enum: TranasctionMethod })
   method?: TranasctionMethod;
 
-  @Field(() => Currency)
-  @ManyToOne(() => Currency, (currency) => currency.transactionFiat)
-  currency?: Currency;
+  @Field(() => Wallet)
+  @ManyToOne(() => Wallet, (wallet) => wallet.transactionFiat)
+  wallet?: Wallet;
 
   @Field(() => CreditCard)
   @ManyToOne(() => CreditCard, (creditCard) => creditCard.transactionFiat)
@@ -52,7 +53,7 @@ export class TransactionFiat {
   updated_at?: Date;
 
   @Field(() => Float)
-  @Column('decimal', {})
+  @Column({ type: 'decimal', precision: 7, scale: 4 })
   amount?: number;
 
   @Field(() => String)
@@ -60,8 +61,8 @@ export class TransactionFiat {
   bankNumber?: string;
 
   @Field(() => Float)
-  @Column()
-  totalBalance?: number;
+  @Column({ type: 'decimal', precision: 7, scale: 4 })
+  totalBalanceLeft?: number;
 
   //   @OneToMany(() => User, (user) => user.role)
   //   user: User[];

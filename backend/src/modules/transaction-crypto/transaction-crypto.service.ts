@@ -42,11 +42,11 @@ export class TransactionCryptoService {
     const temp2 = Number(input.amount);
 
     if (input.method == TranasctionMethod.Deposit) {
-      crypto.totalBalance = temp1 + temp2;
+      crypto.totalBalanceLeft = temp1 + temp2;
     } else {
-      crypto.totalBalance = temp1 - temp2;
+      crypto.totalBalanceLeft = temp1 - temp2;
     }
-    await this.walletService.updateWallet(wallet.id, crypto.totalBalance);
+    await this.walletService.updateWallet(wallet.id, crypto.totalBalanceLeft);
     return this.RepoService.transactionCryptoRepo.save(crypto);
   }
 }

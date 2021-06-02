@@ -48,7 +48,7 @@ export class TransactionCrypto {
   updated_at?: Date;
 
   @Field(() => Float)
-  @Column('decimal', {})
+  @Column({ type: 'decimal', precision: 7, scale: 4 })
   amount?: number;
 
   @Field(() => String)
@@ -56,8 +56,8 @@ export class TransactionCrypto {
   targetWallet?: string;
 
   @Field(() => Float)
-  @Column()
-  totalBalance?: number;
+  @Column({ type: 'decimal', precision: 7, scale: 4 })
+  totalBalanceLeft?: number;
 
   //   @OneToMany(() => User, (user) => user.role)
   //   user: User[];

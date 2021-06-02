@@ -68,11 +68,11 @@ export class OrderService implements OnApplicationBootstrap {
       walletTo: walletTo,
       price: input.price,
       amount: input.amount,
-      totalBalance: input.price * input.amount,
+      totalBalanceLeft: input.price * input.amount,
       cancel: false,
       filled: false,
     };
-    await this.walletService.Sell(order.walletFrom.id, order.totalBalance);
+    await this.walletService.Sell(order.walletFrom.id, order.totalBalanceLeft);
     return await this.repoService.orderRepo.save(order);
   }
   async getOrderById(orderId: number): Promise<Order> {
@@ -83,7 +83,7 @@ export class OrderService implements OnApplicationBootstrap {
   async cancelOrder(userId: number, orderId: number): Promise<Order> {
     const order = await this.getOrderById(orderId);
     if (order.user.id == userId) {
-      await this.walletService.Buy(order.walletFrom.id, order.totalBalance);
+      await this.walletService.Buy(order.walletFrom.id, order.totalBalanceLeft);
       order.cancel = true;
       return await this.repoService.orderRepo.save(order);
     } else {

@@ -11,6 +11,7 @@ import { Currency } from './currency.model';
 import { Order } from './order.model';
 import { PtoP } from './ptop.model';
 import { TransactionCrypto } from './transactionCrypto.model';
+import { TransactionFiat } from './transactionFiat.model';
 @ObjectType()
 @Entity()
 export class Wallet {
@@ -19,7 +20,7 @@ export class Wallet {
   id?: number;
 
   @Field()
-  @Column('decimal')
+  @Column({ type: 'decimal', precision: 7, scale: 4 })
   amount?: number;
 
   @ManyToOne(() => User, (user) => user.wallet)
@@ -47,4 +48,8 @@ export class Wallet {
     (transactionCrypto) => transactionCrypto.wallet,
   )
   transactionCrypto?: TransactionCrypto[];
+
+  @Field(() => [TransactionFiat])
+  @OneToMany(() => TransactionFiat, (transactionFiat) => transactionFiat.wallet)
+  transactionFiat?: TransactionFiat[];
 }
