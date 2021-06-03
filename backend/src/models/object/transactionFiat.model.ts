@@ -39,11 +39,15 @@ export class TransactionFiat {
   method?: TranasctionMethod;
 
   @Field(() => Wallet)
-  @ManyToOne(() => Wallet, (wallet) => wallet.transactionFiat)
+  @ManyToOne(() => Wallet, (wallet) => wallet.transactionFiat, {
+    onDelete: 'CASCADE',
+  })
   wallet?: Wallet;
 
   @Field(() => CreditCard)
-  @ManyToOne(() => CreditCard, (creditCard) => creditCard.transactionFiat)
+  @ManyToOne(() => CreditCard, (creditCard) => creditCard.transactionFiat, {
+    onDelete: 'CASCADE',
+  })
   creditCard?: CreditCard;
 
   @Field()

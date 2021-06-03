@@ -23,9 +23,15 @@ export const Dropdown = (props) => {
   };
 
   const handleItemClick = (key) => {
-    selectedItem === key ? setSelectedItem(null) : setSelectedItem(key);
-    setOpen(!isOpen);
-    props.onChange(selectedItem === key ? null : childContent[key]);
+    if (!props.isSelect) {
+      selectedItem === key ? setSelectedItem(null) : setSelectedItem(key);
+      setOpen(!isOpen);
+      props.onChange(selectedItem === key ? null : childContent[key]);
+    } else {
+      setSelectedItem(key);
+      setOpen(!isOpen);
+      props.onChange(key);
+    }
   };
 
   useEffect(() => {
@@ -36,6 +42,7 @@ export const Dropdown = (props) => {
       childCnt[name] = element.props.children;
     });
     setChildContent({ ...childCnt });
+    if (props.isSelect) setSelectedItem(props.active);
     // console.log(childCnt);
   }, [props, children]);
 
@@ -58,8 +65,11 @@ export const Dropdown = (props) => {
           </div>
         </div>
       </DropdownHeader>
-      <DropdownField className={ClassNames(isOpen && "open")}>
-        <DropdownContent>
+      <DropdownField
+        className={ClassNames(isOpen && "open")}
+        style={props.isHeightAuto && { height: "auto" }}
+      >
+        <DropdownContent style={props.isHeightAuto && { height: "auto" }}>
           {Object.keys(childContent).map((key, index) => {
             return (
               <div

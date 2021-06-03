@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   ManyToOne,
+  OneToOne,
 } from 'typeorm';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Gender } from 'src/static/enum';
@@ -13,6 +14,8 @@ import { Role } from './role.model';
 import { Wallet } from './wallet.model';
 import { CreditCard } from './creditcard.model';
 import { TransactionFiat } from './transactionFiat.model';
+import { Verification } from './verification.model';
+import { verify } from 'crypto';
 
 @ObjectType()
 @Entity()
@@ -110,6 +113,9 @@ export class User {
   @Field(() => [TransactionFiat])
   @OneToMany(() => TransactionFiat, (transactionFiat) => transactionFiat.user)
   transactionFiat?: TransactionFiat[];
+
+  @OneToOne(() => Verification, (veri) => veri.user)
+  verification: Verification;
 }
 //   @Field((type) => [InvoiceModel], { nullable: true })
 //   @OneToMany((type) => InvoiceModel, (invoice) => invoice.customer)

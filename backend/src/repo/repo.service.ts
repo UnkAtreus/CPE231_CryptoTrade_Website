@@ -8,6 +8,7 @@ import { PtoP } from 'src/models/object/ptop.model';
 import { Role } from 'src/models/object/role.model';
 import { TransactionFiat } from 'src/models/object/transactionFiat.model';
 import { User } from 'src/models/object/user.model';
+import { Verification } from 'src/models/object/verification.model';
 import { Wallet } from 'src/models/object/wallet.model';
 import { Repository } from 'typeorm';
 import { TransactionCrypto } from '../models/object/transactionCrypto.model';
@@ -29,5 +30,7 @@ export class RepoService {
     @InjectRepository(TransactionFiat)
     public readonly transactionFiatRepo: Repository<TransactionFiat>,
     @InjectRepository(Wallet) public readonly walletRepo: Repository<Wallet>,
+    @InjectRepository(Verification)
+    public readonly veriRepo: Repository<Verification>,
   ) {}
 }

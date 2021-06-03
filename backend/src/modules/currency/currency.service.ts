@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Currency } from 'src/models/object/currency.model';
 import { RepoService } from 'src/repo/repo.service';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, Not, In } from 'typeorm';
 
 @Injectable()
 export class CurrencyService {
@@ -74,6 +74,15 @@ export class CurrencyService {
       where: {
         currency: shortName,
       },
+    });
+  }
+  async getAllCurrencyNoStatic(): Promise<Currency[]> {
+    return await this.repoService.currencyRepo.find({
+      where: [
+        {
+          currency: Not(In(['USDT', 'THB'])),
+        },
+      ],
     });
   }
 }
