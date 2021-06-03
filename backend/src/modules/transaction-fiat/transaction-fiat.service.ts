@@ -27,7 +27,7 @@ export class TransactionFiatService {
     fiat.user = user;
     const getbank = await this.bankService.getBankByName(input.bankType);
     const curreny = await this.currencyService.getCurrencyByShortName('USDT');
-    const wallet = await this.walletService.getWalletByCurrency(
+    const wallet = await this.walletService.getWalletByCurrencyId(
       user.id,
       curreny.id,
     );

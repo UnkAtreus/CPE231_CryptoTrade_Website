@@ -17,8 +17,7 @@ import { Wallet } from './wallet.model';
 @ObjectType()
 @Entity()
 export class TransactionCrypto {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ zerofill: true })
   id?: number;
 
   @Field(() => User)
@@ -51,7 +50,7 @@ export class TransactionCrypto {
   updated_at?: Date;
 
   @Field(() => Float)
-  @Column({ type: 'decimal', precision: 7, scale: 4 })
+  @Column({ type: 'decimal', precision: 8, scale: 8 })
   amount?: number;
 
   @Field(() => String)
@@ -59,7 +58,7 @@ export class TransactionCrypto {
   targetWallet?: string;
 
   @Field(() => Float)
-  @Column({ type: 'decimal', precision: 7, scale: 4 })
+  @Column({ type: 'decimal', precision: 8, scale: 8 })
   totalBalanceLeft?: number;
 
   //   @OneToMany(() => User, (user) => user.role)

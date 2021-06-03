@@ -20,8 +20,7 @@ import { verify } from 'crypto';
 @ObjectType()
 @Entity()
 export class User {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ zerofill: true })
   id?: number;
 
   @Field(() => Role)

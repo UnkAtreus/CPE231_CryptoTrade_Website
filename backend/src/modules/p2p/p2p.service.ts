@@ -21,11 +21,11 @@ export class P2PService {
     const curreny = await this.currencyService.getCurrencyByShortName(
       input.currency,
     );
-    const walletForm = await this.walletService.getWalletByCurrency(
+    const walletForm = await this.walletService.getWalletByCurrencyId(
       user.id,
       curreny.id,
     );
-    const walletTo = await this.walletService.getWalletByCurrency(
+    const walletTo = await this.walletService.getWalletByCurrencyId(
       input.targetUser,
       curreny.id,
     );

@@ -18,8 +18,7 @@ import { Wallet } from './wallet.model';
 @Entity()
 /// THIS IS FOR TRANSACTION FROM STABLE COIN ONLY !!!
 export class TransactionFiat {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ zerofill: true })
   id?: number;
 
   @Field(() => User)
@@ -61,7 +60,7 @@ export class TransactionFiat {
   updated_at?: Date;
 
   @Field(() => Float)
-  @Column({ type: 'decimal', precision: 7, scale: 4 })
+  @Column({ type: 'decimal', precision: 8, scale: 8 })
   amount?: number;
 
   @Field(() => String)
@@ -69,7 +68,7 @@ export class TransactionFiat {
   bankNumber?: string;
 
   @Field(() => Float)
-  @Column({ type: 'decimal', precision: 7, scale: 4 })
+  @Column({ type: 'decimal', precision: 8, scale: 8 })
   totalBalanceLeft?: number;
 
   //   @OneToMany(() => User, (user) => user.role)

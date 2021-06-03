@@ -23,9 +23,9 @@ type Order {
   method: String
   walletFrom: Wallet
   walletTo: Wallet
-  price: Float
-  amount: Float
-  totalBalance: Float
+  price: String
+  amount: String
+  totalBalance: String
   cancel: Boolean
   filled: Boolean
   created_at: DateTime
@@ -47,7 +47,6 @@ type PtoP {
 }
 
 type TransactionCrypto {
-  id: ID
   user: User
   wallet: Wallet
   method: String
@@ -57,6 +56,7 @@ type TransactionCrypto {
   amount: Float
   targetWallet: String
   totalBalanceLeft: Float
+  id: Float
 }
 
 type Bank {
@@ -66,7 +66,6 @@ type Bank {
 }
 
 type CreditCard {
-  id: ID
   user: User
   cardNumber: String
   expiredMonth: String
@@ -77,10 +76,10 @@ type CreditCard {
   city: String
   country: String
   transactionFiat: [TransactionFiat!]
+  id: Float
 }
 
 type TransactionFiat {
-  id: ID
   user: User
   bank: Bank
   status: String
@@ -92,12 +91,13 @@ type TransactionFiat {
   amount: Float
   bankNumber: String
   totalBalanceLeft: Float
+  id: Float
 }
 
 type Wallet {
   id: Float
-  amount: Float
-  inOrder: Float
+  amount: String
+  inOrder: String
   currency: Currency
   order: [Order!]
   p2pFrom: [PtoP!]
@@ -115,7 +115,6 @@ type Verification {
 }
 
 type User {
-  id: ID
   role: Role
   firstName: String
   lastName: String
@@ -138,6 +137,7 @@ type User {
   wallet: [Wallet!]
   creditCard: [CreditCard!]
   transactionFiat: [TransactionFiat!]
+  id: Float
   verification: Verification
 }
 
@@ -236,8 +236,8 @@ input CardInput {
 
 input OrderInput {
   method: Float!
-  currenyIDFrom: ID!
-  currenyIDTo: ID!
+  currencyFrom: String!
+  currencyTo: String!
   price: Float!
   amount: Float!
 }

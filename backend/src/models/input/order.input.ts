@@ -6,11 +6,11 @@ class OrderInput {
   @Field()
   readonly method: OrderMethod;
 
-  @Field(() => ID)
-  readonly currenyIDFrom: number;
+  @Field()
+  readonly currencyFrom: string;
 
-  @Field(() => ID)
-  readonly currenyIDTo: number;
+  @Field()
+  readonly currencyTo: string;
 
   @Field(() => Float)
   readonly price: number;

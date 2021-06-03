@@ -26,7 +26,7 @@ export class TransactionCryptoService {
     const curreny = await this.currencyService.getCurrencyByShortName(
       input.shortName,
     );
-    const wallet = await this.walletService.getWalletByCurrency(
+    const wallet = await this.walletService.getWalletByCurrencyId(
       user.id,
       curreny.id,
     );
