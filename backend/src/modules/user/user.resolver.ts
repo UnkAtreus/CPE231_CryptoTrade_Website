@@ -74,12 +74,12 @@ export class UserResolver {
     return 'verify';
   }
 
-  @Mutation(() => String)
-  @Roles(['customer'])
-  async changePass(
-    @Args('passInput') input: PassInput,
-    @Context('user') user: User,
-  ): Promise<string> {
-    return this.userService.changePassword(input, user);
-  }
+  // @Mutation(() => String)
+  // @Roles(['customer'])
+  // async changePass(
+  //   @Args('passInput') input: PassInput,
+  //   @Context('user') user: User,
+  // ): Promise<string> {
+  //   return this.userService.changePassword(input, user);
+  // }
 }
