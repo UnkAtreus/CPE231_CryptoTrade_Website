@@ -157,6 +157,7 @@ type Query {
   getCardByToken: [CreditCard!]!
   getAllFiat: [TransactionFiat!]!
   getAllFiatByUser: [TransactionFiat!]!
+  getBankByName(name: String!): Bank!
   getAllCrypto: [TransactionCrypto!]!
   getAllCryptoByUser: [TransactionCrypto!]!
   verification(id: Int!): Verification!
@@ -185,6 +186,7 @@ type Mutation {
   cancelOrder(id: ID!): Order!
   createFiat(fiatInput: FiatInput!): TransactionFiat!
   updateFiatStatus(id: ID!, status: Float!): TransactionFiat!
+  creatBank: [Bank!]!
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
   updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
   createP2P(p2pInput: PtoPInput!): PtoP!
@@ -244,6 +246,7 @@ input FiatInput {
   method: Float
   amount: Float
   bankNumber: String
+  bankType: String
 }
 
 input CryptoInput {
