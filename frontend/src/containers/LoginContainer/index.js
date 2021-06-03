@@ -33,11 +33,13 @@ const LoginContainer = ({ match, ...props }) => {
                     type="text"
                     title="Telephone"
                     placeholder="+66 812345678"
+                    onChange={(e) => console.log(e)}
                   />
                   <Input
                     type="password"
                     title="Password"
                     placeholder="**********"
+                    onChange={(e) => console.log(e)}
                   />
                   <div className="content-row justify-content-center mgt-24">
                     <Button
@@ -51,7 +53,7 @@ const LoginContainer = ({ match, ...props }) => {
             </div>
             <div className="content-row justify-content-center">
               <div className="label gray mgr-8">Don’t have an account? </div>
-              <a href="/" className="label purple">
+              <a href="/register" className="label purple">
                 Create new one
               </a>
             </div>

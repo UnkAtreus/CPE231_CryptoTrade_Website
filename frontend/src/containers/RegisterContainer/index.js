@@ -386,7 +386,7 @@ const RegisterContainer = ({ match, ...props }) => {
             </div>
             <div className="content-row justify-content-center">
               <div className="label gray mgr-8">Already gave an account? </div>
-              <a href="/" className="label purple">
+              <a href="/login" className="label purple">
                 Sign In
               </a>
             </div>
