@@ -17,7 +17,7 @@ export const ROUTE_PATH = {
   },
   P2P: {
     TEXT: "P2P",
-    LINK: "/p2p",
+    LINK: "/p2p/:type",
   },
   DEPOSIT: {
     TEXT: "Deposit",

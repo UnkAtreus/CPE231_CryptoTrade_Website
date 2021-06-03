@@ -37,12 +37,10 @@ const WithdrawContainer = ({ match, ...props }) => {
   const [curSymbol, setCurSymbol] = useState(
     match.params.type.toLowerCase() === "fiat" ? "USD" : "BTC"
   );
-  const [monthExpiry, setMonthExpiry] = useState("1");
-  const [yearExpiry, setYearExpiry] = useState("21");
   const [payMentMethod, setPayMentMethod] = useState("Bank account");
   const [bankAmount, setBankAmount] = useState();
 
-  const depositType = match.params.type
+  const withdrawType = match.params.type
     ? match.params.type.toLowerCase()
     : "crypto";
 
@@ -105,7 +103,7 @@ const WithdrawContainer = ({ match, ...props }) => {
         </SubHeader>
         <div className="content-row mgb-8">
           <WithdrawType>
-            <TabWithLink active={depositType.toLowerCase()}>
+            <TabWithLink active={withdrawType.toLowerCase()}>
               <TabPane name="Crypto" link="/withdraw/crypto">
                 <WithdrawTypeContainer>
                   <div className="content-column Input-container">
@@ -205,7 +203,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                       </div>
                       <Radio
                         position="column"
-                        onChange={setPayMentMethod}
+                        onChange={(e) => {}}
                         active={"Bank account"}
                       >
                         <RadioChild name="Bank account"></RadioChild>
@@ -238,7 +236,7 @@ const WithdrawContainer = ({ match, ...props }) => {
             </TabWithLink>
           </WithdrawType>
           <WithdrawDetail>
-            {depositType === "fiat" ? (
+            {withdrawType === "fiat" ? (
               <>
                 <div className="title white mgb-8">Payment details</div>
                 <Input
