@@ -49,17 +49,17 @@ export class TransactionCrypto {
   @UpdateDateColumn()
   updated_at?: Date;
 
-  @Field(() => Float)
-  @Column({ type: 'decimal', precision: 8, scale: 8 })
-  amount?: number;
+  @Field(() => String)
+  @Column()
+  amount?: string;
 
   @Field(() => String)
   @Column()
   targetWallet?: string;
 
-  @Field(() => Float)
-  @Column({ type: 'decimal', precision: 8, scale: 8 })
-  totalBalanceLeft?: number;
+  @Field(() => String)
+  @Column()
+  totalBalanceLeft?: string;
 
   //   @OneToMany(() => User, (user) => user.role)
   //   user: User[];

@@ -19,8 +19,8 @@ export class Currency {
   currencyLongName?: string;
 
   @Field()
-  @Column('decimal')
-  volume?: number;
+  @Column()
+  volume?: string;
 
   @Field(() => [User])
   @OneToMany(() => User, (user) => user.id)

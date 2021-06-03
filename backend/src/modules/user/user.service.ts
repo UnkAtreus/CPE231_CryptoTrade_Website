@@ -12,6 +12,7 @@ import { WalletService } from '../wallet/wallet.service';
 import { UpdateResult } from 'typeorm';
 import PassInput from 'src/models/input/password.input';
 import { TokenRole } from '../../models/object/tokenrole.model';
+import PincodeInput from 'src/models/input/pincode.input';
 @Injectable()
 export class UserService {
   constructor(
@@ -104,7 +105,7 @@ export class UserService {
       async (result: boolean) => {
         if (result) {
           return Hash.encrypt(input.newPass).then(async (password: string) => {
-            const up = await this.repoService.userRepo.save({
+            await this.repoService.userRepo.save({
               id: getUser.id,
               password: password,
             });
@@ -114,5 +115,24 @@ export class UserService {
         }
       },
     );
+  }
+
+  async createPincode(pincode: string, user: User): Promise<User> {
+    // return Hash.encrypt(pincode).then(async (pin: string) => {}
+    return await this.repoService.userRepo.save({
+      id: user.id,
+      pinncode: pincode,
+    });
+  }
+
+  async upDatePincode(pincode: PincodeInput, user: User): Promise<User> {
+    if (pincode.newPin == pincode.oldPin) {
+      return await this.repoService.userRepo.save({
+        id: user.id,
+        pinncode: pincode,
+      });
+    } else {
+      throw IncorrectPassword;
+    }
   }
 }

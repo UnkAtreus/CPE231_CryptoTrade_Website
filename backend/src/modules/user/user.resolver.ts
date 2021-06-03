@@ -1,3 +1,4 @@
+import PincodeInput from 'src/models/input/pincode.input';
 import PassInput from 'src/models/input/password.input';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import RegisterInput from 'src/models/input/register.input';
@@ -7,6 +8,7 @@ import LoginInput from '../../models/input/login.input';
 import { Roles } from 'src/middleware/guard/roles.decorator';
 import { Gender } from 'src/static/enum';
 import faker from 'faker';
+import { Role } from 'src/models/object/role.model';
 import { TokenRole } from 'src/models/object/tokenrole.model';
 @Resolver()
 export class UserResolver {
@@ -36,7 +38,7 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-  async verifyUser(@Args('idInput') input: number): Promise<string> {
+  async verifyUser(@Args('idInput') input: number) {
     this.userService.verifyUser(input);
     return 'verify';
   }
@@ -46,10 +48,27 @@ export class UserResolver {
   async changePassword(
     @Args('passInput') input: PassInput,
     @Context('user') user: User,
-  ): Promise<string> {
+  ) {
     return this.userService.changePassword(input, user);
   }
 
+  @Mutation(() => User)
+  @Roles(['customer'])
+  async createPincode(
+    @Args('input') input: string,
+    @Context('user') user: User,
+  ) {
+    return this.userService.createPincode(input, user);
+  }
+
+  @Mutation(() => User)
+  @Roles(['customer'])
+  async updatePincode(
+    @Args('input') input: PincodeInput,
+    @Context('user') user: User,
+  ) {
+    return this.userService.upDatePincode(input, user);
+  }
   // @Mutation(() => String)
   // async seedUser() {
   //   for (let i = 0; i < 20; i++) {

@@ -38,7 +38,7 @@ export class CurrencyResolver {
     @Args('id', { type: () => ID }) id: number,
     @Args('name', { nullable: true }) name?: string,
     @Args('shortName', { nullable: true }) shortName?: string,
-    @Args('volume', { nullable: true }) volume?: number,
+    @Args('volume', { nullable: true }) volume?: string,
   ): Promise<Currency> {
     return await this.currencyService.updateCurrency(
       id,
