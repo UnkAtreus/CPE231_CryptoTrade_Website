@@ -23,7 +23,6 @@ export class TransactionCryptoService {
     input: CryptoInput,
   ): Promise<TransactionCrypto> {
     const crypto = new TransactionCrypto();
-    const getuser = await this.userService.getUserByToken(user.id);
     const curreny = await this.currencyService.getCurrencyByShortName(
       input.shortName,
     );
@@ -32,7 +31,7 @@ export class TransactionCryptoService {
       curreny.id,
     );
 
-    crypto.user = getuser;
+    crypto.user = user;
     crypto.method = input.method;
     crypto.amount = input.amount;
     crypto.targetWallet = input.targetWallet;

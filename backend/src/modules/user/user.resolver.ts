@@ -1,3 +1,4 @@
+import PassInput from 'src/models/input/password.input';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import RegisterInput from 'src/models/input/register.input';
 import { User } from 'src/models/object/user.model';
@@ -66,5 +67,19 @@ export class UserResolver {
       await this.userService.registerUser(input);
     }
     return '';
+  }
+  @Mutation(() => String)
+  async verifyUser(@Args('idInput') input: number): Promise<string> {
+    this.userService.verifyUser(input);
+    return 'verify';
+  }
+
+  @Mutation(() => String)
+  @Roles(['customer'])
+  async changePass(
+    @Args('passInput') input: PassInput,
+    @Context('user') user: User,
+  ): Promise<string> {
+    return this.userService.changePassword(input, user);
   }
 }

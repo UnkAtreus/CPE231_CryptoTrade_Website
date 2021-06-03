@@ -9,6 +9,9 @@ import { IncorrectPassword, UserNotFound } from 'src/utils/error-handling';
 
 import { Hash } from './helper/hash';
 import { WalletService } from '../wallet/wallet.service';
+import { UpdateResult } from 'typeorm';
+import { userInfo } from 'node:os';
+import PassInput from 'src/models/input/password.input';
 @Injectable()
 export class UserService {
   constructor(
@@ -77,4 +80,27 @@ export class UserService {
       },
     );
   }
+
+  async getUserByID(id: number): Promise<User> {
+    return await this.repoService.userRepo.findOne(id);
+  }
+
+  async verifyUser(id: number): Promise<UpdateResult> {
+    return await this.repoService.userRepo.update({ id }, { verify: true });
+  }
+
+  // async changePassword(pass: PassInput, user: User): Promise<any> {
+  //   console.log(user.id);
+  //   Hash.compare(pass.oldPass, user.password).then(async (result: boolean) => {
+  //     if (result) {
+  //       const up = await this.repoService.userRepo.update(
+  //         { id: user.id },
+  //         { password: pass.newPass }, // not hash
+  //       );
+  //       return this.createToken(up);
+  //     } else {
+  //       throw IncorrectPassword;
+  //     }
+  //   });
+  // }
 }

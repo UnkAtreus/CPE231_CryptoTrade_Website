@@ -161,6 +161,8 @@ input LoginInput {
 type Mutation {
   registerUser(registerInput: RegisterInput!): String!
   seedUser: String!
+  verifyUser(idInput: Float!): String!
+  changePass(passInput: PassInput!): String!
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!
   deleteCurrency(id: ID!): String!
@@ -174,8 +176,8 @@ type Mutation {
   createFiat(fiatInput: FiatInput!): TransactionFiat!
   updateFiatStatus(id: ID!, status: Float!): TransactionFiat!
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
-  createP2P(p2pInput: PtoPInput!): PtoP!
   updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
+  createP2P(p2pInput: PtoPInput!): PtoP!
 }
 
 input RegisterInput {
@@ -196,6 +198,11 @@ input ProfileInput {
   address: String
   city: String
   postcode: String
+}
+
+input PassInput {
+  oldPass: String
+  newPass: String
 }
 
 input CardInput {
