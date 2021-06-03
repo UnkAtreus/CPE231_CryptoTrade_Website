@@ -179,6 +179,7 @@ type Mutation {
   verifyUser(idInput: Float!): String!
   changePassword(passInput: PassInput!): String!
   createPincode(input: String!): User!
+  updatePincode(input: PincodeInput!): User!
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!
   deleteCurrency(id: ID!): String!
@@ -225,6 +226,11 @@ input ProfileInput {
 input PassInput {
   oldPass: String
   newPass: String
+}
+
+input PincodeInput {
+  oldPin: String
+  newPin: String
 }
 
 input CardInput {

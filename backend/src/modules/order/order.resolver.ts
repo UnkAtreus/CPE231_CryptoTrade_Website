@@ -1,4 +1,3 @@
-import { UseGuards } from '@nestjs/common';
 import {
   Args,
   Context,
@@ -23,16 +22,12 @@ export class OrderResolver {
     this.pubSub = new PubSub();
   }
   @Subscription(() => Order, {
-    filter: (payload, variables) => payload.videoAdded.id === variables.id,
+    // filter: (payload, variables) => payload.orderAdded.id === variables.id,
   })
+  // @UseGuards(GraphqlJwtAuthGuard)
   orderAdded() {
     return this.pubSub.asyncIterator('orderAdded');
   }
-  // @Mutation(() => String)
-  // async testOrder2() {
-  //   this.pubSub.publish('test', 'testMessage');
-  //   return 'test';
-  // }
 
   @Mutation(() => Order)
   @Roles(['customer'])
@@ -40,6 +35,8 @@ export class OrderResolver {
     @Context('user') user: User,
     @Args('input') input: OrderInput,
   ): Promise<Order> {
+    console.log(user.id);
+
     const order: Order = await this.orderService.createOrder(user.id, input);
     this.pubSub.publish('orderAdded', { orderAdded: order });
     return order;
