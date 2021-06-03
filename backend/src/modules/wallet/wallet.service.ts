@@ -19,8 +19,8 @@ export class WalletService {
       const wallet: Wallet = {
         user: user,
         currency: currency,
-        inOrder: 0,
-        amount: 0,
+        inOrder: '0',
+        amount: '0',
       };
       walletLists.push(wallet);
     });
@@ -30,7 +30,7 @@ export class WalletService {
     return await this.repoService.walletRepo.find();
   }
 
-  async getWalletByCurrency(
+  async getWalletByCurrencyId(
     userId: number,
     currencyId: number,
   ): Promise<Wallet> {
@@ -40,6 +40,19 @@ export class WalletService {
         currency: currencyId,
       },
     });
+  }
+
+  async getWalletByCurrency(userId: number, currency: string): Promise<Wallet> {
+    return await this.currencyService
+      .getCurrencyByShortName(currency)
+      .then(async (curren) => {
+        return await this.repoService.walletRepo.findOne({
+          where: {
+            user: userId,
+            currency: curren.id,
+          },
+        });
+      });
   }
   async getWalletById(id: number): Promise<Wallet> {
     return await this.repoService.walletRepo.findOne(id);
@@ -51,33 +64,40 @@ export class WalletService {
 
   async updateWallet(id: number, amount: number): Promise<Wallet> {
     const wallet = await this.getWalletById(id);
-    console.log(amount);
-    wallet.amount = amount;
+    wallet.amount = String(amount);
     return await this.repoService.walletRepo.save(wallet);
   }
 
   async Buy(
     walletIDTarget: number,
+    walletIDorder: number,
     inOrder: number,
     amount: number,
   ): Promise<Wallet[]> {
     const wallet = await this.getWalletById(walletIDTarget);
-    wallet.amount += amount;
-    wallet.inOrder -= inOrder;
-    return await this.repoService.walletRepo.save([wallet]);
+    const walletInOrder = await this.getWalletById(walletIDorder);
+    wallet.amount = String(Number(wallet.amount) + Number(amount));
+    walletInOrder.inOrder = String(
+      Number(walletInOrder.inOrder) - Number(amount),
+    );
+    // wallet.amount += amount;
+    // wallet.inOrder -= inOrder;
+    return await this.repoService.walletRepo.save([wallet, walletInOrder]);
   }
 
   async Sell(walletIDFrom: number, amount: number): Promise<Wallet[]> {
     const wallet = await this.getWalletById(walletIDFrom);
-    wallet.amount -= amount;
-    wallet.inOrder += amount;
+    wallet.amount = String(Number(wallet.amount) - Number(amount));
+    wallet.inOrder = String(Number(wallet.inOrder) + Number(amount));
+    // wallet.amount -= amount;
+    // wallet.inOrder += amount;
     return await this.repoService.walletRepo.save([wallet]);
   }
 
   async cancelOrder(walletIDFrom: number, amount: number): Promise<Wallet[]> {
     const wallet = await this.getWalletById(walletIDFrom);
-    wallet.amount += amount;
-    wallet.inOrder -= amount;
+    wallet.amount = String(Number(wallet.amount) + Number(amount));
+    wallet.inOrder = String(Number(wallet.inOrder) - Number(amount));
     return await this.repoService.walletRepo.save([wallet]);
   }
   async playerToPlayer(
@@ -87,8 +107,10 @@ export class WalletService {
   ): Promise<Wallet[]> {
     const walletFrom = await this.repoService.walletRepo.findOne(id);
     const walletTo = await this.repoService.walletRepo.findOne(idTarget);
-    walletFrom.amount -= amount;
-    walletTo.amount += amount;
+    walletFrom.amount = String(Number(walletFrom.amount) - Number(amount));
+    walletTo.amount = String(Number(walletTo.inOrder) - Number(amount));
+    // walletFrom.amount -= amount;
+    // walletTo.amount += amount;
     return await this.repoService.walletRepo.save([walletFrom, walletTo]);
   }
 }

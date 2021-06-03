@@ -55,25 +55,32 @@ export class OrderService implements OnApplicationBootstrap {
     const user = await this.userService.getUserByToken(userId);
     const walletFrom = await this.walletService.getWalletByCurrency(
       userId,
-      input.currenyIDFrom,
+      input.currencyFrom,
     );
+
     const walletTo = await this.walletService.getWalletByCurrency(
       userId,
-      input.currenyIDTo,
+      input.currencyTo,
     );
     const order: Order = {
       user: user,
       method: input.method,
       walletFrom: walletFrom,
       walletTo: walletTo,
-      price: input.price,
-      amount: input.amount,
-      totalBalance: input.price * input.amount,
+      price: String(input.price),
+      amount: String(input.amount),
+      totalBalance: String(input.price * input.amount),
       cancel: false,
       filled: false,
     };
-    await this.walletService.Sell(order.walletFrom.id, order.totalBalance);
+
+    await this.walletService.Sell(
+      order.walletFrom.id,
+      input.price * input.amount,
+    );
+
     return await this.repoService.orderRepo.save(order);
+    // return;
   }
   async getOrderById(orderId: number): Promise<Order> {
     return await this.repoService.orderRepo.findOne(orderId, {
@@ -83,7 +90,10 @@ export class OrderService implements OnApplicationBootstrap {
   async cancelOrder(userId: number, orderId: number): Promise<Order> {
     const order = await this.getOrderById(orderId);
     if (order.user.id == userId) {
-      await this.walletService.cancelOrder(order.walletFrom.id, order.amount);
+      await this.walletService.cancelOrder(
+        order.walletFrom.id,
+        Number(order.amount),
+      );
       order.cancel = true;
       return await this.repoService.orderRepo.save(order);
     } else {
@@ -105,8 +115,9 @@ export class OrderService implements OnApplicationBootstrap {
     orderLists.forEach(async (order) => {
       await this.walletService.Buy(
         order.walletTo.id,
-        order.amount,
-        order.totalBalance,
+        order.walletFrom.id,
+        Number(order.amount),
+        Number(order.totalBalance),
       );
       /// TRIGGER TO SUBSCRIPTION
     });

@@ -13,7 +13,7 @@ import { Wallet } from './wallet.model';
 @Entity()
 export class Order {
   @Field(() => ID)
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ zerofill: true })
   id?: number;
 
   @Field(() => User)
@@ -32,17 +32,18 @@ export class Order {
   @ManyToOne(() => Wallet, (walletTo) => walletTo.order)
   walletTo?: Wallet;
 
-  @Field(() => Float)
+  @Field(() => String)
   @Column()
-  price?: number;
+  price?: string;
 
-  @Field(() => Float)
-  @Column('decimal', {})
-  amount?: number;
+  @Field(() => String)
+  // @Column({ type: 'decimal', precision: 38, scale: 38 })
+  @Column()
+  amount?: string;
 
-  @Field(() => Float)
-  @Column({ type: 'decimal', precision: 7, scale: 4 })
-  totalBalance?: number;
+  @Field(() => String)
+  @Column()
+  totalBalance?: string;
 
   @Field(() => Boolean)
   @Column()
