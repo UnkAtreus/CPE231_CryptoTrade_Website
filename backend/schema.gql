@@ -107,6 +107,13 @@ type Wallet {
   user: User
 }
 
+type Verification {
+  id: Float
+  status: Float
+  imageUrl: Float
+  user: User
+}
+
 type User {
   id: ID
   role: Role
@@ -131,10 +138,10 @@ type User {
   wallet: [Wallet!]
   creditCard: [CreditCard!]
   transactionFiat: [TransactionFiat!]
+  verification: Verification
 }
 
 type Query {
-  getHello: String!
   getAllUser: [User!]!
   login(login: LoginInput!): String!
   getUserByToken: User!
@@ -152,6 +159,7 @@ type Query {
   getAllFiatByUser: [TransactionFiat!]!
   getAllCrypto: [TransactionCrypto!]!
   getAllCryptoByUser: [TransactionCrypto!]!
+  verification(id: Int!): Verification!
 }
 
 input LoginInput {
@@ -160,6 +168,7 @@ input LoginInput {
 }
 
 type Mutation {
+  uploadFile(file: Upload!): Boolean!
   registerUser(registerInput: RegisterInput!): String!
   seedUser: String!
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
@@ -177,7 +186,13 @@ type Mutation {
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
   updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
   createP2P(p2pInput: PtoPInput!): PtoP!
+  createVerification(createVerificationInput: CreateVerificationInput!): Verification!
+  updateVerification(updateVerificationInput: UpdateVerificationInput!): Verification!
+  removeVerification(id: Int!): Verification!
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input RegisterInput {
   email: String!
@@ -235,6 +250,17 @@ input PtoPInput {
   amount: Float
   targetUser: Float
   currency: String
+}
+
+input CreateVerificationInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateVerificationInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
 
 type Subscription {

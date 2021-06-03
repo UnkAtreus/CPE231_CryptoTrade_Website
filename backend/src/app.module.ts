@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+
 import { UserModule } from './modules/user/user.module';
 import { RepoModule } from './repo/repo.module';
 import { CardModule } from './modules/card/card.module';
@@ -20,6 +19,10 @@ import { BankModule } from './modules/bank/bank.module';
 import { TransactionCryptoModule } from './modules/transaction-crypto/transaction-crypto.module';
 import { P2PModule } from './modules/p2p/p2p.module';
 
+import { DownloadResolver } from './modules/uploadfile/download.resolver';
+import { AppController } from './app.controller';
+import { VerificationModule } from './modules/verification/verification.module';
+
 @Module({
   imports: [
     GraphQLModule.forRoot(graphql_config),
@@ -35,10 +38,12 @@ import { P2PModule } from './modules/p2p/p2p.module';
     BankModule,
     TransactionCryptoModule,
     P2PModule,
+    VerificationModule,
+    // TestsocketModule,
   ],
   controllers: [AppController],
   providers: [
-    AppService,
+    DownloadResolver,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
