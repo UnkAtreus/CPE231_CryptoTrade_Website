@@ -68,7 +68,6 @@ export class UserService {
 
   async loginUser(input: LoginInput): Promise<string> {
     const user = await this.getUserByEmail(input);
-
     return Hash.compare(input.password, user.password).then(
       async (result: boolean) => {
         if (result) {
@@ -89,15 +88,15 @@ export class UserService {
   }
 
   async changePassword(input: PassInput, user: User): Promise<any> {
-    return Hash.compare(input.oldPass, user.password).then(
+    const getUser = await this.getUserByID(user.id);
+    return Hash.compare(input.oldPass, getUser.password).then(
       async (result: boolean) => {
         if (result) {
           return Hash.encrypt(input.newPass).then(async (password: string) => {
             const up = await this.repoService.userRepo.save({
-              id: user.id,
+              id: getUser.id,
               password: password,
             });
-            return up != null;
           });
         } else {
           throw IncorrectPassword;
