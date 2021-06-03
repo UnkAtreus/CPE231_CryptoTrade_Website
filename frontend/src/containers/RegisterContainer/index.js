@@ -19,6 +19,7 @@ import {
   Input,
   NavBar,
 } from "components";
+import { history } from "../../store/configureStore";
 
 import { useMutation, gql } from "@apollo/client";
 
@@ -117,6 +118,12 @@ const RegisterContainer = ({ match, ...props }) => {
   const handleCreatePost = (event) => {
     event.preventDefault();
     createPost({ variables: { input: params } });
+    console.log("DONE");
+    if (error) {
+      console.log("FINISH");
+      history.push("/login");
+      window.location.reload();
+    }
   };
 
   useEffect(() => {
