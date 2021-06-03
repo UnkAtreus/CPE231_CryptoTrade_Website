@@ -1,3 +1,4 @@
+import { BankService } from './../bank/bank.service';
 import { Roles } from './../../middleware/guard/roles.decorator';
 import { Module } from '@nestjs/common';
 import { TransactionFiat } from 'src/models/object/transactionFiat.model';
@@ -9,7 +10,10 @@ import { TransactionStatus } from 'src/static/enum';
 
 @Resolver()
 export class TransactionFiatResolver {
-  constructor(private fiatService: TransactionFiatService) {}
+  constructor(
+    private fiatService: TransactionFiatService,
+    private bankService: BankService,
+  ) {}
 
   @Mutation(() => TransactionFiat)
   @Roles(['customer'])

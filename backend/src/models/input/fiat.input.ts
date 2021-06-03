@@ -8,5 +8,7 @@ class FiatInput {
   readonly amount?: number;
   @Field()
   readonly bankNumber?: string;
+  @Field()
+  readonly bankType?: string;
 }
 export default FiatInput;

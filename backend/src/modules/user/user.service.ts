@@ -11,6 +11,8 @@ import { Hash } from './helper/hash';
 import { WalletService } from '../wallet/wallet.service';
 import { UpdateResult } from 'typeorm';
 import PassInput from 'src/models/input/password.input';
+import { TokenRole } from '../../models/object/tokenrole.model';
+import PincodeInput from 'src/models/input/pincode.input';
 @Injectable()
 export class UserService {
   constructor(
@@ -48,7 +50,7 @@ export class UserService {
     }
     return user;
   }
-  async registerUser(registerInput: RegisterInput): Promise<string> {
+  async registerUser(registerInput: RegisterInput): Promise<TokenRole> {
     return Hash.encrypt(registerInput.password).then(
       async (password: string) => {
         const user: User = {
@@ -60,19 +62,28 @@ export class UserService {
         const result = await this.createOrUpdate(user); // สร้างเสร็จ
         if (result) {
           await this.walletService.createAllWalletForUser(result);
-          return await this.createToken(result);
+          const token = await this.createToken(result);
+          const tokenRole: TokenRole = {
+            token: token,
+            role: user.role.role,
+          };
+          return tokenRole;
         }
       },
     );
   }
 
-  async loginUser(input: LoginInput): Promise<string> {
+  async loginUser(input: LoginInput): Promise<TokenRole> {
     const user = await this.getUserByEmail(input);
-
     return Hash.compare(input.password, user.password).then(
       async (result: boolean) => {
         if (result) {
-          return await this.createToken(user);
+          const token = await this.createToken(user);
+          const tokenRole: TokenRole = {
+            token: token,
+            role: user.role.role,
+          };
+          return tokenRole;
         } else {
           throw IncorrectPassword;
         }
@@ -89,20 +100,39 @@ export class UserService {
   }
 
   async changePassword(input: PassInput, user: User): Promise<any> {
-    return Hash.compare(input.oldPass, user.password).then(
+    const getUser = await this.getUserByID(user.id);
+    return Hash.compare(input.oldPass, getUser.password).then(
       async (result: boolean) => {
         if (result) {
           return Hash.encrypt(input.newPass).then(async (password: string) => {
-            const up = await this.repoService.userRepo.save({
-              id: user.id,
+            await this.repoService.userRepo.save({
+              id: getUser.id,
               password: password,
             });
-            return up != null;
           });
         } else {
           throw IncorrectPassword;
         }
       },
     );
+  }
+
+  async createPincode(pincode: string, user: User): Promise<User> {
+    // return Hash.encrypt(pincode).then(async (pin: string) => {}
+    return await this.repoService.userRepo.save({
+      id: user.id,
+      pinncode: pincode,
+    });
+  }
+
+  async upDatePincode(pincode: PincodeInput, user: User): Promise<User> {
+    if (pincode.newPin == pincode.oldPin) {
+      return await this.repoService.userRepo.save({
+        id: user.id,
+        pinncode: pincode,
+      });
+    } else {
+      throw IncorrectPassword;
+    }
   }
 }

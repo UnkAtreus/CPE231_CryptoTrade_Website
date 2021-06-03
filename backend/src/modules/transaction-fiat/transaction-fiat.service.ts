@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import FiatInput from 'src/models/input/fiat.input';
 import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
 import { WalletService } from '../wallet/wallet.service';
+import { BankService } from '../bank/bank.service';
 
 @Injectable()
 export class TransactionFiatService {
@@ -15,32 +16,36 @@ export class TransactionFiatService {
     private readonly walletService: WalletService,
     private readonly userService: UserService,
     private readonly currencyService: CurrencyService,
+    private readonly bankService: BankService,
   ) {}
   async createFiat(input: FiatInput, user: User): Promise<TransactionFiat> {
     const fiat = new TransactionFiat();
     fiat.bankNumber = input.bankNumber;
     fiat.method = input.method;
-    fiat.amount = input.amount;
+    fiat.amount = String(input.amount);
     fiat.status = TransactionStatus.Pending;
     fiat.user = user;
-
+    const getbank = await this.bankService.getBankByName(input.bankType);
     const curreny = await this.currencyService.getCurrencyByShortName('USDT');
-    const wallet = await this.walletService.getWalletByCurrency(
+    const wallet = await this.walletService.getWalletByCurrencyId(
       user.id,
       curreny.id,
     );
     fiat.wallet = wallet;
+    fiat.bank = getbank;
 
     console.log(wallet.amount);
     const temp1 = Number(wallet.amount);
     const temp2 = Number(fiat.amount);
+    let result = 0;
 
     if (input.method == TranasctionMethod.Deposit) {
-      fiat.totalBalanceLeft = temp1 + temp2;
+      result = temp1 + temp2;
     } else {
-      fiat.totalBalanceLeft = temp1 - temp2;
+      result = temp1 - temp2;
     }
-    await this.walletService.updateWallet(wallet.id, fiat.totalBalanceLeft);
+    fiat.totalBalanceLeft = String(result);
+    await this.walletService.updateWallet(wallet.id, result);
     return await this.repoService.transactionFiatRepo.save(fiat);
   }
 

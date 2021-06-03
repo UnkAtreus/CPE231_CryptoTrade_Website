@@ -11,8 +11,7 @@ import { User } from './user.model';
 @ObjectType()
 @Entity()
 export class CreditCard {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ zerofill: true })
   id?: number;
 
   @Field(() => User)

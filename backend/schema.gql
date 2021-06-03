@@ -12,7 +12,7 @@ type Currency {
   id: Float
   currency: String
   currencyLongName: String
-  volume: Float
+  volume: String
   user: [User!]
   wallet: [Wallet!]
 }
@@ -23,9 +23,9 @@ type Order {
   method: String
   walletFrom: Wallet
   walletTo: Wallet
-  price: Float
-  amount: Float
-  totalBalance: Float
+  price: String
+  amount: String
+  totalBalance: String
   cancel: Boolean
   filled: Boolean
   created_at: DateTime
@@ -47,16 +47,16 @@ type PtoP {
 }
 
 type TransactionCrypto {
-  id: ID
   user: User
   wallet: Wallet
   method: String
   status: String
   created_at: DateTime
   updated_at: DateTime
-  amount: Float
+  amount: String
   targetWallet: String
-  totalBalanceLeft: Float
+  totalBalanceLeft: String
+  id: Float
 }
 
 type Bank {
@@ -66,7 +66,6 @@ type Bank {
 }
 
 type CreditCard {
-  id: ID
   user: User
   cardNumber: String
   expiredMonth: String
@@ -77,10 +76,10 @@ type CreditCard {
   city: String
   country: String
   transactionFiat: [TransactionFiat!]
+  id: Float
 }
 
 type TransactionFiat {
-  id: ID
   user: User
   bank: Bank
   status: String
@@ -89,15 +88,16 @@ type TransactionFiat {
   creditCard: CreditCard
   created_at: DateTime
   updated_at: DateTime
-  amount: Float
+  amount: String
   bankNumber: String
-  totalBalanceLeft: Float
+  totalBalanceLeft: String
+  id: Float
 }
 
 type Wallet {
   id: Float
-  amount: Float
-  inOrder: Float
+  amount: String
+  inOrder: String
   currency: Currency
   order: [Order!]
   p2pFrom: [PtoP!]
@@ -115,7 +115,6 @@ type Verification {
 }
 
 type User {
-  id: ID
   role: Role
   firstName: String
   lastName: String
@@ -138,12 +137,18 @@ type User {
   wallet: [Wallet!]
   creditCard: [CreditCard!]
   transactionFiat: [TransactionFiat!]
+  id: Float
   verification: Verification
+}
+
+type TokenRole {
+  token: String
+  role: String
 }
 
 type Query {
   getAllUser: [User!]!
-  login(login: LoginInput!): String!
+  login(login: LoginInput!): TokenRole!
   getUserByToken: User!
   getAllWallet: [Wallet!]!
   getUserWalletByToken: [Wallet!]!
@@ -157,6 +162,7 @@ type Query {
   getCardByToken: [CreditCard!]!
   getAllFiat: [TransactionFiat!]!
   getAllFiatByUser: [TransactionFiat!]!
+  getBankByName(name: String!): Bank!
   getAllCrypto: [TransactionCrypto!]!
   getAllCryptoByUser: [TransactionCrypto!]!
   verification(id: Int!): Verification!
@@ -169,21 +175,23 @@ input LoginInput {
 
 type Mutation {
   uploadFile(file: Upload!): Boolean!
-  registerUser(registerInput: RegisterInput!): String!
-  seedUser: String!
+  registerUser(registerInput: RegisterInput!): TokenRole!
   verifyUser(idInput: Float!): String!
+  changePassword(passInput: PassInput!): String!
+  createPincode(input: String!): User!
+  updatePincode(input: PincodeInput!): User!
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!
   deleteCurrency(id: ID!): String!
-  updateCurrency(volume: Float, shortName: String, name: String, id: ID!): Currency!
+  updateCurrency(volume: String, shortName: String, name: String, id: ID!): Currency!
   addCard(cardInput: CardInput!): CreditCard!
   updateCard(cardInput: CardInput!, id: Float!): CreditCard!
   deleteCard(id: Float!): CreditCard!
-  testOrder2: String!
   createOrder(input: OrderInput!): Order!
   cancelOrder(id: ID!): Order!
   createFiat(fiatInput: FiatInput!): TransactionFiat!
   updateFiatStatus(id: ID!, status: Float!): TransactionFiat!
+  creatBank: [Bank!]!
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
   updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
   createP2P(p2pInput: PtoPInput!): PtoP!
@@ -215,6 +223,16 @@ input ProfileInput {
   postcode: String
 }
 
+input PassInput {
+  oldPass: String
+  newPass: String
+}
+
+input PincodeInput {
+  oldPin: String
+  newPin: String
+}
+
 input CardInput {
   cardNumber: String
   expiredMonth: String
@@ -228,8 +246,8 @@ input CardInput {
 
 input OrderInput {
   method: Float!
-  currenyIDFrom: ID!
-  currenyIDTo: ID!
+  currencyFrom: String!
+  currencyTo: String!
   price: Float!
   amount: Float!
 }
@@ -238,6 +256,7 @@ input FiatInput {
   method: Float
   amount: Float
   bankNumber: String
+  bankType: String
 }
 
 input CryptoInput {
@@ -265,5 +284,5 @@ input UpdateVerificationInput {
 }
 
 type Subscription {
-  testOrder: String!
+  orderAdded: Order!
 }
