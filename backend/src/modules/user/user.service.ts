@@ -10,7 +10,6 @@ import { IncorrectPassword, UserNotFound } from 'src/utils/error-handling';
 import { Hash } from './helper/hash';
 import { WalletService } from '../wallet/wallet.service';
 import { UpdateResult } from 'typeorm';
-import { userInfo } from 'node:os';
 import PassInput from 'src/models/input/password.input';
 @Injectable()
 export class UserService {
@@ -62,7 +61,7 @@ export class UserService {
         if (result) {
           await this.walletService.createAllWalletForUser(result);
           return await this.createToken(result);
-        } // GEN TOKEN
+        }
       },
     );
   }
@@ -89,18 +88,21 @@ export class UserService {
     return await this.repoService.userRepo.update({ id }, { verify: true });
   }
 
-  // async changePassword(pass: PassInput, user: User): Promise<any> {
-  //   console.log(user.id);
-  //   Hash.compare(pass.oldPass, user.password).then(async (result: boolean) => {
-  //     if (result) {
-  //       const up = await this.repoService.userRepo.update(
-  //         { id: user.id },
-  //         { password: pass.newPass }, // not hash
-  //       );
-  //       return this.createToken(up);
-  //     } else {
-  //       throw IncorrectPassword;
-  //     }
-  //   });
-  // }
+  async changePassword(input: PassInput, user: User): Promise<any> {
+    return Hash.compare(input.oldPass, user.password).then(
+      async (result: boolean) => {
+        if (result) {
+          return Hash.encrypt(input.newPass).then(async (password: string) => {
+            const up = await this.repoService.userRepo.save({
+              id: user.id,
+              password: password,
+            });
+            return up != null;
+          });
+        } else {
+          throw IncorrectPassword;
+        }
+      },
+    );
+  }
 }

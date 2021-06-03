@@ -172,7 +172,6 @@ type Mutation {
   registerUser(registerInput: RegisterInput!): String!
   seedUser: String!
   verifyUser(idInput: Float!): String!
-  changePass(passInput: PassInput!): String!
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!
   deleteCurrency(id: ID!): String!
@@ -214,11 +213,6 @@ input ProfileInput {
   address: String
   city: String
   postcode: String
-}
-
-input PassInput {
-  oldPass: String
-  newPass: String
 }
 
 input CardInput {
