@@ -22,7 +22,7 @@ export class TransactionFiatService {
     const fiat = new TransactionFiat();
     fiat.bankNumber = input.bankNumber;
     fiat.method = input.method;
-    fiat.amount = input.amount;
+    fiat.amount = String(input.amount);
     fiat.status = TransactionStatus.Pending;
     fiat.user = user;
     const getbank = await this.bankService.getBankByName(input.bankType);
@@ -37,13 +37,15 @@ export class TransactionFiatService {
     console.log(wallet.amount);
     const temp1 = Number(wallet.amount);
     const temp2 = Number(fiat.amount);
+    let result = 0;
 
     if (input.method == TranasctionMethod.Deposit) {
-      fiat.totalBalanceLeft = temp1 + temp2;
+      result = temp1 + temp2;
     } else {
-      fiat.totalBalanceLeft = temp1 - temp2;
+      result = temp1 - temp2;
     }
-    await this.walletService.updateWallet(wallet.id, fiat.totalBalanceLeft);
+    fiat.totalBalanceLeft = String(result);
+    await this.walletService.updateWallet(wallet.id, result);
     return await this.repoService.transactionFiatRepo.save(fiat);
   }
 

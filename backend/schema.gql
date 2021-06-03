@@ -12,7 +12,7 @@ type Currency {
   id: Float
   currency: String
   currencyLongName: String
-  volume: Float
+  volume: String
   user: [User!]
   wallet: [Wallet!]
 }
@@ -53,9 +53,9 @@ type TransactionCrypto {
   status: String
   created_at: DateTime
   updated_at: DateTime
-  amount: Float
+  amount: String
   targetWallet: String
-  totalBalanceLeft: Float
+  totalBalanceLeft: String
   id: Float
 }
 
@@ -88,9 +88,9 @@ type TransactionFiat {
   creditCard: CreditCard
   created_at: DateTime
   updated_at: DateTime
-  amount: Float
+  amount: String
   bankNumber: String
-  totalBalanceLeft: Float
+  totalBalanceLeft: String
   id: Float
 }
 
@@ -174,10 +174,11 @@ type Mutation {
   seedUser: String!
   verifyUser(idInput: Float!): String!
   changePass(passInput: PassInput!): String!
+  createPincode(input: String!): User!
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!
   deleteCurrency(id: ID!): String!
-  updateCurrency(volume: Float, shortName: String, name: String, id: ID!): Currency!
+  updateCurrency(volume: String, shortName: String, name: String, id: ID!): Currency!
   addCard(cardInput: CardInput!): CreditCard!
   updateCard(cardInput: CardInput!, id: Float!): CreditCard!
   deleteCard(id: Float!): CreditCard!

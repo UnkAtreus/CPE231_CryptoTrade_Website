@@ -7,6 +7,7 @@ import LoginInput from '../../models/input/login.input';
 import { Roles } from 'src/middleware/guard/roles.decorator';
 import { Gender } from 'src/static/enum';
 import faker from 'faker';
+import { Role } from 'src/models/object/role.model';
 @Resolver()
 export class UserResolver {
   constructor(private userService: UserService) {}
@@ -69,7 +70,7 @@ export class UserResolver {
     return '';
   }
   @Mutation(() => String)
-  async verifyUser(@Args('idInput') input: number): Promise<string> {
+  async verifyUser(@Args('idInput') input: number) {
     this.userService.verifyUser(input);
     return 'verify';
   }
@@ -79,7 +80,16 @@ export class UserResolver {
   async changePass(
     @Args('passInput') input: PassInput,
     @Context('user') user: User,
-  ): Promise<string> {
+  ) {
     return this.userService.changePassword(input, user);
+  }
+
+  @Mutation(() => User)
+  @Roles(['customer'])
+  async createPincode(
+    @Args('input') input: string,
+    @Context('user') user: User,
+  ) {
+    return this.userService.createPincode(input, user);
   }
 }

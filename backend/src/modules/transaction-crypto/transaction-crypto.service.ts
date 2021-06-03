@@ -33,19 +33,21 @@ export class TransactionCryptoService {
 
     crypto.user = user;
     crypto.method = input.method;
-    crypto.amount = input.amount;
+    crypto.amount = String(input.amount);
     crypto.targetWallet = input.targetWallet;
     crypto.wallet = wallet;
 
     const temp1 = Number(wallet.amount);
     const temp2 = Number(input.amount);
+    let result = 0;
 
     if (input.method == TranasctionMethod.Deposit) {
-      crypto.totalBalanceLeft = temp1 + temp2;
+      result = temp1 + temp2;
     } else {
-      crypto.totalBalanceLeft = temp1 - temp2;
+      result = temp1 - temp2;
     }
-    await this.walletService.updateWallet(wallet.id, crypto.totalBalanceLeft);
+    crypto.totalBalanceLeft = String(result);
+    await this.walletService.updateWallet(wallet.id, result);
     return this.repoService.transactionCryptoRepo.save(crypto);
   }
   async getCryptoByID(id: number): Promise<TransactionCrypto> {
