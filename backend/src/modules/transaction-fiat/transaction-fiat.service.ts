@@ -22,8 +22,7 @@ export class TransactionFiatService {
     fiat.method = input.method;
     fiat.amount = input.amount;
     fiat.status = TransactionStatus.Pending;
-    const getuser = await this.userService.getUserByToken(user.id);
-    fiat.user = getuser;
+    fiat.user = user;
 
     const curreny = await this.currencyService.getCurrencyByShortName('USDT');
     const wallet = await this.walletService.getWalletByCurrency(
