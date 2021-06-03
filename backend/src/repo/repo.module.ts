@@ -11,6 +11,7 @@ import { RepoService } from './repo.service';
 import { TransactionCrypto } from '../models/object/transactionCrypto.model';
 import { TransactionFiat } from '../models/object/transactionFiat.model';
 import { Wallet } from 'src/models/object/wallet.model';
+import { Verification } from 'src/models/object/verification.model';
 
 @Global()
 @Module({
@@ -26,6 +27,7 @@ import { Wallet } from 'src/models/object/wallet.model';
       TransactionCrypto,
       TransactionFiat,
       Wallet,
+      Verification,
     ]),
   ],
   providers: [RepoService],
