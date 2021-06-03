@@ -11,6 +11,7 @@ import { Hash } from './helper/hash';
 import { WalletService } from '../wallet/wallet.service';
 import { UpdateResult } from 'typeorm';
 import PassInput from 'src/models/input/password.input';
+import { TokenRole } from '../../models/object/tokenrole.model';
 @Injectable()
 export class UserService {
   constructor(
@@ -48,7 +49,7 @@ export class UserService {
     }
     return user;
   }
-  async registerUser(registerInput: RegisterInput): Promise<string> {
+  async registerUser(registerInput: RegisterInput): Promise<TokenRole> {
     return Hash.encrypt(registerInput.password).then(
       async (password: string) => {
         const user: User = {
@@ -60,18 +61,28 @@ export class UserService {
         const result = await this.createOrUpdate(user); // สร้างเสร็จ
         if (result) {
           await this.walletService.createAllWalletForUser(result);
-          return await this.createToken(result);
+          const token = await this.createToken(result);
+          const tokenRole: TokenRole = {
+            token: token,
+            role: user.role.role,
+          };
+          return tokenRole;
         }
       },
     );
   }
 
-  async loginUser(input: LoginInput): Promise<string> {
+  async loginUser(input: LoginInput): Promise<TokenRole> {
     const user = await this.getUserByEmail(input);
     return Hash.compare(input.password, user.password).then(
       async (result: boolean) => {
         if (result) {
-          return await this.createToken(user);
+          const token = await this.createToken(user);
+          const tokenRole: TokenRole = {
+            token: token,
+            role: user.role.role,
+          };
+          return tokenRole;
         } else {
           throw IncorrectPassword;
         }

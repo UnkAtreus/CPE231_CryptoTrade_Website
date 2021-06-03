@@ -13,32 +13,36 @@ import OrderInput from 'src/models/input/order.input';
 import { UserService } from '../user/user.service';
 import { OrderMethod } from 'src/static/enum';
 import { Unauthorized } from '../../utils/error-handling';
+import { throws } from 'assert';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
+  price: number;
   constructor(
     private readonly walletService: WalletService,
     private readonly repoService: RepoService,
     private readonly userService: UserService,
-  ) {}
-  onApplicationBootstrap() {
-    // this.handleInterval();
+  ) {
+    this.price = 0;
   }
-  private readonly price: number = 0;
-  handleInterval() {
+  onApplicationBootstrap() {
+    this.handleInterval();
+  }
+
+  async handleInterval() {
     const client = new webClient();
-    client.on('connectFailed', function (error) {
+    client.on('connectFailed', (error) => {
       console.log('----> Connect Error: ' + error.toString());
     });
-    client.on('connect', function (connection) {
+    client.on('connect', (connection) => {
       console.log('WebSocket Client Connected');
       connection.on('error', function (error) {
         console.log('----> Connection Error: ' + error.toString());
       });
-      connection.on('close', function () {
+      connection.on('close', () => {
         console.log('--- Connection Closed ---');
       });
-      connection.on('message', function (message) {
+      connection.on('message', (message) => {
         if (message.type === 'utf8') {
           const x = JSON.parse(message.utf8Data);
           this.price = x['data']['p'];
@@ -49,6 +53,9 @@ export class OrderService implements OnApplicationBootstrap {
       'wss://stream.binance.com:9443/stream?streams=btcusdt@aggTrade',
       '',
     );
+  }
+  async test() {
+    return (this.price += 15);
   }
 
   async createOrder(userId: number, input: OrderInput): Promise<Order> {
@@ -101,9 +108,10 @@ export class OrderService implements OnApplicationBootstrap {
     }
   }
 
-  // @Interval(2000)
+  @Interval(2000)
   async fillOrder() {
     console.log(this.price);
+
     const orderLists = await this.repoService.orderRepo.find({
       where: {
         price: this.price,

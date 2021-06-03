@@ -141,9 +141,14 @@ type User {
   verification: Verification
 }
 
+type TokenRole {
+  token: String
+  role: String
+}
+
 type Query {
   getAllUser: [User!]!
-  login(login: LoginInput!): String!
+  login(login: LoginInput!): TokenRole!
   getUserByToken: User!
   getAllWallet: [Wallet!]!
   getUserWalletByToken: [Wallet!]!
@@ -169,10 +174,9 @@ input LoginInput {
 
 type Mutation {
   uploadFile(file: Upload!): Boolean!
-  registerUser(registerInput: RegisterInput!): String!
-  seedUser: String!
+  registerUser(registerInput: RegisterInput!): TokenRole!
   verifyUser(idInput: Float!): String!
-  changePass(passInput: PassInput!): String!
+  changePassword(passInput: PassInput!): String!
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!
   deleteCurrency(id: ID!): String!
