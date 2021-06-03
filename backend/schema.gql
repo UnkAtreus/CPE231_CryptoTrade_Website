@@ -177,9 +177,8 @@ type Mutation {
   uploadFile(file: Upload!): Boolean!
   registerUser(registerInput: RegisterInput!): TokenRole!
   verifyUser(idInput: Float!): String!
-  changePass(passInput: PassInput!): String!
-  createPincode(input: String!): User!
   changePassword(passInput: PassInput!): String!
+  createPincode(input: String!): User!
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!
   deleteCurrency(id: ID!): String!

@@ -1,3 +1,4 @@
+import PincodeInput from 'src/models/input/pincode.input';
 import PassInput from 'src/models/input/password.input';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import RegisterInput from 'src/models/input/register.input';
@@ -58,6 +59,15 @@ export class UserResolver {
     @Context('user') user: User,
   ) {
     return this.userService.createPincode(input, user);
+  }
+
+  @Mutation(() => User)
+  @Roles(['customer'])
+  async updatePincode(
+    @Args('input') input: PincodeInput,
+    @Context('user') user: User,
+  ) {
+    return this.userService.upDatePincode(input, user);
   }
   // @Mutation(() => String)
   // async seedUser() {

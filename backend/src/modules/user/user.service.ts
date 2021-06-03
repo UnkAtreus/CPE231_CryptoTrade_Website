@@ -12,6 +12,7 @@ import { WalletService } from '../wallet/wallet.service';
 import { UpdateResult } from 'typeorm';
 import PassInput from 'src/models/input/password.input';
 import { TokenRole } from '../../models/object/tokenrole.model';
+import PincodeInput from 'src/models/input/pincode.input';
 @Injectable()
 export class UserService {
   constructor(
@@ -122,5 +123,16 @@ export class UserService {
       id: user.id,
       pinncode: pincode,
     });
+  }
+
+  async upDatePincode(pincode: PincodeInput, user: User): Promise<User> {
+    if (pincode.newPin == pincode.oldPin) {
+      return await this.repoService.userRepo.save({
+        id: user.id,
+        pinncode: pincode,
+      });
+    } else {
+      throw IncorrectPassword;
+    }
   }
 }
