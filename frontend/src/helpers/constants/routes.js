@@ -25,7 +25,7 @@ export const ROUTE_PATH = {
   },
   WITHDRAW: {
     TEXT: "Withdraw",
-    LINK: "/withdraw",
+    LINK: "/withdraw/:type",
   },
   SETTING: {
     TEXT: "Setting",

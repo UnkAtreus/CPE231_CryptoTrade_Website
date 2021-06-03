@@ -66,7 +66,7 @@ export const WithdrawTypeContainer = styled.div`
     filter: invert(22%) sepia(27%) saturate(914%) hue-rotate(202deg)
       brightness(89%) contrast(89%);
     background-blend-mode: overlay;
-    border-radius: 0px 0px 30px 0px;
+    border-radius: 0px 0px 16px 0px;
     background-size: 297px 297px;
     background-image: url(${SHARDS["bitcoin-overlay.svg"]});
     &.crypto {
