@@ -185,7 +185,6 @@ type Mutation {
   addCard(cardInput: CardInput!): CreditCard!
   updateCard(cardInput: CardInput!, id: Float!): CreditCard!
   deleteCard(id: Float!): CreditCard!
-  testOrder2: String!
   createOrder(input: OrderInput!): Order!
   cancelOrder(id: ID!): Order!
   createFiat(fiatInput: FiatInput!): TransactionFiat!
@@ -278,5 +277,5 @@ input UpdateVerificationInput {
 }
 
 type Subscription {
-  testOrder: String!
+  orderAdded: Order!
 }

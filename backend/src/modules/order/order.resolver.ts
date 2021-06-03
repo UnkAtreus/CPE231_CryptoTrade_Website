@@ -1,3 +1,4 @@
+import { UseGuards } from '@nestjs/common';
 import {
   Args,
   Context,
@@ -14,19 +15,24 @@ import { Order } from 'src/models/object/order.model';
 import { User } from 'src/models/object/user.model';
 import { OrderService } from './order.service';
 
-const pubSub = new PubSub();
+// const pubSub = new PubSub();
 @Resolver()
 export class OrderResolver {
-  constructor(private readonly orderService: OrderService) {}
-  @Subscription(() => String)
-  testOrder() {
-    return pubSub.asyncIterator('test');
+  private pubSub: PubSub;
+  constructor(private readonly orderService: OrderService) {
+    this.pubSub = new PubSub();
   }
-  @Mutation(() => String)
-  async testOrder2() {
-    pubSub.publish('test', 'testMessage');
-    return 'test';
+  @Subscription(() => Order, {
+    filter: (payload, variables) => payload.videoAdded.id === variables.id,
+  })
+  orderAdded() {
+    return this.pubSub.asyncIterator('orderAdded');
   }
+  // @Mutation(() => String)
+  // async testOrder2() {
+  //   this.pubSub.publish('test', 'testMessage');
+  //   return 'test';
+  // }
 
   @Mutation(() => Order)
   @Roles(['customer'])
@@ -34,7 +40,9 @@ export class OrderResolver {
     @Context('user') user: User,
     @Args('input') input: OrderInput,
   ): Promise<Order> {
-    return await this.orderService.createOrder(user.id, input);
+    const order: Order = await this.orderService.createOrder(user.id, input);
+    this.pubSub.publish('orderAdded', { orderAdded: order });
+    return order;
   }
 
   @Mutation(() => Order)
