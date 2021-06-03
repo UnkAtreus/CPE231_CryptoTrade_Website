@@ -75,3 +75,12 @@ export const Symbols = (state = initialSymbols, action) => {
       return state;
   }
 };
+
+export const Token = (state = {}, action) => {
+  switch (action.type) {
+    case "SET_TOKEN":
+      return action.data;
+    default:
+      return state;
+  }
+};

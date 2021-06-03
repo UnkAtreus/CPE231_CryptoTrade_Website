@@ -104,7 +104,7 @@ const DeopsitContainer = ({ match, ...props }) => {
         <SubHeader>
           <div className="feature-card-title white">Deposit</div>
         </SubHeader>
-        <div className="content-row mgb-8">
+        <div className="content-row">
           <DepositType>
             <TabWithLink active={depositType.toLowerCase()}>
               <TabPane name="Crypto" link="/deposit/crypto">

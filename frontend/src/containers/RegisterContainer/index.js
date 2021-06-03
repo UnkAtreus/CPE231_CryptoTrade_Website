@@ -77,6 +77,7 @@ const RegisterContainer = ({ match, ...props }) => {
       profileInput: profileParams,
     });
   }, [profileParams]);
+
   useEffect(() => {
     console.log(userParams);
     setParams({

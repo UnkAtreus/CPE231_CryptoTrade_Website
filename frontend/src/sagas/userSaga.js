@@ -2,6 +2,7 @@ import { put, takeEvery, takeLatest, call } from "redux-saga/effects";
 import { userController } from "apiService";
 import { ACTION_SAGA_TYPES, AuthActionType } from "./actionSagaTypes";
 import { receiveUserListRedux } from "actions";
+import { handleItem } from "../helpers/functions";
 
 export function* workerUserListSaga(action) {
   const { params, configService } = action.payload;
@@ -31,32 +32,20 @@ export function* localeSaga() {
   yield takeLatest(AuthActionType.SET_LOCALE_REQUEST, localeEffect);
 }
 
-// export function* loginEffect(action) {
-//   try {
-//     const { email, password, redirect } = action.payload;
-//     const data = yield call(login, { email, password });
+// eslint-disable-next-line require-yield
+export function* loginEffect(action) {
+  try {
+    console.log(action.data.redirect);
+    const { redirect } = action.data;
+    if (action.data.login) {
+      yield call(handleItem, "access-token", action.data.login); // SET_LOCALSTORE
+      redirect();
+    }
+  } catch (loginError) {
+    console.log(loginError);
+  }
+}
 
-//     const payload = {
-//       token: data.access_token,
-//       threshold: data.threshold || 3600,
-//       refreshToken: data.refresh_token,
-//     };
-
-//     yield put({ type: AuthActionType.LOGIN_SUCCESS, payload });
-//     yield call(setItems, payload); // SET_LOCALSTORE
-
-//   } catch (loginError) {
-//     yield put({
-//       type: NAME,
-//       payload: {
-//         NAME_ERROR,
-//       },
-//     });
-
-//     yield call(SETINIT);
-//   }
-// }
-
-// export function* loginSaga() {
-//   yield takeLatest(AuthActionType.LOGIN_REQUEST, loginEffect);
-// }
+export function* loginSaga() {
+  yield takeLatest("SET_TOKEN", loginEffect);
+}

@@ -101,7 +101,7 @@ const WithdrawContainer = ({ match, ...props }) => {
         <SubHeader>
           <div className="feature-card-title white">Withdraw</div>
         </SubHeader>
-        <div className="content-row mgb-8">
+        <div className="content-row">
           <WithdrawType>
             <TabWithLink active={withdrawType.toLowerCase()}>
               <TabPane name="Crypto" link="/withdraw/crypto">

@@ -98,7 +98,7 @@ const PeerToPeerContainer = ({ match, ...props }) => {
         <SubHeader>
           <div className="feature-card-title white">P2P</div>
         </SubHeader>
-        <div className="content-row mgb-8">
+        <div className="content-row ">
           <PeerToPeerType>
             <TabWithLink active={depositType.toLowerCase()}>
               <TabPane name="Crypto" link="/p2p/crypto">

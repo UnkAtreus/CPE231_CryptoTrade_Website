@@ -1,10 +1,6 @@
-import {
-  injectGlobal
-} from 'styled-components'
+import { injectGlobal } from "styled-components";
 
-import {
-  default as VARIABLES
-} from '../../themes/styles/variables'
+import { default as VARIABLES } from "../../themes/styles/variables";
 
 injectGlobal`
 
@@ -225,6 +221,10 @@ injectGlobal`
 
   .mgl-16 {
     margin-left: 16px;
+  }
+
+  .mgl-32 {
+    margin-left: 32px;
   }
 
   .mgt-8 {

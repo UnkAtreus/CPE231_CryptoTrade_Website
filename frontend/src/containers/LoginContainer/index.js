@@ -1,19 +1,51 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import { LoginStyled, Header, LoginForm, LoginFormContainer } from "./styled";
 import { Container, Button, Input, NavBar } from "components";
+import { useDispatch, useSelector } from "react-redux";
+import { history } from "../../store/configureStore";
 
 import { useQuery, gql } from "@apollo/client";
+import { argsToArgsConfig } from "graphql/type/definition";
 
 const LoginContainer = ({ match, ...props }) => {
-  const EXCHANGE_RATES = gql`
-    query {
-      getHello
+  const [userParams, setUserParams] = useState({
+    email: "",
+    password: "",
+  });
+  const [params, setParams] = useState({
+    email: "",
+    password: "",
+  });
+  const dispatch = useDispatch();
+
+  const POST_LOGIN = gql`
+    query ($input: LoginInput!) {
+      login(login: $input)
     }
   `;
+  const { loading, error, data } = useQuery(POST_LOGIN, {
+    variables: { input: params },
+  });
 
-  const { loading, error, data } = useQuery(EXCHANGE_RATES);
+  const handleCreatePost = (event) => {
+    event.preventDefault();
+    setParams({
+      ...userParams,
+    });
+  };
 
-  console.log(data);
+  useEffect(() => {
+    console.log("data", data);
+    console.log("error", error);
+    if (data) {
+      dispatch({
+        type: "SET_TOKEN",
+        data: { ...data, redirect: () => history.push("/home") } || {},
+      });
+      window.location.reload();
+    }
+  }, [data]);
 
   return (
     <LoginStyled>
@@ -24,7 +56,11 @@ const LoginContainer = ({ match, ...props }) => {
         <LoginForm>
           <div className="content-column">
             <div className="content-row justify-content-center mgb-16">
-              <LoginFormContainer>
+              <LoginFormContainer
+                onSubmit={(e) => {
+                  handleCreatePost(e);
+                }}
+              >
                 <div className="content-column ">
                   <div className="content-row justify-content-center mgb-8">
                     <div className="feature-card-title white">Sign In</div>
@@ -33,13 +69,23 @@ const LoginContainer = ({ match, ...props }) => {
                     type="text"
                     title="Telephone"
                     placeholder="+66 812345678"
-                    onChange={(e) => console.log(e)}
+                    onChange={(e) =>
+                      setUserParams({
+                        ...userParams,
+                        email: e,
+                      })
+                    }
                   />
                   <Input
                     type="password"
                     title="Password"
                     placeholder="**********"
-                    onChange={(e) => console.log(e)}
+                    onChange={(e) =>
+                      setUserParams({
+                        ...userParams,
+                        password: e,
+                      })
+                    }
                   />
                   <div className="content-row justify-content-center mgt-24">
                     <Button
