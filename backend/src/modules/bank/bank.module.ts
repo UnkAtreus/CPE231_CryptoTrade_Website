@@ -4,5 +4,6 @@ import { BankService } from './bank.service';
 
 @Module({
   providers: [BankResolver, BankService],
+  exports: [BankService],
 })
 export class BankModule {}
