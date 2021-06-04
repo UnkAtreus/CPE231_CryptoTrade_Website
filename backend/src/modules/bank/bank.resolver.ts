@@ -6,11 +6,16 @@ import { BankService } from './bank.service';
 export class BankResolver {
   constructor(private readonly bankService: BankService) {}
   @Mutation(() => [Bank])
-  async creatBank(): Promise<Bank[]> {
+  async createBank(): Promise<Bank[]> {
     return await this.bankService.createBank();
   }
   @Query(() => Bank)
   async getBankByName(@Args('name') name: string): Promise<Bank> {
     return await this.bankService.getBankByName(name);
+  }
+
+  @Query(() => [Bank])
+  async getAllBank(): Promise<Bank[]> {
+    return await this.getAllBank();
   }
 }

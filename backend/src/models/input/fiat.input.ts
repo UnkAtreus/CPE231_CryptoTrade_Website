@@ -6,9 +6,9 @@ class FiatInput {
   readonly method?: TranasctionMethod;
   @Field(() => Float)
   readonly amount?: number;
-  @Field()
+  @Field({ nullable: true })
   readonly bankNumber?: string;
-  @Field()
+  @Field({ nullable: true })
   readonly bankType?: string;
 }
 export default FiatInput;

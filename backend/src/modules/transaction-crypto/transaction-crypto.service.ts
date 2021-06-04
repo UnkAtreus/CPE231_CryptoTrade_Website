@@ -46,6 +46,7 @@ export class TransactionCryptoService {
       result = temp1 + temp2;
     } else {
       result = temp1 - temp2;
+      crypto.fee = String(temp2 * 0.001);
       if (result < 0) {
         throw NotEnoughBalanceInWallet;
       }

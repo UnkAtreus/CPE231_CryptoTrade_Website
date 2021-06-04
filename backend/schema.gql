@@ -26,6 +26,7 @@ type Order {
   price: String
   amount: String
   totalBalance: String
+  fee: String
   cancel: Boolean
   filled: Boolean
   created_at: DateTime
@@ -41,9 +42,9 @@ type PtoP {
   id: Float
   walletFrom: Wallet
   walletTo: Wallet
-  amount: Float
-  walletFromBalance: Float
-  walletToBalance: Float
+  amount: String
+  walletFromBalance: String
+  walletToBalance: String
 }
 
 type TransactionCrypto {
@@ -56,6 +57,7 @@ type TransactionCrypto {
   amount: String
   targetWallet: String
   totalBalanceLeft: String
+  fee: String
   id: Float
 }
 
@@ -91,6 +93,7 @@ type TransactionFiat {
   amount: String
   bankNumber: String
   totalBalanceLeft: String
+  fee: String
   id: Float
 }
 
@@ -130,7 +133,6 @@ type User {
   postcode: String
   password: String
   pincode: String
-  token: String
   verify: Boolean
   created_at: DateTime
   updated_at: DateTime
@@ -150,6 +152,7 @@ type Query {
   getAllUser: [User!]!
   login(login: LoginInput!): TokenRole!
   getUserByToken: User!
+  registerCount(date: DateTime): Float!
   getAllWallet: [Wallet!]!
   getUserWalletByToken: [Wallet!]!
   getWalletById(id: ID!): Wallet!
@@ -193,13 +196,14 @@ type Mutation {
   fillOrder(id: ID!): Order!
   createFiat(fiatInput: FiatInput!): TransactionFiat!
   updateFiatStatus(id: ID!, status: Float!): TransactionFiat!
-  creatBank: [Bank!]!
+  createBank: [Bank!]!
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
   updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
   createP2P(p2pInput: PtoPInput!): PtoP!
   createVerification(createVerificationInput: CreateVerificationInput!): Verification!
   updateVerification(updateVerificationInput: UpdateVerificationInput!): Verification!
   removeVerification(id: Int!): Verification!
+  createRole: String!
 }
 
 """The `Upload` scalar type represents a file upload."""
@@ -286,5 +290,5 @@ input UpdateVerificationInput {
 }
 
 type Subscription {
-  orderAdded: Order!
+  orderTrigger: Order!
 }

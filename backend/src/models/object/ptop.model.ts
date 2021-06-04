@@ -16,15 +16,15 @@ export class PtoP {
   @ManyToOne(() => Wallet, (wallet) => wallet.p2pTo)
   walletTo?: Wallet;
 
-  @Field(() => Float)
-  @Column('decimal', {})
-  amount?: number;
+  @Field()
+  @Column()
+  amount?: string;
 
-  @Field(() => Float)
-  @Column('decimal', {})
-  walletFromBalance?: number;
+  @Field()
+  @Column()
+  walletFromBalance?: string;
 
-  @Field(() => Float)
-  @Column('decimal', {})
-  walletToBalance?: number;
+  @Field()
+  @Column()
+  walletToBalance?: string;
 }

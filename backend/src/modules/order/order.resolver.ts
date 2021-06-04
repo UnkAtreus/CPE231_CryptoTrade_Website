@@ -1,3 +1,4 @@
+import { Inject } from '@nestjs/common';
 import {
   Args,
   Context,
@@ -18,16 +19,19 @@ import { OrderService } from './order.service';
 // const pubSub = new PubSub();
 @Resolver()
 export class OrderResolver {
-  private pubSub: PubSub;
-  constructor(private readonly orderService: OrderService) {
-    this.pubSub = new PubSub();
+  // private pubSub: PubSub;
+  constructor(
+    private readonly orderService: OrderService,
+    @Inject('PUB_SUB')
+    private readonly pubSub: PubSub,
+  ) {
+    // this.pubSub = new PubSub();
   }
-  @Subscription(() => Order, {
-    // filter: (payload, variables) => payload.orderAdded.id === variables.id,
-  })
   // @UseGuards(GraphqlJwtAuthGuard)
-  orderAdded() {
-    return this.pubSub.asyncIterator('orderAdded');
+  // filter: (payload, variables) => payload.orderAdded.id === variables.id,
+  @Subscription(() => Order, {})
+  orderTrigger() {
+    return this.pubSub.asyncIterator('orderTrigger');
   }
 
   @Mutation(() => Order)
@@ -36,10 +40,8 @@ export class OrderResolver {
     @Context('user') user: User,
     @Args('input') input: OrderInput,
   ): Promise<Order> {
-    console.log(user.id);
-
     const order: Order = await this.orderService.createOrder(user.id, input);
-    this.pubSub.publish('orderAdded', { orderAdded: order });
+    this.pubSub.publish('orderTrigger', { orderTrigger: order });
     return order;
   }
 
@@ -49,14 +51,18 @@ export class OrderResolver {
     @Context('user') user: User,
     @Args('id', { type: () => ID }) input: number,
   ): Promise<Order> {
-    return await this.orderService.cancelOrder(user.id, input);
+    const order = await this.orderService.cancelOrder(user.id, input);
+    this.pubSub.publish('orderTrigger', { orderTrigger: order });
+    return order;
   }
   @Mutation(() => Order)
   @Roles(['customer'])
   async fillOrder(
     @Args('id', { type: () => ID }) input: number,
   ): Promise<Order> {
-    return await this.orderService.fillOrder(input);
+    const order = await this.orderService.fillOrder(input);
+    this.pubSub.publish('orderTrigger', { orderTrigger: order });
+    return order;
   }
   @Query(() => [Order])
   @Roles(['customer'])

@@ -35,15 +35,16 @@ export class TransactionFiatService {
     fiat.wallet = wallet;
     fiat.bank = getbank;
 
-    console.log(wallet.amount);
+    console.log(wallet);
     const temp1 = Number(wallet.amount);
-    const temp2 = Number(fiat.amount);
+    const temp2 = Number(input.amount);
     let result = 0;
 
     if (input.method == TranasctionMethod.Deposit) {
       result = temp1 + temp2;
     } else {
       result = temp1 - temp2;
+      fiat.fee = String(temp2 * 0.001);
       if (result < 0) {
         throw NotEnoughBalanceInWallet;
       }
@@ -57,7 +58,9 @@ export class TransactionFiatService {
     return await this.repoService.transactionFiatRepo.findOne(id);
   }
   async getAllFiat(): Promise<TransactionFiat[]> {
-    return await this.repoService.transactionFiatRepo.find();
+    return await this.repoService.transactionFiatRepo.find({
+      relations: ['user'],
+    });
   }
 
   async getAllFiatByUser(user: User): Promise<TransactionFiat[]> {
@@ -65,6 +68,7 @@ export class TransactionFiatService {
       where: {
         user: user.id,
       },
+      relations: ['user'],
     });
   }
   async updateFiat(

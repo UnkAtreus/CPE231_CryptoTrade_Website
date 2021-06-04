@@ -45,6 +45,10 @@ export class Order {
   @Column()
   totalBalance?: string;
 
+  @Field(() => String)
+  @Column({ default: '0' })
+  fee?: string;
+
   @Field(() => Boolean)
   @Column()
   cancel?: boolean;

@@ -18,4 +18,8 @@ export class BankService {
   async getBankByName(name: string): Promise<Bank> {
     return await this.repoService.bankRepo.findOne({ where: { bank: name } });
   }
+
+  async getBankAll(): Promise<Bank[]> {
+    return await this.repoService.bankRepo.find();
+  }
 }
