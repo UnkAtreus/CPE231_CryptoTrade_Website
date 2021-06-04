@@ -35,7 +35,7 @@ export class TransactionFiatService {
     fiat.wallet = wallet;
     fiat.bank = getbank;
 
-    console.log(wallet.amount);
+    console.log(wallet);
     const temp1 = Number(wallet.amount);
     const temp2 = Number(input.amount);
     let result = 0;
