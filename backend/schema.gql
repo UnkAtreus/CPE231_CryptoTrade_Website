@@ -167,6 +167,7 @@ type Query {
   getAllFiat: [TransactionFiat!]!
   getAllFiatByUser: [TransactionFiat!]!
   getBankByName(name: String!): Bank!
+  getAllBank: [Bank!]!
   getAllCrypto: [TransactionCrypto!]!
   getAllCryptoByUser: [TransactionCrypto!]!
   verification(id: Int!): Verification!

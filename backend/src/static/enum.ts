@@ -14,7 +14,6 @@ export enum OrderMethod {
 }
 
 export enum TransactionStatus {
-  Order,
   Pending,
   Done,
   Cancel,

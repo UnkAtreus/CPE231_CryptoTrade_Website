@@ -60,9 +60,9 @@ export class TransactionCryptoService {
   }
   async getAllCrypto(): Promise<TransactionCrypto[]> {
     return await this.repoService.transactionCryptoRepo.find({
-      order :{
+      order: {
         created_at: 'DESC',
-      }
+      },
     });
   }
 
@@ -71,9 +71,9 @@ export class TransactionCryptoService {
       where: {
         user: user.id,
       },
-      order :{
+      order: {
         created_at: 'DESC',
-      }
+      },
     });
   }
   async updateCrypto(

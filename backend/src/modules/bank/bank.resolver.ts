@@ -16,6 +16,6 @@ export class BankResolver {
 
   @Query(() => [Bank])
   async getAllBank(): Promise<Bank[]> {
-    return await this.getAllBank();
+    return await this.bankService.getBankAll();
   }
 }

@@ -7,7 +7,6 @@ export class RoleResolver {
   constructor(private readonly roleService: RoleService) {}
 
   @Mutation(() => String)
-  @Roles(['customer', 'staff', 'admin'])
   async createRole(): Promise<string> {
     return await this.roleService.createRole();
   }
