@@ -190,6 +190,7 @@ type Mutation {
   deleteCard(id: Float!): CreditCard!
   createOrder(input: OrderInput!): Order!
   cancelOrder(id: ID!): Order!
+  fillOrder(id: ID!): Order!
   createFiat(fiatInput: FiatInput!): TransactionFiat!
   updateFiatStatus(id: ID!, status: Float!): TransactionFiat!
   creatBank: [Bank!]!

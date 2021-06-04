@@ -26,6 +26,8 @@ export class P2PService {
       user.id,
       curreny.id,
     );
+    console.log(walletFrom);
+
     if (Number(walletFrom.amount) < input.amount) {
       throw NotEnoughBalanceInWallet;
     }

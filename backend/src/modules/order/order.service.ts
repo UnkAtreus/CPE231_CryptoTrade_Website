@@ -40,7 +40,7 @@ export class OrderService implements OnApplicationBootstrap {
     });
     client.on('connect', (connection) => {
       console.log('WebSocket Client Connected');
-      connection.on('error', function (error) {
+      connection.on('error', (error) => {
         console.log('----> Connection Error: ' + error.toString());
       });
       connection.on('close', () => {
@@ -72,6 +72,8 @@ export class OrderService implements OnApplicationBootstrap {
       userId,
       input.currencyTo,
     );
+    const total: number = Number(input.price) * Number(input.amount);
+    console.log(total);
     const order: Order = {
       user: user,
       method: input.method,
@@ -79,15 +81,12 @@ export class OrderService implements OnApplicationBootstrap {
       walletTo: walletTo,
       price: String(input.price),
       amount: String(input.amount),
-      totalBalance: String(input.price * input.amount),
+      totalBalance: String(total),
       cancel: false,
       filled: false,
     };
 
-    await this.walletService.Sell(
-      order.walletFrom.id,
-      input.price * input.amount,
-    );
+    await this.walletService.Sell(order.walletFrom.id, input.amount);
 
     return await this.repoService.orderRepo.save(order);
   }
@@ -122,9 +121,23 @@ export class OrderService implements OnApplicationBootstrap {
       ],
     });
   }
+  async fillOrder(orderId: number): Promise<Order> {
+    const order = await this.getOrderById(orderId);
+    return await this.walletService
+      .Buy(
+        order.walletTo.id,
+        order.walletFrom.id,
+        Number(order.amount),
+        Number(order.totalBalance),
+      )
+      .then(() => {
+        order.filled = true;
+        return this.repoService.orderRepo.save(order);
+      });
+  }
 
   @Interval(2000)
-  async fillOrder() {
+  async fillOrderInterval() {
     // console.log(this.price);
     // const orderLists = await this.repoService.orderRepo.find({
     //   where: {

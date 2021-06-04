@@ -21,7 +21,9 @@ export class UserService {
   ) {}
 
   async getAllUsers(): Promise<User[]> {
-    return await this.repoService.userRepo.find({ relations: ['role'] });
+    return await this.repoService.userRepo.find({
+      relations: ['role', 'wallet', 'wallet.currency'],
+    });
   }
   async createToken({ id, role }: User) {
     const roleName = role.role;
@@ -35,7 +37,7 @@ export class UserService {
   async getUserByToken(id: number): Promise<User> {
     return await this.repoService.userRepo.findOne({
       where: { id: id },
-      relations: ['role', 'wallet', 'creditCard'],
+      relations: ['role', 'wallet', 'creditCard', 'wallet.currency'],
     });
   }
 
@@ -119,9 +121,11 @@ export class UserService {
 
   async createPincode(pincode: string, user: User): Promise<User> {
     // return Hash.encrypt(pincode).then(async (pin: string) => {}
-    return await this.repoService.userRepo.save({
-      id: user.id,
-      pinncode: pincode,
+    return Hash.encrypt(pincode).then(async (pincodefinal: string) => {
+      return await this.repoService.userRepo.save({
+        id: user.id,
+        pinncode: pincodefinal,
+      });
     });
   }
 

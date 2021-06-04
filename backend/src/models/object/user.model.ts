@@ -80,7 +80,7 @@ export class User {
   password?: string;
 
   @Field(() => String)
-  @Column({ nullable: true, length: 6 })
+  @Column({ nullable: true })
   pincode?: string;
 
   @Field(() => String)

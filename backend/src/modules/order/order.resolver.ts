@@ -51,6 +51,13 @@ export class OrderResolver {
   ): Promise<Order> {
     return await this.orderService.cancelOrder(user.id, input);
   }
+  @Mutation(() => Order)
+  @Roles(['customer'])
+  async fillOrder(
+    @Args('id', { type: () => ID }) input: number,
+  ): Promise<Order> {
+    return await this.orderService.fillOrder(input);
+  }
   @Query(() => [Order])
   @Roles(['customer'])
   async Orders(@Context('user') user: User): Promise<Order[]> {
