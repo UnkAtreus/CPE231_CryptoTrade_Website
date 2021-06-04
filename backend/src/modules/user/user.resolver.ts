@@ -69,4 +69,8 @@ export class UserResolver {
   ) {
     return this.userService.upDatePincode(input, user);
   }
+  @Query(() => Number)
+  async registerCount(@Args('date', { nullable: true }) date?: Date) {
+    return await this.userService.getCountUserRegister(date);
+  }
 }

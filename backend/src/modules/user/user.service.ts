@@ -9,10 +9,11 @@ import { IncorrectPassword, UserNotFound } from 'src/utils/error-handling';
 
 import { Hash } from './helper/hash';
 import { WalletService } from '../wallet/wallet.service';
-import { UpdateResult } from 'typeorm';
+import { Between, Raw, UpdateResult } from 'typeorm';
 import PassInput from 'src/models/input/password.input';
 import { TokenRole } from '../../models/object/tokenrole.model';
 import PincodeInput from 'src/models/input/pincode.input';
+import { addDays } from 'date-fns';
 @Injectable()
 export class UserService {
   constructor(
@@ -135,5 +136,19 @@ export class UserService {
     } else {
       throw IncorrectPassword;
     }
+  }
+  async getCountUserRegister(date?: Date) {
+    date = date ?? new Date();
+    const start = date.toISOString().slice(0, 10);
+    const end = addDays(date, 1).toISOString().slice(0, 10);
+
+    return await this.repoService.userRepo.count({
+      where: {
+        created_at: Raw((alias) => `${alias} BETWEEN :start AND :end`, {
+          start: start,
+          end: end,
+        }),
+      },
+    });
   }
 }
