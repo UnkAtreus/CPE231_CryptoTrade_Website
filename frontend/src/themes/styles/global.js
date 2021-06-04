@@ -175,7 +175,10 @@ injectGlobal`
   }
 
   .bg-purple {
-    background-color: ${VARIABLES.COLORS.PURPLE};
+    /* background-color: ${VARIABLES.COLORS.PURPLE}; */
+    background: linear-gradient(
+180deg
+, rgba(127,73,232,1) 0%, rgba(113,73,232,1) 100%);
   }
 
   .mgb-2 {

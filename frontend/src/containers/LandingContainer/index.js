@@ -419,6 +419,24 @@ const LandingContainer = ({ match, ...props }) => {
             </div>
           </div>
         </CryptoBalance>
+
+        <div className="content-row justify-content-center">
+          <div className="content-column">
+            <div className="feature-card-title white mgb-24">
+              Start trading now
+            </div>
+            <Button
+              style={{
+                marginTop: "16px",
+                width: "200px",
+                marginBottom: "48px",
+              }}
+              label="Trade Now"
+              color="purple"
+              fontColor="white"
+            />
+          </div>
+        </div>
       </Container>
     </LandingStyled>
   );
