@@ -20,6 +20,7 @@ import DeopsitContainer from "./containers/DeopsitContainer";
 import WithdrawContainer from "./containers/WithdrawContainer";
 import PeerToPeerContainer from "./containers/PeerToPeerContainer";
 import SettingContainer from "./containers/SettingContainer";
+import LandingContainer from "./containers/LandingContainer";
 import { ROUTE_PATH } from "helpers";
 import { history } from "./store/configureStore";
 
@@ -116,7 +117,7 @@ export const App = (props) => {
               path={ROUTE_PATH.SETTING.LINK}
               component={SettingContainer}
             />
-            <Route path={ROUTE_PATH.HOME.LINK} component={HomeContainer} />
+            <Route path={ROUTE_PATH.HOME.LINK} component={LandingContainer} />
           </Switch>
         </Router>
         {/* </ConnectedRouter> */}

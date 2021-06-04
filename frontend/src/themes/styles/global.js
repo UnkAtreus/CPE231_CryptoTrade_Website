@@ -14,7 +14,6 @@ injectGlobal`
   body {
     background-color: #33334B;
     overflow-x: hidden !important;
-    width: 100vw;
     overflow-y: auto;
   }
 
