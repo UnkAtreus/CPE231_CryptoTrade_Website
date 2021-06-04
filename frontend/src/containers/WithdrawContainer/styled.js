@@ -121,3 +121,8 @@ export const WithdrawHistory = styled.div`
 export const PaymentSelected = styled.div`
   margin-bottom: 8px;
 `;
+
+export const HistoryContainer = styled.div`
+  overflow: auto;
+  height: 196px;
+`;
