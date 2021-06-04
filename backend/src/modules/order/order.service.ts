@@ -19,6 +19,7 @@ import {
 import { throws } from 'assert';
 import { User } from 'src/models/object/user.model';
 import { PubSub } from 'graphql-subscriptions';
+import OrderMarketInput from 'src/models/input/ordermarket.input';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
@@ -34,7 +35,7 @@ export class OrderService implements OnApplicationBootstrap {
     this.price = 0;
   }
   onApplicationBootstrap() {
-    // this.handleInterval();
+    this.handleInterval();
   }
 
   async handleInterval() {
@@ -93,11 +94,20 @@ export class OrderService implements OnApplicationBootstrap {
 
     return await this.repoService.orderRepo.save(order);
   }
+
+  // async createOrderMarket(
+  //   userId: number,
+  //   input: OrderMarketInput,
+  // ): Promise<any> {
+  //   return '0';
+  // }
+
   async getOrderById(orderId: number): Promise<Order> {
     return await this.repoService.orderRepo.findOne(orderId, {
       relations: ['user', 'walletFrom', 'walletTo'],
     });
   }
+
   async cancelOrder(userId: number, orderId: number): Promise<Order> {
     const order = await this.getOrderById(orderId);
     if (order.user.id == userId) {
@@ -119,6 +129,8 @@ export class OrderService implements OnApplicationBootstrap {
         'walletTo',
         'walletFrom.currency',
         'walletTo.currency',
+        'user',
+        'method',
       ],
       order: {
         created_at: 'DESC',
@@ -171,7 +183,7 @@ export class OrderService implements OnApplicationBootstrap {
       });
   }
 
-  // @Interval(2000)
+  @Interval(2000)
   async fillOrderInterval() {
     const orderLists = await this.repoService.orderRepo.find({
       where: {

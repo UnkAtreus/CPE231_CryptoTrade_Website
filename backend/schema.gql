@@ -30,7 +30,7 @@ type Order {
   cancel: Boolean
   filled: Boolean
   created_at: DateTime
-  tradeDateTime: DateTime
+  updated_at: DateTime
 }
 
 """
@@ -172,6 +172,8 @@ type Query {
   getAllBank: [Bank!]!
   getAllCrypto: [TransactionCrypto!]!
   getAllCryptoByUser: [TransactionCrypto!]!
+  getAllP2P: [PtoP!]!
+  getP2PByToken: [PtoP!]!
   verification(id: Int!): Verification!
 }
 
