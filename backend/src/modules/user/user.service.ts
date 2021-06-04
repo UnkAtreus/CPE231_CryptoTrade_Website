@@ -130,7 +130,7 @@ export class UserService {
     if (pincode.newPin == pincode.oldPin) {
       return await this.repoService.userRepo.save({
         id: user.id,
-        pinncode: pincode,
+        pincode: pincode.newPin,
       });
     } else {
       throw IncorrectPassword;
