@@ -44,4 +44,26 @@ export class P2PService {
     await this.walletService.updateWallet(walletTo.id, temp2);
     return this.repoService.ptopRepo.save(p2p);
   }
+
+  async getAllP2P(): Promise<PtoP[]> {
+    return await this.repoService.ptopRepo.find({
+      relations: [
+        'walletFrom',
+        'walletFrom.currency',
+        'walletTo',
+        'walletTo.currency',
+      ],
+    });
+  }
+  async getP2PByToken(user: User): Promise<PtoP[]> {
+    return await this.repoService.ptopRepo.find({
+      where: { id: user.id },
+      relations: [
+        'walletFrom',
+        'walletFrom.currency',
+        'walletTo',
+        'walletTo.currency',
+      ],
+    });
+  }
 }

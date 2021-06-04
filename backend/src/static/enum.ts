@@ -9,8 +9,8 @@ export enum TranasctionMethod {
 }
 
 export enum OrderMethod {
-  Sell,
-  Buy,
+  limit,
+  market,
 }
 
 export enum TransactionStatus {

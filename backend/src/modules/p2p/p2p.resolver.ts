@@ -1,5 +1,5 @@
 import PtoPInput from 'src/models/input/p2p.input';
-import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Resolver, Query } from '@nestjs/graphql';
 import { Role } from 'src/models/object/role.model';
 import { P2PService } from './p2p.service';
 import { PtoP } from 'src/models/object/ptop.model';
@@ -17,5 +17,17 @@ export class P2PResolver {
     @Args('p2pInput') input: PtoPInput,
   ): Promise<PtoP> {
     return this.p2pService.createP2P(input, user);
+  }
+
+  @Query(() => [PtoP])
+  @Roles(['customer'])
+  async getAllP2P(): Promise<PtoP[]> {
+    return this.p2pService.getAllP2P();
+  }
+
+  @Query(() => [PtoP])
+  @Roles(['customer'])
+  async getP2PByToken(@Context('user') user: User): Promise<PtoP[]> {
+    return this.p2pService.getP2PByToken(user);
   }
 }
