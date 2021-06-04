@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState, useEffect } from "react";
 import {
   SettingStyled,
   Header,
@@ -11,8 +12,132 @@ import {
   InfoWrapper,
 } from "./styled";
 import { Container, NavBar } from "components";
+import { useQuery, gql } from "@apollo/client";
+import BigNumber from "bignumber.js";
+import { marketController } from "apiService";
+import moment from "moment";
+
+import {
+  MOCK_WALLET,
+  CRYPTO_INDEX,
+  MOCK_ALL_CUR_PRICE,
+  MOCK_USER_INFO,
+} from "helpers";
+
+const GET_ALL_SYMBOL = gql`
+  query {
+    getAllCurrencyWithNoStatic {
+      currency
+      currencyLongName
+    }
+    getUserWalletByToken {
+      amount
+      inOrder
+      currency {
+        currency
+        currencyLongName
+      }
+    }
+    getUserByToken {
+      firstName
+      lastName
+      phone
+      email
+      gender
+      birthDate
+      nationality
+      city
+      address
+    }
+  }
+`;
 
 const SettingContainer = ({ match, ...props }) => {
+  const [userWallet, setUserWallet] = useState(MOCK_WALLET);
+  const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
+  const [coinSymbol, setCoinSymbol] = useState([
+    {
+      __typename: "Currency",
+      currencyShortName: "BTC",
+      currency: "Bitcoin",
+    },
+  ]);
+
+  const [getCurPrice, setgetCurPrice] = useState(MOCK_ALL_CUR_PRICE);
+  const curPrice = [];
+
+  const FORMAT_DECIMAL = {
+    prefix: "",
+    decimalSeparator: ".",
+    groupSeparator: "",
+    groupSize: 3,
+    secondaryGroupSize: 0,
+    fractionGroupSeparator: " ",
+    fractionGroupSize: 0,
+    suffix: "",
+  };
+
+  const { loading, error, data } = useQuery(GET_ALL_SYMBOL);
+
+  const GetPrice = async () => {
+    const crypto_price = await marketController().getPrice("");
+    crypto_price.map((data, index) => {
+      switch (data.symbol) {
+        case "BTCUSDT":
+        case "ADAUSDT":
+        case "ETHUSDT":
+        case "BCHUSDT":
+        case "DOTUSDT":
+        case "ADABTC":
+        case "ETHBTC":
+        case "BCHBTC":
+        case "DOTBTC":
+          // console.log(data);
+          curPrice.push(data);
+          break;
+
+        default:
+          break;
+      }
+    });
+    setgetCurPrice(curPrice);
+    console.log(getCurPrice);
+  };
+
+  const getTotal = (flag) => {
+    return (
+      Number(userWallet[CRYPTO_INDEX[flag]].amount) +
+      Number(userWallet[CRYPTO_INDEX[flag]].inOrder)
+    );
+  };
+
+  const getBTCTotal = () => {
+    return (
+      getTotal("ada") * Number(getCurPrice[3].price) +
+      getTotal("eth") * Number(getCurPrice[0].price) +
+      getTotal("bch") * Number(getCurPrice[5].price) +
+      getTotal("dot") * Number(getCurPrice[7].price) +
+      getTotal("btc")
+    );
+  };
+
+  useEffect(() => {
+    if (data && data.getAllCurrencyWithNoStatic) {
+      setCoinSymbol(data.getAllCurrencyWithNoStatic);
+    }
+    if (data && data.getUserWalletByToken) {
+      setUserWallet(data.getUserWalletByToken);
+    }
+    if (data && data.getUserByToken) {
+      console.log(data.getUserByToken);
+      setUserInfo(data.getUserByToken);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    GetPrice();
+  }, []);
+
   return (
     <SettingStyled>
       <Header name="header">
@@ -28,11 +153,15 @@ const SettingContainer = ({ match, ...props }) => {
               <div className="paragraph white mgb-8">Fiat balance</div>
               <div className="content-row space-between">
                 <div className="paragraph white">USDT</div>
-                <div className="paragraph white">52,160.29</div>
+                <div className="paragraph white">
+                  {BigNumber(getTotal("usdt")).toFormat(2)}
+                </div>
               </div>
               <div className="content-row space-between">
                 <div className="label gray">TetherUS</div>
-                <div className="label gray">≈ $52,160.29</div>
+                <div className="label gray">
+                  ≈ ${BigNumber(getTotal("usdt")).toFormat(2)}
+                </div>
               </div>
             </FiatBalanceContainer>
             <SpotBalanceContainer>
@@ -40,13 +169,18 @@ const SettingContainer = ({ match, ...props }) => {
               <div className="content-row space-between">
                 <div className="paragraph white">BTC</div>
                 <div className="content-row align-items-end">
-                  <div className="paragraph white">0.00390985</div>
+                  <div className="paragraph white">{getBTCTotal()}</div>
                   <div className="label white mgl-8 mgb-2">BTC</div>
                 </div>
               </div>
               <div className="content-row space-between">
                 <div className="label gray">Bitcoin</div>
-                <div className="label gray">≈ $230.68</div>
+                <div className="label gray">
+                  ≈ $
+                  {BigNumber(
+                    getBTCTotal() * Number(getCurPrice[1].price)
+                  ).toFormat(2)}
+                </div>
               </div>
             </SpotBalanceContainer>
           </div>
@@ -98,25 +232,34 @@ const SettingContainer = ({ match, ...props }) => {
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00000091
+                {BigNumber(getTotal("btc")).toFormat(8, FORMAT_DECIMAL)}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00000091
+                {BigNumber(userWallet[CRYPTO_INDEX["btc"]].amount).toFormat(
+                  8,
+                  FORMAT_DECIMAL
+                )}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00000000
+                {BigNumber(userWallet[CRYPTO_INDEX["btc"]].inOrder).toFormat(
+                  8,
+                  FORMAT_DECIMAL
+                )}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                ≈ $8.35
+                ≈ $
+                {BigNumber(
+                  getTotal("btc") * Number(getCurPrice[1].price)
+                ).toFormat(8, FORMAT_DECIMAL)}
               </div>
             </div>
 
@@ -134,25 +277,34 @@ const SettingContainer = ({ match, ...props }) => {
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                129.33490000
+                {BigNumber(getTotal("ada")).toFormat(8, FORMAT_DECIMAL)}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                129.33490000
+                {BigNumber(userWallet[CRYPTO_INDEX["ada"]].amount).toFormat(
+                  8,
+                  FORMAT_DECIMAL
+                )}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00000000
+                {BigNumber(userWallet[CRYPTO_INDEX["ada"]].inOrder).toFormat(
+                  8,
+                  FORMAT_DECIMAL
+                )}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                ≈ $158.19
+                ≈ $
+                {BigNumber(
+                  getTotal("ada") * Number(getCurPrice[4].price)
+                ).toFormat(8, FORMAT_DECIMAL)}
               </div>
             </div>
 
@@ -170,25 +322,34 @@ const SettingContainer = ({ match, ...props }) => {
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00138437
+                {BigNumber(getTotal("eth")).toFormat(8, FORMAT_DECIMAL)}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00138437
+                {BigNumber(userWallet[CRYPTO_INDEX["eth"]].amount).toFormat(
+                  8,
+                  FORMAT_DECIMAL
+                )}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00000000
+                {BigNumber(userWallet[CRYPTO_INDEX["eth"]].inOrder).toFormat(
+                  8,
+                  FORMAT_DECIMAL
+                )}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                ≈ $2.54
+                ≈ $
+                {BigNumber(
+                  getTotal("eth") * Number(getCurPrice[2].price)
+                ).toFormat(8, FORMAT_DECIMAL)}
               </div>
             </div>
 
@@ -206,25 +367,34 @@ const SettingContainer = ({ match, ...props }) => {
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00000000
+                {BigNumber(getTotal("bch")).toFormat(8, FORMAT_DECIMAL)}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00000000
+                {BigNumber(userWallet[CRYPTO_INDEX["bch"]].amount).toFormat(
+                  8,
+                  FORMAT_DECIMAL
+                )}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00000000
+                {BigNumber(userWallet[CRYPTO_INDEX["bch"]].inOrder).toFormat(
+                  8,
+                  FORMAT_DECIMAL
+                )}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                ≈ $0.00000000
+                ≈ $
+                {BigNumber(
+                  getTotal("bch") * Number(getCurPrice[6].price)
+                ).toFormat(8, FORMAT_DECIMAL)}
               </div>
             </div>
 
@@ -242,25 +412,34 @@ const SettingContainer = ({ match, ...props }) => {
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00000000
+                {BigNumber(getTotal("dot")).toFormat(8, FORMAT_DECIMAL)}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00000000
+                {BigNumber(userWallet[CRYPTO_INDEX["dot"]].amount).toFormat(
+                  8,
+                  FORMAT_DECIMAL
+                )}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                0.00000000
+                {BigNumber(userWallet[CRYPTO_INDEX["dot"]].inOrder).toFormat(
+                  8,
+                  FORMAT_DECIMAL
+                )}
               </div>
               <div
                 className="label white text-right"
                 style={{ minWidth: "126px" }}
               >
-                ≈ $0.00000000
+                ≈ $
+                {BigNumber(
+                  getTotal("dot") * Number(getCurPrice[8].price)
+                ).toFormat(8, FORMAT_DECIMAL)}
               </div>
             </div>
           </CryptoBalance>
@@ -278,37 +457,49 @@ const SettingContainer = ({ match, ...props }) => {
                     <div className="label gray" style={{ minWidth: "164px" }}>
                       Name:
                     </div>
-                    <div className="label white">Kittipat Dechkul</div>
+                    <div className="label white">
+                      {userInfo.firstName} {userInfo.lastName}
+                    </div>
                   </div>
                   <div className="content-row mgb-8">
                     <div className="label gray" style={{ minWidth: "164px" }}>
                       Telephone:
                     </div>
-                    <div className="label white">+6 ••• ••• •• 90</div>
+                    <div className="label white">{userInfo.phone}</div>
                   </div>
                   <div className="content-row mgb-8">
                     <div className="label gray" style={{ minWidth: "164px" }}>
                       Email:
                     </div>
-                    <div className="label white">kittipat2544@gmail.com</div>
+                    <div className="label white">{userInfo.email}</div>
                   </div>
                   <div className="content-row mgb-8">
                     <div className="label gray" style={{ minWidth: "164px" }}>
                       Gender:
                     </div>
-                    <div className="label white">Male</div>
+                    <div className="label white">
+                      {userInfo.gender === "0"
+                        ? "Male"
+                        : userInfo.gender === "1"
+                        ? "Female"
+                        : "Other"}
+                    </div>
                   </div>
                   <div className="content-row mgb-8">
                     <div className="label gray" style={{ minWidth: "164px" }}>
                       Birthdate:
                     </div>
-                    <div className="label white">20 January 2001</div>
+                    <div className="label white">
+                      {moment(Number(userInfo.birthDate)).format("D MMMM YYYY")}
+                    </div>
                   </div>
                   <div className="content-row mgb-8">
                     <div className="label gray" style={{ minWidth: "164px" }}>
                       Nationality
                     </div>
-                    <div className="label white">Thai</div>
+                    <div className="label white">
+                      {userInfo.nationality || "Thai"}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -325,7 +516,7 @@ const SettingContainer = ({ match, ...props }) => {
                     <div className="label gray" style={{ minWidth: "164px" }}>
                       Province:
                     </div>
-                    <div className="label white">Bangkok</div>
+                    <div className="label white">{userInfo.city}</div>
                   </div>
                   <div className="content-row mgb-8">
                     <div className="label gray" style={{ minWidth: "164px" }}>
@@ -337,7 +528,7 @@ const SettingContainer = ({ match, ...props }) => {
                     <div className="label gray" style={{ minWidth: "164px" }}>
                       Address
                     </div>
-                    <div className="label white">1/98 The cube . . . .</div>
+                    <div className="label white">{userInfo.address}</div>
                   </div>
                 </div>
               </div>

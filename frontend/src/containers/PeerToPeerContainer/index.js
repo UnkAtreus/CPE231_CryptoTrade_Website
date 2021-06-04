@@ -23,6 +23,8 @@ import {
 import { useQuery, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
 
+import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
+
 const PeerToPeerContainer = ({ match, ...props }) => {
   const [coinSymbol, setCoinSymbol] = useState([
     {
@@ -36,6 +38,7 @@ const PeerToPeerContainer = ({ match, ...props }) => {
   );
   const [payMentMethod, setPayMentMethod] = useState("Bank account");
   const [cryptoAmount, setCryptoAmount] = useState();
+  const [userWallet, setUserWallet] = useState(MOCK_WALLET);
 
   const depositType = match.params.type
     ? match.params.type.toLowerCase()
@@ -82,6 +85,13 @@ const PeerToPeerContainer = ({ match, ...props }) => {
         email
         password
       }
+      getUserWalletByToken {
+        amount
+        currency {
+          currency
+          currencyLongName
+        }
+      }
     }
   `;
 
@@ -93,6 +103,9 @@ const PeerToPeerContainer = ({ match, ...props }) => {
     }
     if (data && data.getUserByToken) {
       console.log(data.getUserByToken);
+    }
+    if (data && data.getUserWalletByToken) {
+      setUserWallet(data.getUserWalletByToken);
     }
   }, [data]);
 
@@ -145,7 +158,8 @@ const PeerToPeerContainer = ({ match, ...props }) => {
                       <div className="label gray">Total balance:</div>
                       <div className="label white">
                         {BigNumber(
-                          MOCK_USER_CURRENCY[curSymbol.toLowerCase()]
+                          userWallet[CRYPTO_INDEX[curSymbol.toLowerCase()]]
+                            .amount
                         ).toFormat(FORMAT_DECIMAL) +
                           " " +
                           curSymbol.toUpperCase()}
@@ -155,7 +169,8 @@ const PeerToPeerContainer = ({ match, ...props }) => {
                       <div className="label gray">Available balance:</div>
                       <div className="label white">
                         {BigNumber(
-                          MOCK_USER_CURRENCY[curSymbol.toLowerCase()]
+                          userWallet[CRYPTO_INDEX[curSymbol.toLowerCase()]]
+                            .amount
                         ).toFormat(FORMAT_DECIMAL) +
                           " " +
                           curSymbol.toUpperCase()}
@@ -188,7 +203,7 @@ const PeerToPeerContainer = ({ match, ...props }) => {
               <div className="text-9 gray mgr-8">Available amount:</div>
               <div className="text-9 white">
                 {BigNumber(
-                  MOCK_USER_CURRENCY[curSymbol.toLowerCase()]
+                  userWallet[CRYPTO_INDEX[curSymbol.toLowerCase()]].amount
                 ).toFormat(FORMAT_DECIMAL)}{" "}
                 {curSymbol || "USD"}
               </div>
