@@ -71,6 +71,10 @@ export class TransactionFiat {
   @Column()
   totalBalanceLeft?: string;
 
+  @Field(() => String)
+  @Column({ default: '0' })
+  fee?: string;
+
   //   @OneToMany(() => User, (user) => user.role)
   //   user: User[];
 }

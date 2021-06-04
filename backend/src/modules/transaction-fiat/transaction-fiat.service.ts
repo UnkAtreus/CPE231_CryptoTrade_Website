@@ -37,13 +37,14 @@ export class TransactionFiatService {
 
     console.log(wallet.amount);
     const temp1 = Number(wallet.amount);
-    const temp2 = Number(fiat.amount);
+    const temp2 = Number(input.amount);
     let result = 0;
 
     if (input.method == TranasctionMethod.Deposit) {
       result = temp1 + temp2;
     } else {
       result = temp1 - temp2;
+      fiat.fee = String(temp2 * 0.001);
       if (result < 0) {
         throw NotEnoughBalanceInWallet;
       }

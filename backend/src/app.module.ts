@@ -22,6 +22,7 @@ import { P2PModule } from './modules/p2p/p2p.module';
 import { DownloadResolver } from './modules/uploadfile/download.resolver';
 import { AppController } from './app.controller';
 import { VerificationModule } from './modules/verification/verification.module';
+import { RoleModule } from './modules/role/role.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { VerificationModule } from './modules/verification/verification.module';
     TransactionCryptoModule,
     P2PModule,
     VerificationModule,
+    RoleModule,
     // TestsocketModule,
   ],
   controllers: [AppController],
