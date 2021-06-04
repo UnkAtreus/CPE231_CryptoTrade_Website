@@ -112,6 +112,19 @@ export class OrderService implements OnApplicationBootstrap {
       throw Unauthorized;
     }
   }
+  async getOrderAll(): Promise<Order[]> {
+    return await this.repoService.orderRepo.find({
+      relations: [
+        'walletFrom',
+        'walletTo',
+        'walletFrom.currency',
+        'walletTo.currency',
+      ],
+      order :{
+        created_at: 'DESC',
+      }
+    });
+  }
   async getOrderByUserId(user: User): Promise<Order[]> {
     return await this.repoService.orderRepo.find({
       where: {
@@ -123,6 +136,9 @@ export class OrderService implements OnApplicationBootstrap {
         'walletFrom.currency',
         'walletTo.currency',
       ],
+      order :{
+        created_at: 'DESC',
+      }
     });
   }
   async fillOrder(orderId: number): Promise<Order> {

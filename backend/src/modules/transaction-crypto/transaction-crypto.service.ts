@@ -59,7 +59,11 @@ export class TransactionCryptoService {
     return await this.repoService.transactionCryptoRepo.findOne(id);
   }
   async getAllCrypto(): Promise<TransactionCrypto[]> {
-    return await this.repoService.transactionCryptoRepo.find();
+    return await this.repoService.transactionCryptoRepo.find({
+      order :{
+        created_at: 'DESC',
+      }
+    });
   }
 
   async getAllCryptoByUser(user: User): Promise<TransactionCrypto[]> {
@@ -67,6 +71,9 @@ export class TransactionCryptoService {
       where: {
         user: user.id,
       },
+      order :{
+        created_at: 'DESC',
+      }
     });
   }
   async updateCrypto(
