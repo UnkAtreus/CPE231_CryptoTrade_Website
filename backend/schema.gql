@@ -26,6 +26,7 @@ type Order {
   price: String
   amount: String
   totalBalance: String
+  fee: String
   cancel: Boolean
   filled: Boolean
   created_at: DateTime
@@ -151,6 +152,7 @@ type Query {
   getAllUser: [User!]!
   login(login: LoginInput!): TokenRole!
   getUserByToken: User!
+  registerCount(date: DateTime): Float!
   getAllWallet: [Wallet!]!
   getUserWalletByToken: [Wallet!]!
   getWalletById(id: ID!): Wallet!
