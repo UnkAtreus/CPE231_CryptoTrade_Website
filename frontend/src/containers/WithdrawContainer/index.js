@@ -229,6 +229,7 @@ const WithdrawContainer = ({ match, ...props }) => {
 
   const sortHistory = (fiat, crypto) => {
     var concat_array = fiat.concat(crypto);
+    console.log(concat_array);
 
     var sort = sortArray(concat_array, {
       by: "created_at",
@@ -607,7 +608,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                           className="label white text-center"
                           style={{ minWidth: "96px" }}
                         >
-                          {items.bank}
+                          {items.status || "0"}
                         </div>
                         <div
                           className={ClassNames(
