@@ -23,9 +23,10 @@ import {
   TabWithLink,
   TabPane,
 } from "components";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useMutation, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
 import { num_list } from "helpers/constants/numList";
+import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
 
 const DeopsitContainer = ({ match, ...props }) => {
   const [coinSymbol, setCoinSymbol] = useState([
@@ -41,7 +42,14 @@ const DeopsitContainer = ({ match, ...props }) => {
   const [monthExpiry, setMonthExpiry] = useState("1");
   const [yearExpiry, setYearExpiry] = useState("21");
   const [payMentMethod, setPayMentMethod] = useState("Bank account");
+  const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [bankAmount, setBankAmount] = useState(0);
+  const [orderParam, setOrderParam] = useState({
+    method: 0,
+    amount: 4000,
+    bankNumber: "",
+    bankType: "",
+  });
 
   const depositType = match.params.type
     ? match.params.type.toLowerCase()
@@ -84,14 +92,47 @@ const DeopsitContainer = ({ match, ...props }) => {
         currency
         currencyLongName
       }
+      getUserWalletByToken {
+        amount
+        currency {
+          currency
+          currencyLongName
+        }
+      }
+    }
+  `;
+
+  const CREATE_ORDER = gql`
+    mutation ($input: FiatInput!) {
+      createFiat(fiatInput: $input) {
+        wallet {
+          amount
+        }
+      }
     }
   `;
 
   const { loading, error, data } = useQuery(GET_ALL_SYMBOL);
 
+  const [createOrder] = useMutation(CREATE_ORDER, {
+    onCompleted(order) {
+      // {registerUser:
+      //  { role: "customer",
+      //    token: "" }}
+      if (order) {
+        console.log(order);
+        // history.push("/login");
+        // window.location.reload();
+      }
+    },
+  });
+
   useEffect(() => {
     if (data && data.getAllCurrencyWithNoStatic) {
       setCoinSymbol(data.getAllCurrencyWithNoStatic);
+    }
+    if (data && data.getUserWalletByToken) {
+      setUserWallet(data.getUserWalletByToken);
     }
   }, [data]);
 
@@ -144,7 +185,8 @@ const DeopsitContainer = ({ match, ...props }) => {
                       <div className="label gray">Total balance:</div>
                       <div className="label white">
                         {BigNumber(
-                          MOCK_USER_CURRENCY[curSymbol.toLowerCase()]
+                          userWallet[CRYPTO_INDEX[curSymbol.toLowerCase()]]
+                            .amount
                         ).toFormat(FORMAT_DECIMAL) +
                           " " +
                           curSymbol.toUpperCase()}
@@ -154,7 +196,8 @@ const DeopsitContainer = ({ match, ...props }) => {
                       <div className="label gray">Available balance:</div>
                       <div className="label white">
                         {BigNumber(
-                          MOCK_USER_CURRENCY[curSymbol.toLowerCase()]
+                          userWallet[CRYPTO_INDEX[curSymbol.toLowerCase()]]
+                            .amount
                         ).toFormat(FORMAT_DECIMAL) +
                           " " +
                           curSymbol.toUpperCase()}
@@ -217,18 +260,18 @@ const DeopsitContainer = ({ match, ...props }) => {
                     <div className="content-row space-between mgb-8">
                       <div className="label gray">Total balance:</div>
                       <div className="label white">
-                        {BigNumber(MOCK_USER_CURRENCY["usdt"]).toFormat(
-                          FORMAT_DECIMAL
-                        )}{" "}
+                        {BigNumber(
+                          userWallet[CRYPTO_INDEX["usdt"]].amount
+                        ).toFormat(FORMAT_DECIMAL)}{" "}
                         USDT
                       </div>
                     </div>
                     <div className="content-row space-between mgb-8">
                       <div className="label gray">Available balance:</div>
                       <div className="label white">
-                        {BigNumber(MOCK_USER_CURRENCY["usdt"]).toFormat(
-                          FORMAT_DECIMAL
-                        )}{" "}
+                        {BigNumber(
+                          userWallet[CRYPTO_INDEX["usdt"]].amount
+                        ).toFormat(FORMAT_DECIMAL)}{" "}
                         USDT
                       </div>
                     </div>
@@ -243,7 +286,12 @@ const DeopsitContainer = ({ match, ...props }) => {
           <DepositDetail>
             {depositType === "fiat" ? (
               payMentMethod === "Bank account" ? (
-                <>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    createOrder({ variables: { input: orderParam } });
+                  }}
+                >
                   <div className="title white mgb-8">Payment details</div>
                   <Input
                     title="Amount"
@@ -251,6 +299,10 @@ const DeopsitContainer = ({ match, ...props }) => {
                     value={bankAmount}
                     onChange={(e) => {
                       setBankAmount(e);
+                      setOrderParam({
+                        ...orderParam,
+                        amount: Number(e),
+                      });
                     }}
                   ></Input>
                   <div className="content-row space-between mgb-8">
@@ -276,7 +328,10 @@ const DeopsitContainer = ({ match, ...props }) => {
                       style={{ marginTop: "12px" }}
                       active="Kbank"
                       onChange={(e) => {
-                        console.log(e);
+                        setOrderParam({
+                          ...orderParam,
+                          bankType: e,
+                        });
                       }}
                       isSelect={true}
                       isHeightAuto={true}
@@ -292,7 +347,10 @@ const DeopsitContainer = ({ match, ...props }) => {
                     title="Bank Number"
                     placeholder="xxx-xxxx-xxxx-x"
                     onChange={(e) => {
-                      console.log(e);
+                      setOrderParam({
+                        ...orderParam,
+                        bankNumber: e,
+                      });
                     }}
                   ></Input>
                   <Button
@@ -301,7 +359,7 @@ const DeopsitContainer = ({ match, ...props }) => {
                     color="green"
                     fontColor="black"
                   />
-                </>
+                </form>
               ) : (
                 <>
                   <div className="title white mgb-8">Payment details</div>
