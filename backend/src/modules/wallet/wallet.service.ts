@@ -77,15 +77,17 @@ export class WalletService {
     inOrder: number,
     amount: number,
   ): Promise<Wallet[]> {
-    const wallet = await this.getWalletById(walletIDTarget);
+    const walletTarget = await this.getWalletById(walletIDTarget);
     const walletInOrder = await this.getWalletById(walletIDorder);
-    wallet.amount = String(Number(wallet.amount) + Number(amount));
+
+    walletTarget.amount = String(Number(walletTarget.amount) + Number(amount));
     walletInOrder.inOrder = String(
-      Number(walletInOrder.inOrder) - Number(amount),
+      Number(walletInOrder.inOrder) - Number(inOrder),
     );
-    // wallet.amount += amount;
-    // wallet.inOrder -= inOrder;
-    return await this.repoService.walletRepo.save([wallet, walletInOrder]);
+    return await this.repoService.walletRepo.save([
+      walletTarget,
+      walletInOrder,
+    ]);
   }
 
   async Sell(walletIDFrom: number, amount: number): Promise<Wallet[]> {
