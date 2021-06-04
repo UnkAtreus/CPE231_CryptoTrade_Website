@@ -21,7 +21,10 @@ const LoginContainer = ({ match, ...props }) => {
 
   const POST_LOGIN = gql`
     query ($input: LoginInput!) {
-      login(login: $input)
+      login(login: $input) {
+        token
+        role
+      }
     }
   `;
   const { loading, error, data } = useQuery(POST_LOGIN, {

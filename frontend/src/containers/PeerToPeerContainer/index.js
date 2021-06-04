@@ -78,6 +78,10 @@ const PeerToPeerContainer = ({ match, ...props }) => {
         currency
         currencyLongName
       }
+      getUserByToken {
+        email
+        password
+      }
     }
   `;
 
@@ -86,6 +90,9 @@ const PeerToPeerContainer = ({ match, ...props }) => {
   useEffect(() => {
     if (data && data.getAllCurrencyWithNoStatic) {
       setCoinSymbol(data.getAllCurrencyWithNoStatic);
+    }
+    if (data && data.getUserByToken) {
+      console.log(data.getUserByToken);
     }
   }, [data]);
 

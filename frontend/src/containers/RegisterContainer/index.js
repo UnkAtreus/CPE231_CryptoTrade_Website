@@ -72,7 +72,7 @@ const RegisterContainer = ({ match, ...props }) => {
   };
 
   useEffect(() => {
-    console.log(profileParams);
+    // console.log(profileParams);
     setParams({
       ...userParams,
       profileInput: profileParams,
@@ -80,7 +80,7 @@ const RegisterContainer = ({ match, ...props }) => {
   }, [profileParams]);
 
   useEffect(() => {
-    console.log(userParams);
+    // console.log(userParams);
     setParams({
       ...userParams,
       profileInput: profileParams,
@@ -89,7 +89,10 @@ const RegisterContainer = ({ match, ...props }) => {
 
   const CREATE_USER = gql`
     mutation RegisterUser($input: RegisterInput!) {
-      registerUser(registerInput: $input)
+      registerUser(registerInput: $input) {
+        token
+        role
+      }
     }
   `;
 
@@ -113,23 +116,27 @@ const RegisterContainer = ({ match, ...props }) => {
     .fill("")
     .map((_v, idx) => now - idx);
 
-  const [createPost, { loading, error }] = useMutation(CREATE_USER);
+  const [createPost, { loading, error }] = useMutation(CREATE_USER, {
+    onCompleted(login) {
+      // {registerUser:
+      //  { role: "customer",
+      //    token: "" }}
+      if (login) {
+        history.push("/login");
+        window.location.reload();
+      }
+    },
+  });
 
   const handleCreatePost = (event) => {
     event.preventDefault();
     createPost({ variables: { input: params } });
-    console.log("DONE");
-    if (error) {
-      console.log("FINISH");
-      history.push("/login");
-      window.location.reload();
-    }
   };
 
   useEffect(() => {
-    console.log(birthDate);
+    // console.log(birthDate);
     var string = birthDate.year + "-" + birthDate.month + "-" + birthDate.day;
-    console.log(string);
+    // console.log(string);
     var date = moment(string).format("YYYY-MM-DDThh:mm:ss[Z]");
     setProfileParams({
       ...profileParams,

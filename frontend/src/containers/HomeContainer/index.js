@@ -22,7 +22,21 @@ import { marketController } from "apiService";
 import ClassNames from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import BigNumber from "bignumber.js";
-import { isEqualType } from "graphql";
+import { useQuery, gql } from "@apollo/client";
+
+import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
+
+const GET_ALL_DATA = gql`
+  query {
+    getUserWalletByToken {
+      amount
+      currency {
+        currency
+        currencyLongName
+      }
+    }
+  }
+`;
 
 const constants = {
   lastUpdateId: 10299107955,
@@ -53,6 +67,7 @@ const HomeContainer = (props) => {
   const [valueTotalBuyMarket, setValueTotalBuyMarket] = useState(0);
   const [valueAmountSellMarket, setValueAmountSellMarket] = useState(0);
   const [valueTotalSellMarket, setValueTotalSellMarket] = useState(0);
+  const [userWallet, setUserWallet] = useState(MOCK_WALLET);
 
   const MOCK_USER_CURRENCY = {
     btc: 0.00000091,
@@ -117,6 +132,8 @@ const HomeContainer = (props) => {
 
   const dispatch = useDispatch();
   const arg = useSelector((state) => state, isEqual);
+
+  const { loading, error, data } = useQuery(GET_ALL_DATA);
 
   const GetPrice = async () => {
     const crypto_price = await marketController().getPrice(
@@ -197,12 +214,14 @@ const HomeContainer = (props) => {
       case "step":
         setValueAmountSell(
           BigNumber(
-            MOCK_USER_CURRENCY[cryptoSymbol.toLowerCase()] * 0.25 * data
+            userWallet[CRYPTO_INDEX[cryptoSymbol.toLowerCase()]].amount *
+              0.25 *
+              data
           ).toFormat(2, FORMAT_DECIMAL)
         );
         setValueTotalSell(
           BigNumber(
-            MOCK_USER_CURRENCY[cryptoSymbol.toLowerCase()] *
+            userWallet[CRYPTO_INDEX[cryptoSymbol.toLowerCase()]].amount *
               0.25 *
               data *
               priceSell
@@ -234,14 +253,13 @@ const HomeContainer = (props) => {
         break;
       case "step":
         setValueAmountBuy(
-          BigNumber(MOCK_USER_CURRENCY["usdt"] * 0.25 * data).toFormat(
-            2,
-            FORMAT_DECIMAL
-          )
+          BigNumber(
+            userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data
+          ).toFormat(2, FORMAT_DECIMAL)
         );
         setValueTotalBuy(
           BigNumber(
-            MOCK_USER_CURRENCY["usdt"] * 0.25 * data * priceBuy
+            userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data * priceBuy
           ).toFormat(2, FORMAT_DECIMAL)
         );
         break;
@@ -265,16 +283,17 @@ const HomeContainer = (props) => {
         break;
       case "stepbuy":
         setValueAmountBuyMarket(
-          BigNumber(MOCK_USER_CURRENCY["usdt"] * 0.25 * data).toFormat(
-            2,
-            FORMAT_DECIMAL
-          )
+          BigNumber(
+            userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data
+          ).toFormat(2, FORMAT_DECIMAL)
         );
         break;
       case "stepsell":
         setValueAmountSellMarket(
           BigNumber(
-            MOCK_USER_CURRENCY[cryptoSymbol.toLowerCase()] * 0.25 * data
+            userWallet[CRYPTO_INDEX[cryptoSymbol.toLowerCase()]].amount *
+              0.25 *
+              data
           ).toFormat(2, FORMAT_DECIMAL)
         );
         break;
@@ -293,6 +312,12 @@ const HomeContainer = (props) => {
       _disconnectSocketStreams(this.streams.map((i) => `${SYMBOL}${i}`));
     };
   }, []);
+
+  useEffect(() => {
+    if (data && data.getUserWalletByToken) {
+      setUserWallet(data.getUserWalletByToken);
+    }
+  }, [data]);
 
   const convertTime = (date) => {
     return Intl.DateTimeFormat("en-US", {
@@ -887,9 +912,9 @@ const HomeContainer = (props) => {
                         <div className="title white">Buy {cryptoSymbol}</div>
                         <div className="content-row">
                           <div className="label gray">
-                            {BigNumber(MOCK_USER_CURRENCY["usdt"]).toFormat(
-                              FORMAT_DECIMAL
-                            )}
+                            {BigNumber(
+                              userWallet[CRYPTO_INDEX["usdt"]].amount
+                            ).toFormat(FORMAT_DECIMAL)}
                           </div>
                           <div className="label gray mgl-8">USDT</div>
                         </div>
@@ -936,7 +961,9 @@ const HomeContainer = (props) => {
                         <div className="content-row">
                           <div className="label gray">
                             {BigNumber(
-                              MOCK_USER_CURRENCY[cryptoSymbol.toLowerCase()]
+                              userWallet[
+                                CRYPTO_INDEX[cryptoSymbol.toLowerCase()]
+                              ].amount
                             ).toFormat(FORMAT_DECIMAL)}
                           </div>
                           <div className="label gray mgl-8">{cryptoSymbol}</div>
@@ -989,9 +1016,9 @@ const HomeContainer = (props) => {
                         <div className="title white">Buy {cryptoSymbol}</div>
                         <div className="content-row">
                           <div className="label gray">
-                            {BigNumber(MOCK_USER_CURRENCY["usdt"]).toFormat(
-                              FORMAT_DECIMAL
-                            )}
+                            {BigNumber(
+                              userWallet[CRYPTO_INDEX["usdt"]].amount
+                            ).toFormat(FORMAT_DECIMAL)}
                           </div>
                           <div className="label gray mgl-8">USDT</div>
                         </div>
@@ -1021,7 +1048,9 @@ const HomeContainer = (props) => {
                         <div className="content-row">
                           <div className="label gray">
                             {BigNumber(
-                              MOCK_USER_CURRENCY[cryptoSymbol.toLowerCase()]
+                              userWallet[
+                                CRYPTO_INDEX[cryptoSymbol.toLowerCase()]
+                              ].amount
                             ).toFormat(FORMAT_DECIMAL)}
                           </div>
                           <div className="label gray mgl-8">{cryptoSymbol}</div>
@@ -1165,8 +1194,19 @@ const HomeContainer = (props) => {
                     <div className="label gray">TetherUS</div>
                   </div>
                   <div className="content-column text-right">
-                    <div className="paragraph">49657.01</div>
-                    <div className="label gray">$ 49657.01</div>
+                    <div className="paragraph">
+                      {BigNumber(userWallet[5].amount).toFormat(
+                        2,
+                        FORMAT_DECIMAL
+                      )}
+                    </div>
+                    <div className="label gray">
+                      ${" "}
+                      {BigNumber(userWallet[5].amount).toFormat(
+                        2,
+                        FORMAT_DECIMAL
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1186,7 +1226,12 @@ const HomeContainer = (props) => {
                       <div className="text-9">Bitcoin</div>
                     </div>
                   </div>
-                  <div className="label">0.00000091</div>
+                  <div className="label">
+                    {BigNumber(userWallet[0].amount).toFormat(
+                      3,
+                      FORMAT_DECIMAL
+                    )}
+                  </div>
                 </div>
 
                 <div className="content-row space-between align-items-center  mgb-8">
@@ -1199,7 +1244,12 @@ const HomeContainer = (props) => {
                       <div className="text-9">Cardano</div>
                     </div>
                   </div>
-                  <div className="label">129.33490000</div>
+                  <div className="label">
+                    {BigNumber(userWallet[1].amount).toFormat(
+                      3,
+                      FORMAT_DECIMAL
+                    )}
+                  </div>
                 </div>
 
                 <div className="content-row space-between align-items-center  mgb-8">
@@ -1212,7 +1262,12 @@ const HomeContainer = (props) => {
                       <div className="text-9">Ethereum</div>
                     </div>
                   </div>
-                  <div className="label">0.00138437</div>
+                  <div className="label">
+                    {BigNumber(userWallet[2].amount).toFormat(
+                      3,
+                      FORMAT_DECIMAL
+                    )}
+                  </div>
                 </div>
 
                 <div className="content-row space-between align-items-center  mgb-8">
@@ -1225,7 +1280,12 @@ const HomeContainer = (props) => {
                       <div className="text-9">Bitcoin Cash</div>
                     </div>
                   </div>
-                  <div className="label">0.000</div>
+                  <div className="label">
+                    {BigNumber(userWallet[3].amount).toFormat(
+                      3,
+                      FORMAT_DECIMAL
+                    )}
+                  </div>
                 </div>
 
                 <div className="content-row space-between align-items-center  mgb-8">
@@ -1238,7 +1298,12 @@ const HomeContainer = (props) => {
                       <div className="text-9">Polkadot</div>
                     </div>
                   </div>
-                  <div className="label">0.000</div>
+                  <div className="label">
+                    {BigNumber(userWallet[4].amount).toFormat(
+                      3,
+                      FORMAT_DECIMAL
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

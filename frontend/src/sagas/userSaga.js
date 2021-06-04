@@ -37,8 +37,8 @@ export function* loginEffect(action) {
   try {
     console.log(action.data.redirect);
     const { redirect } = action.data;
-    if (action.data.login) {
-      yield call(handleItem, "access-token", action.data.login); // SET_LOCALSTORE
+    if (action.data.login.token) {
+      yield call(handleItem, "access-token", action.data.login.token); // SET_LOCALSTORE
       redirect();
     }
   } catch (loginError) {

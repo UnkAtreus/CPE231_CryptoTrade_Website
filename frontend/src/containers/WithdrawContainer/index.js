@@ -26,6 +26,8 @@ import {
 import { useQuery, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
 
+import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
+
 const WithdrawContainer = ({ match, ...props }) => {
   const [coinSymbol, setCoinSymbol] = useState([
     {
@@ -35,14 +37,15 @@ const WithdrawContainer = ({ match, ...props }) => {
     },
   ]);
   const [curSymbol, setCurSymbol] = useState(
-    match.params.type.toLowerCase() === "fiat" ? "USD" : "BTC"
+    match.params.type.toLowerCase() === "fiat" ? "usd" : "btc"
   );
+
   const [payMentMethod, setPayMentMethod] = useState("Bank account");
   const [bankAmount, setBankAmount] = useState();
-
-  const withdrawType = match.params.type
-    ? match.params.type.toLowerCase()
-    : "crypto";
+  const [userWallet, setUserWallet] = useState(MOCK_WALLET);
+  const [withdrawType, setWithdrawType] = useState(
+    match.params.type.toLowerCase() === "fiat" ? "fiat" : "crypto"
+  );
 
   const MOCK_USER_CURRENCY = {
     btc: 0.00000091,
@@ -81,16 +84,48 @@ const WithdrawContainer = ({ match, ...props }) => {
         currency
         currencyLongName
       }
+      getUserWalletByToken {
+        amount
+        currency {
+          currency
+          currencyLongName
+        }
+      }
     }
   `;
 
   const { loading, error, data } = useQuery(GET_ALL_SYMBOL);
 
+  const setURLType = (symbol) => {
+    console.log(symbol);
+    switch (symbol) {
+      case "crypto":
+        setWithdrawType("crypto");
+        setCurSymbol("btc");
+        break;
+      case "fiat":
+        setWithdrawType("fiat");
+        setCurSymbol("usd");
+        break;
+      default:
+        setWithdrawType("crypto");
+        setCurSymbol("btc");
+        break;
+    }
+  };
+
   useEffect(() => {
     if (data && data.getAllCurrencyWithNoStatic) {
       setCoinSymbol(data.getAllCurrencyWithNoStatic);
     }
+    if (data && data.getUserWalletByToken) {
+      setUserWallet(data.getUserWalletByToken);
+    }
   }, [data]);
+
+  useEffect(() => {
+    setURLType(match.params.type.toLowerCase());
+  }, []);
 
   return (
     <WithdrawStyled>
@@ -103,7 +138,7 @@ const WithdrawContainer = ({ match, ...props }) => {
         </SubHeader>
         <div className="content-row">
           <WithdrawType>
-            <TabWithLink active={withdrawType.toLowerCase()}>
+            <TabWithLink active={withdrawType}>
               <TabPane name="Crypto" link="/withdraw/crypto">
                 <WithdrawTypeContainer>
                   <div className="content-column Input-container">
@@ -118,8 +153,8 @@ const WithdrawContainer = ({ match, ...props }) => {
                       </div>
                       <Dropdown
                         style={{ marginTop: "12px" }}
-                        active={curSymbol || "BTC"}
-                        onChange={setCurSymbol}
+                        active={curSymbol.toUpperCase() || "BTC"}
+                        onChange={(e) => setCurSymbol(e.toLowerCase())}
                         isSelect={true}
                         isHeightAuto={true}
                       >
@@ -141,7 +176,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                       <div className="label gray">Total balance:</div>
                       <div className="label white">
                         {BigNumber(
-                          MOCK_USER_CURRENCY[curSymbol.toLowerCase()]
+                          userWallet[CRYPTO_INDEX[curSymbol]].amount
                         ).toFormat(FORMAT_DECIMAL) +
                           " " +
                           curSymbol.toUpperCase()}
@@ -151,13 +186,14 @@ const WithdrawContainer = ({ match, ...props }) => {
                       <div className="label gray">Available balance:</div>
                       <div className="label white">
                         {BigNumber(
-                          MOCK_USER_CURRENCY[curSymbol.toLowerCase()]
+                          userWallet[CRYPTO_INDEX[curSymbol]].amount
                         ).toFormat(FORMAT_DECIMAL) +
                           " " +
                           curSymbol.toUpperCase()}
                       </div>
                     </div>
                   </div>
+
                   <div className="content-row pic-container">
                     <div className="pic-overlay cypto"></div>
                   </div>
@@ -177,8 +213,8 @@ const WithdrawContainer = ({ match, ...props }) => {
                       </div>
                       <Dropdown
                         style={{ marginTop: "12px" }}
-                        active={curSymbol || "USD"}
-                        onChange={setCurSymbol}
+                        active={curSymbol.toUpperCase() || "USD"}
+                        onChange={(e) => setCurSymbol(e.toLowerCase())}
                         isSelect={true}
                         isHeightAuto={true}
                       >
@@ -212,18 +248,18 @@ const WithdrawContainer = ({ match, ...props }) => {
                     <div className="content-row space-between mgb-8">
                       <div className="label gray">Total balance:</div>
                       <div className="label white">
-                        {BigNumber(MOCK_USER_CURRENCY["usdt"]).toFormat(
-                          FORMAT_DECIMAL
-                        )}{" "}
+                        {BigNumber(
+                          userWallet[CRYPTO_INDEX["usdt"]].amount
+                        ).toFormat(FORMAT_DECIMAL)}{" "}
                         USDT
                       </div>
                     </div>
                     <div className="content-row space-between mgb-8">
                       <div className="label gray">Available balance:</div>
                       <div className="label white">
-                        {BigNumber(MOCK_USER_CURRENCY["usdt"]).toFormat(
-                          FORMAT_DECIMAL
-                        )}{" "}
+                        {BigNumber(
+                          userWallet[CRYPTO_INDEX["usdt"]].amount
+                        ).toFormat(FORMAT_DECIMAL)}{" "}
                         USDT
                       </div>
                     </div>
@@ -241,7 +277,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                 <div className="title white mgb-8">Payment details</div>
                 <Input
                   title="Amount"
-                  suffix={curSymbol || "USD"}
+                  suffix={curSymbol.toUpperCase() || "USD"}
                   value={bankAmount}
                   onChange={(e) => {
                     setBankAmount(e);
@@ -249,7 +285,9 @@ const WithdrawContainer = ({ match, ...props }) => {
                 ></Input>
                 <div className="content-row space-between mgb-8">
                   <div className="label gray">Fee:</div>
-                  <div className="label white">0 {curSymbol || "USD"}</div>
+                  <div className="label white">
+                    0 {curSymbol.toUpperCase() || "USD"}
+                  </div>
                 </div>
                 <div className="content-row space-between mgb-8">
                   <div className="label gray">You will get:</div>
@@ -300,8 +338,8 @@ const WithdrawContainer = ({ match, ...props }) => {
               <>
                 <div className="title white mgb-8">Withdrawal info</div>
                 <Input
-                  title={"Recipient's " + curSymbol + " Address"}
-                  placeholder={curSymbol + " Address"}
+                  title={"Recipient's " + curSymbol.toUpperCase() + " Address"}
+                  placeholder={curSymbol.toUpperCase() + " Address"}
                   value={""}
                   onChange={(e) => {
                     console.log(e);
@@ -309,7 +347,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                 />
                 <Input
                   title="Amount"
-                  suffix={curSymbol || "USD"}
+                  suffix={curSymbol.toUpperCase() || "USD"}
                   value={bankAmount}
                   onChange={(e) => {
                     setBankAmount(e);
@@ -319,15 +357,17 @@ const WithdrawContainer = ({ match, ...props }) => {
                   <div className="text-9 gray mgr-8">Available amount:</div>
                   <div className="text-9 white">
                     {BigNumber(
-                      MOCK_USER_CURRENCY[curSymbol.toLowerCase()]
+                      userWallet[CRYPTO_INDEX[curSymbol]].amount
                     ).toFormat(FORMAT_DECIMAL) +
                       " " +
-                      curSymbol}
+                      curSymbol.toUpperCase()}
                   </div>
                 </div>
                 <div className="content-row space-between mgb-8">
                   <div className="label gray">Transaction Fee: </div>
-                  <div className="label white">0.0005 {curSymbol}</div>
+                  <div className="label white">
+                    0.0005 {curSymbol.toUpperCase()}
+                  </div>
                 </div>
                 <div className="content-row space-between mgb-8">
                   <div className="label gray">The receiver will get:</div>
@@ -338,7 +378,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                           4,
                           FORMAT_DECIMAL
                         )}{" "}
-                    {curSymbol}
+                    {curSymbol.toUpperCase()}
                   </div>
                 </div>
                 <Button

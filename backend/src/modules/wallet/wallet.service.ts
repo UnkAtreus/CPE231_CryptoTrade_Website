@@ -59,7 +59,10 @@ export class WalletService {
   }
 
   async getWalletByToken(userId: number): Promise<Wallet[]> {
-    return await this.repoService.walletRepo.find({ where: { user: userId } });
+    return await this.repoService.walletRepo.find({
+      where: { user: userId },
+      relations: ['currency'],
+    });
   }
 
   async updateWallet(id: number, amount: number): Promise<Wallet> {

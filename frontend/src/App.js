@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+import { Router, Route, Redirect, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import { getCreateStore } from "store";
 import RouteContainer from "containers/RouteContainer";
@@ -9,6 +9,7 @@ import {
   ApolloClient,
   createHttpLink,
   InMemoryCache,
+  ApolloLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { isLoggedIn } from "./helpers/functions/heplers";
@@ -29,7 +30,6 @@ const httpLink = createHttpLink({
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
   const token = localStorage.getItem("access-token");
-  console.log(token);
   // return the headers to the context so httpLink can read them
   return {
     headers: {
@@ -46,8 +46,6 @@ export const client = new ApolloClient({
     console.log(e);
   },
 });
-
-console.log(client);
 
 const store = getCreateStore();
 
@@ -81,7 +79,7 @@ export const App = (props) => {
     <ApolloProvider client={client}>
       <Provider store={store}>
         {/* <ConnectedRouter history={history}> */}
-        <BrowserRouter history={history}>
+        <Router history={history}>
           <Switch>
             <PrivateRoute
               exact={true}
@@ -120,7 +118,7 @@ export const App = (props) => {
             />
             <Route path={ROUTE_PATH.HOME.LINK} component={HomeContainer} />
           </Switch>
-        </BrowserRouter>
+        </Router>
         {/* </ConnectedRouter> */}
       </Provider>
     </ApolloProvider>
