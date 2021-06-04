@@ -76,6 +76,7 @@ export class TransactionCryptoService {
       order: {
         created_at: 'DESC',
       },
+      relations: ['walet', 'user']
     });
   }
   async updateCrypto(
