@@ -8,6 +8,7 @@ import { User } from 'src/models/object/user.model';
 import CryptoInput from 'src/models/input/crypto.input';
 import { CurrencyService } from '../currency/currency.service';
 import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
+import { NotEnoughBalanceInWallet } from 'src/utils/error-handling';
 
 @Injectable()
 export class TransactionCryptoService {
@@ -45,6 +46,9 @@ export class TransactionCryptoService {
       result = temp1 + temp2;
     } else {
       result = temp1 - temp2;
+      if (result < 0) {
+        throw NotEnoughBalanceInWallet;
+      }
     }
     crypto.totalBalanceLeft = String(result);
     await this.walletService.updateWallet(wallet.id, result);

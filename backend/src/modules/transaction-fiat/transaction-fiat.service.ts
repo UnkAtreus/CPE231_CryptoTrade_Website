@@ -8,6 +8,7 @@ import FiatInput from 'src/models/input/fiat.input';
 import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
 import { WalletService } from '../wallet/wallet.service';
 import { BankService } from '../bank/bank.service';
+import { NotEnoughBalanceInWallet } from 'src/utils/error-handling';
 
 @Injectable()
 export class TransactionFiatService {
@@ -43,6 +44,9 @@ export class TransactionFiatService {
       result = temp1 + temp2;
     } else {
       result = temp1 - temp2;
+      if (result < 0) {
+        throw NotEnoughBalanceInWallet;
+      }
     }
     fiat.totalBalanceLeft = String(result);
     await this.walletService.updateWallet(wallet.id, result);

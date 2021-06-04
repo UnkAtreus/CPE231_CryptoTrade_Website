@@ -12,8 +12,12 @@ import { RepoService } from '../../repo/repo.service';
 import OrderInput from 'src/models/input/order.input';
 import { UserService } from '../user/user.service';
 import { OrderMethod } from 'src/static/enum';
-import { Unauthorized } from '../../utils/error-handling';
+import {
+  NotEnoughBalanceInWallet,
+  Unauthorized,
+} from '../../utils/error-handling';
 import { throws } from 'assert';
+import { User } from 'src/models/object/user.model';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
@@ -54,9 +58,6 @@ export class OrderService implements OnApplicationBootstrap {
       '',
     );
   }
-  async test() {
-    return (this.price += 15);
-  }
 
   async createOrder(userId: number, input: OrderInput): Promise<Order> {
     const user = await this.userService.getUserByToken(userId);
@@ -64,7 +65,9 @@ export class OrderService implements OnApplicationBootstrap {
       userId,
       input.currencyFrom,
     );
-
+    if (Number(walletFrom.amount) < input.amount) {
+      throw NotEnoughBalanceInWallet;
+    }
     const walletTo = await this.walletService.getWalletByCurrency(
       userId,
       input.currencyTo,
@@ -87,7 +90,6 @@ export class OrderService implements OnApplicationBootstrap {
     );
 
     return await this.repoService.orderRepo.save(order);
-    // return;
   }
   async getOrderById(orderId: number): Promise<Order> {
     return await this.repoService.orderRepo.findOne(orderId, {
@@ -106,6 +108,19 @@ export class OrderService implements OnApplicationBootstrap {
     } else {
       throw Unauthorized;
     }
+  }
+  async getOrderByUserId(user: User): Promise<Order[]> {
+    return await this.repoService.orderRepo.find({
+      where: {
+        user: user.id,
+      },
+      relations: [
+        'walletFrom',
+        'walletTo',
+        'walletFrom.currency',
+        'walletTo.currency',
+      ],
+    });
   }
 
   @Interval(2000)

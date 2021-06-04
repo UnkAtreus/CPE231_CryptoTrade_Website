@@ -16,6 +16,14 @@ export const UserNotFound = new ApolloError('User not found.', '404', {
   showPath: true,
   showLocations: true,
 });
+export const NotEnoughBalanceInWallet = new ApolloError(
+  'Your wallet balance is not enough',
+  'WL-01',
+  {
+    showPath: true,
+    showLocations: true,
+  },
+);
 export const UpdateFailed = new ApolloError(
   'Update failed: An error occurred updating data.',
   '1004',

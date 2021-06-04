@@ -3,6 +3,7 @@ import PtoPInput from 'src/models/input/p2p.input';
 import { PtoP } from 'src/models/object/ptop.model';
 import { User } from 'src/models/object/user.model';
 import { RepoService } from 'src/repo/repo.service';
+import { NotEnoughBalanceInWallet } from 'src/utils/error-handling';
 import { CurrencyService } from '../currency/currency.service';
 import { UserService } from '../user/user.service';
 import { WalletService } from '../wallet/wallet.service';
@@ -21,22 +22,25 @@ export class P2PService {
     const curreny = await this.currencyService.getCurrencyByShortName(
       input.currency,
     );
-    const walletForm = await this.walletService.getWalletByCurrencyId(
+    const walletFrom = await this.walletService.getWalletByCurrencyId(
       user.id,
       curreny.id,
     );
+    if (Number(walletFrom.amount) < input.amount) {
+      throw NotEnoughBalanceInWallet;
+    }
     const walletTo = await this.walletService.getWalletByCurrencyId(
       input.targetUser,
       curreny.id,
     );
     p2p.amount = input.amount;
-    p2p.walletFrom = walletForm;
+    p2p.walletFrom = walletFrom;
     p2p.walletTo = walletTo;
-    const temp1 = Number(walletForm.amount) - Number(input.amount);
+    const temp1 = Number(walletFrom.amount) - Number(input.amount);
     const temp2 = Number(walletTo.amount) + Number(input.amount);
     p2p.walletFromBalance = temp1;
     p2p.walletToBalance = temp2;
-    await this.walletService.updateWallet(walletForm.id, temp1);
+    await this.walletService.updateWallet(walletFrom.id, temp1);
     await this.walletService.updateWallet(walletTo.id, temp2);
     return this.repoService.ptopRepo.save(p2p);
   }
