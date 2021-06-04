@@ -18,14 +18,18 @@ import {
 } from '../../utils/error-handling';
 import { throws } from 'assert';
 import { User } from 'src/models/object/user.model';
+import { PubSub } from 'graphql-subscriptions';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
+  // private pubSub: PubSub;
   price: number;
   constructor(
     private readonly walletService: WalletService,
     private readonly repoService: RepoService,
     private readonly userService: UserService,
+    @Inject('PUB_SUB')
+    private readonly pubSub: PubSub,
   ) {
     this.price = 0;
   }
@@ -73,7 +77,6 @@ export class OrderService implements OnApplicationBootstrap {
       input.currencyTo,
     );
     const total: number = Number(input.price) * Number(input.amount);
-    console.log(total);
     const order: Order = {
       user: user,
       method: input.method,
@@ -103,6 +106,7 @@ export class OrderService implements OnApplicationBootstrap {
         Number(order.amount),
       );
       order.cancel = true;
+
       return await this.repoService.orderRepo.save(order);
     } else {
       throw Unauthorized;
@@ -135,26 +139,36 @@ export class OrderService implements OnApplicationBootstrap {
         return this.repoService.orderRepo.save(order);
       });
   }
+  async fillOrderModel(orderInput: Order): Promise<Order> {
+    // const order = await this.getOrderById(orderId);
+    return await this.walletService
+      .Buy(
+        orderInput.walletTo.id,
+        orderInput.walletFrom.id,
+        Number(orderInput.amount) * 0.9999,
+        Number(orderInput.totalBalance),
+      )
+      .then(() => {
+        orderInput.filled = true;
+        orderInput.fee = String(Number(orderInput.amount) * 0.0001);
+        return this.repoService.orderRepo.save(orderInput);
+      });
+  }
 
-  @Interval(2000)
+  // @Interval(2000)
   async fillOrderInterval() {
-    // console.log(this.price);
-    // const orderLists = await this.repoService.orderRepo.find({
-    //   where: {
-    //     price: this.price,
-    //     filled: false,
-    //     cancel: false,
-    //   },
-    //   relations: ['walletTo'],
-    // });
-    // orderLists.forEach(async (order) => {
-    //   await this.walletService.Buy(
-    //     order.walletTo.id,
-    //     order.walletFrom.id,
-    //     Number(order.amount),
-    //     Number(order.totalBalance),
-    //   );
-    //   /// TRIGGER TO SUBSCRIPTION
-    // });
+    const orderLists = await this.repoService.orderRepo.find({
+      where: {
+        price: this.price,
+        filled: false,
+        cancel: false,
+      },
+      relations: ['walletTo', 'walletFrom'],
+    });
+    orderLists.forEach(async (order) => {
+      this.fillOrderModel(order).then(() => {
+        return this.pubSub.publish('orderTrigger', { orderTrigger: order });
+      });
+    });
   }
 }

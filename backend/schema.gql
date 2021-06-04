@@ -286,5 +286,5 @@ input UpdateVerificationInput {
 }
 
 type Subscription {
-  orderAdded: Order!
+  orderTrigger: Order!
 }
