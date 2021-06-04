@@ -160,6 +160,7 @@ type Query {
   getAllCard: [CreditCard!]!
   getCardByID(idcardInput: Float!): CreditCard!
   getCardByToken: [CreditCard!]!
+  Orders: [Order!]!
   getAllFiat: [TransactionFiat!]!
   getAllFiatByUser: [TransactionFiat!]!
   getBankByName(name: String!): Bank!
