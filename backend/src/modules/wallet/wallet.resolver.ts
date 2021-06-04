@@ -25,4 +25,12 @@ export class WalletResolver {
   ): Promise<Wallet> {
     return await this.walletService.getWalletById(id);
   }
+
+  @Query(() => Wallet)
+  async getWalletByCurrency(
+    @Args('currencyID') currencyID: number,
+    @Args('userId') userid: number,
+  ): Promise<Wallet> {
+    return await this.walletService.getWalletByCurrencyId(currencyID, userid);
+  }
 }
