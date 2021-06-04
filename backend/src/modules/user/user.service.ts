@@ -119,9 +119,10 @@ export class UserService {
 
   async createPincode(pincode: string, user: User): Promise<User> {
     // return Hash.encrypt(pincode).then(async (pin: string) => {}
+    console.log(pincode);
     return await this.repoService.userRepo.save({
       id: user.id,
-      pinncode: pincode,
+      pincode: pincode,
     });
   }
 
