@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
+import ClassNames from "classnames";
 import {
   DeopsitStyled,
   Header,
@@ -10,6 +11,7 @@ import {
   CoinDropdown,
   DepositHistory,
   PaymentSelected,
+  HistoryContainer,
 } from "./styled";
 import {
   Container,
@@ -27,6 +29,8 @@ import { useQuery, useMutation, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
 import { num_list } from "helpers/constants/numList";
 import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
+import moment from "moment";
+import sortArray from "sort-array";
 
 const DeopsitContainer = ({ match, ...props }) => {
   const [coinSymbol, setCoinSymbol] = useState([
@@ -39,10 +43,18 @@ const DeopsitContainer = ({ match, ...props }) => {
   const [curSymbol, setCurSymbol] = useState(
     match.params.type.toLowerCase() === "fiat" ? "USD" : "BTC"
   );
+  const [selectBank, setSelectBank] = useState("KBANK");
   const [monthExpiry, setMonthExpiry] = useState("1");
   const [yearExpiry, setYearExpiry] = useState("21");
   const [payMentMethod, setPayMentMethod] = useState("Bank account");
+  const [bankType, setBankType] = useState([
+    {
+      bank: "KBANK",
+    },
+  ]);
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
+  const [withdrawHistoryFiat, setWithdrawHistoryFiat] = useState([]);
+  const [withdrawHistoryCrypto, setWithdrawHistoryCrypto] = useState([]);
   const [bankAmount, setBankAmount] = useState(0);
   const [orderParam, setOrderParam] = useState({
     method: 0,
@@ -69,10 +81,10 @@ const DeopsitContainer = ({ match, ...props }) => {
       currencyShortName: "USD",
       currency: "US Dollar",
     },
-    {
-      currencyShortName: "THB",
-      currency: "Thai Bath",
-    },
+    // {
+    //   currencyShortName: "THB",
+    //   currency: "Thai Bath",
+    // },
   ];
 
   const FORMAT_DECIMAL = {
@@ -99,6 +111,40 @@ const DeopsitContainer = ({ match, ...props }) => {
           currencyLongName
         }
       }
+      getAllFiatByUser {
+        user {
+          email
+          firstName
+        }
+        bank {
+          bank
+        }
+        method
+        status
+        amount
+        updated_at
+        bankNumber
+        created_at
+      }
+      getAllCryptoByUser {
+        user {
+          email
+          firstName
+        }
+        wallet {
+          currency {
+            currency
+          }
+        }
+        method
+        status
+        amount
+        updated_at
+        created_at
+      }
+      getAllBank {
+        bank
+      }
     }
   `;
 
@@ -112,20 +158,26 @@ const DeopsitContainer = ({ match, ...props }) => {
     }
   `;
 
-  const { loading, error, data } = useQuery(GET_ALL_SYMBOL);
+  const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
 
   const [createOrder] = useMutation(CREATE_ORDER, {
     onCompleted(order) {
-      // {registerUser:
-      //  { role: "customer",
-      //    token: "" }}
       if (order) {
         console.log(order);
-        // history.push("/login");
-        // window.location.reload();
+        refetch();
       }
     },
   });
+
+  const sortHistory = (fiat, crypto) => {
+    var concat_array = fiat.concat(crypto);
+
+    var sort = sortArray(concat_array, {
+      by: "created_at",
+      order: "desc",
+    });
+    return sort;
+  };
 
   useEffect(() => {
     if (data && data.getAllCurrencyWithNoStatic) {
@@ -133,6 +185,15 @@ const DeopsitContainer = ({ match, ...props }) => {
     }
     if (data && data.getUserWalletByToken) {
       setUserWallet(data.getUserWalletByToken);
+    }
+    if (data && data.getAllFiatByUser) {
+      setWithdrawHistoryFiat(data.getAllFiatByUser);
+    }
+    if (data && data.getAllCryptoByUser) {
+      setWithdrawHistoryCrypto(data.getAllCryptoByUser);
+    }
+    if (data && data.getAllBank) {
+      setBankType(data.getAllBank);
     }
   }, [data]);
 
@@ -289,6 +350,7 @@ const DeopsitContainer = ({ match, ...props }) => {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
+                    console.log(orderParam);
                     createOrder({ variables: { input: orderParam } });
                   }}
                 >
@@ -326,8 +388,9 @@ const DeopsitContainer = ({ match, ...props }) => {
                     </div>
                     <Dropdown
                       style={{ marginTop: "12px" }}
-                      active="Kbank"
+                      active={selectBank || "KBANK"}
                       onChange={(e) => {
+                        setSelectBank(e);
                         setOrderParam({
                           ...orderParam,
                           bankType: e,
@@ -336,11 +399,13 @@ const DeopsitContainer = ({ match, ...props }) => {
                       isSelect={true}
                       isHeightAuto={true}
                     >
-                      <DropdownChild name={"Kbank"}>
-                        <div className="content-row align-items-end">
-                          <div className="label white mgr-8">Kbank</div>
-                        </div>
-                      </DropdownChild>
+                      {bankType.map((data) => (
+                        <DropdownChild name={data.bank}>
+                          <div className="content-row align-items-end">
+                            <div className="label white mgr-8">{data.bank}</div>
+                          </div>
+                        </DropdownChild>
+                      ))}
                     </Dropdown>
                   </CoinDropdown>
                   <Input
@@ -475,9 +540,9 @@ const DeopsitContainer = ({ match, ...props }) => {
           <div className="content-row space-between mgb-8">
             <div
               className="label gray text-center"
-              style={{ minWidth: "64px" }}
+              style={{ minWidth: "96px" }}
             >
-              Coin
+              Coin/Type
             </div>
             <div
               className="label gray text-center"
@@ -501,6 +566,52 @@ const DeopsitContainer = ({ match, ...props }) => {
               Infomation
             </div>
           </div>
+          <HistoryContainer>
+            {sortHistory(withdrawHistoryFiat, withdrawHistoryCrypto) &&
+              sortHistory(withdrawHistoryFiat, withdrawHistoryCrypto).map(
+                (items, index) => {
+                  if (items.method === "0")
+                    return (
+                      <div
+                        className="content-row space-between mgb-8"
+                        key={index}
+                      >
+                        <div
+                          className="label white text-center"
+                          style={{ minWidth: "96px" }}
+                        >
+                          {items.bank || items.wallet}
+                        </div>
+                        <div
+                          className={ClassNames(
+                            "label text-center",
+                            items.status === "0" ? "green" : "red"
+                          )}
+                          style={{ minWidth: "64px" }}
+                        >
+                          {items.status === "0" ? "success" : "cancle"}
+                        </div>
+                        <div
+                          className="label white text-center"
+                          style={{ minWidth: "64px" }}
+                        >
+                          {items.amount}
+                        </div>
+                        <div
+                          className="label gray text-center"
+                          style={{ minWidth: "126px" }}
+                        >
+                          {moment(items.updated_at).format("DD-MM HH:MM:SS")}
+                        </div>
+                        <div
+                          className="label gray"
+                          style={{ minWidth: "296px" }}
+                        ></div>
+                      </div>
+                    );
+                }
+              )}
+          </HistoryContainer>
         </DepositHistory>
       </Container>
     </DeopsitStyled>
