@@ -32,11 +32,12 @@ export class TransactionCryptoService {
       curreny.id,
     );
 
-    crypto.user = user;
+    crypto.user = await this.userService.getUserByID(user.id);
     crypto.method = input.method;
     crypto.amount = String(input.amount);
     crypto.targetWallet = input.targetWallet;
     crypto.wallet = wallet;
+    crypto.status = TransactionStatus.Pending;
 
     const temp1 = Number(wallet.amount);
     const temp2 = Number(input.amount);
@@ -44,6 +45,7 @@ export class TransactionCryptoService {
 
     if (input.method == TranasctionMethod.Deposit) {
       result = temp1 + temp2;
+      crypto.status = TransactionStatus.Done;
     } else {
       result = temp1 - temp2;
       crypto.fee = String(temp2 * 0.001);
@@ -59,13 +61,20 @@ export class TransactionCryptoService {
     return await this.repoService.transactionCryptoRepo.findOne(id);
   }
   async getAllCrypto(): Promise<TransactionCrypto[]> {
-    return await this.repoService.transactionCryptoRepo.find();
+    return await this.repoService.transactionCryptoRepo.find({
+      order: {
+        created_at: 'DESC',
+      },
+    });
   }
 
   async getAllCryptoByUser(user: User): Promise<TransactionCrypto[]> {
     return await this.repoService.transactionCryptoRepo.find({
       where: {
         user: user.id,
+      },
+      order: {
+        created_at: 'DESC',
       },
     });
   }

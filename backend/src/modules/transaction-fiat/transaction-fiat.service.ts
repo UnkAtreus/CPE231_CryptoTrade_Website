@@ -25,23 +25,24 @@ export class TransactionFiatService {
     fiat.method = input.method;
     fiat.amount = String(input.amount);
     fiat.status = TransactionStatus.Pending;
-    fiat.user = user;
+    fiat.user = await this.userService.getUserByID(user.id);
     const getbank = await this.bankService.getBankByName(input.bankType);
-    const curreny = await this.currencyService.getCurrencyByShortName('USDT');
+    const currency = await this.currencyService.getCurrencyByShortName('USDT');
     const wallet = await this.walletService.getWalletByCurrencyId(
       user.id,
-      curreny.id,
+      currency.id,
     );
+
     fiat.wallet = wallet;
     fiat.bank = getbank;
 
-    console.log(wallet);
     const temp1 = Number(wallet.amount);
     const temp2 = Number(input.amount);
     let result = 0;
 
     if (input.method == TranasctionMethod.Deposit) {
       result = temp1 + temp2;
+      fiat.status = TransactionStatus.Done;
     } else {
       result = temp1 - temp2;
       fiat.fee = String(temp2 * 0.001);
@@ -59,7 +60,10 @@ export class TransactionFiatService {
   }
   async getAllFiat(): Promise<TransactionFiat[]> {
     return await this.repoService.transactionFiatRepo.find({
-      relations: ['user'],
+      relations: ['user', 'bank'],
+      order: {
+        created_at: 'DESC',
+      },
     });
   }
 
@@ -68,7 +72,10 @@ export class TransactionFiatService {
       where: {
         user: user.id,
       },
-      relations: ['user'],
+      relations: ['user', 'bank'],
+      order: {
+        created_at: 'DESC',
+      },
     });
   }
   async updateFiat(

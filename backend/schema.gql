@@ -156,6 +156,7 @@ type Query {
   getAllWallet: [Wallet!]!
   getUserWalletByToken: [Wallet!]!
   getWalletById(id: ID!): Wallet!
+  getWalletByCurrency(userId: Float!, currencyID: Float!): Wallet!
   getAllCurrency: [Currency!]!
   getCurrencyId(id: ID!): Currency!
   getCurrencyByShortName(shortName: String!): Currency!
@@ -164,6 +165,7 @@ type Query {
   getCardByID(idcardInput: Float!): CreditCard!
   getCardByToken: [CreditCard!]!
   Orders: [Order!]!
+  AllOrders: [Order!]!
   getAllFiat: [TransactionFiat!]!
   getAllFiatByUser: [TransactionFiat!]!
   getBankByName(name: String!): Bank!
