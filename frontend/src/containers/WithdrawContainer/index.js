@@ -111,6 +111,7 @@ const WithdrawContainer = ({ match, ...props }) => {
       }
       getUserWalletByToken {
         amount
+        inOrder
         currency {
           currency
           currencyLongName
@@ -208,6 +209,13 @@ const WithdrawContainer = ({ match, ...props }) => {
       }
     },
   });
+
+  const getTotal = (flag) => {
+    return (
+      Number(userWallet[CRYPTO_INDEX[flag]].amount) +
+      Number(userWallet[CRYPTO_INDEX[flag]].inOrder)
+    );
+  };
 
   const setURLType = (symbol) => {
     console.log(symbol);
@@ -314,9 +322,9 @@ const WithdrawContainer = ({ match, ...props }) => {
                     <div className="content-row space-between mgb-8">
                       <div className="label gray">Total balance:</div>
                       <div className="label white">
-                        {BigNumber(
-                          userWallet[CRYPTO_INDEX[curSymbol]].amount
-                        ).toFormat(FORMAT_DECIMAL) +
+                        {BigNumber(getTotal(curSymbol)).toFormat(
+                          FORMAT_DECIMAL
+                        ) +
                           " " +
                           curSymbol.toUpperCase()}
                       </div>
@@ -388,9 +396,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                     <div className="content-row space-between mgb-8">
                       <div className="label gray">Total balance:</div>
                       <div className="label white">
-                        {BigNumber(
-                          userWallet[CRYPTO_INDEX["usdt"]].amount
-                        ).toFormat(FORMAT_DECIMAL)}{" "}
+                        {BigNumber(getTotal("usdt")).toFormat(FORMAT_DECIMAL)}{" "}
                         USDT
                       </div>
                     </div>
@@ -608,7 +614,9 @@ const WithdrawContainer = ({ match, ...props }) => {
                           className="label white text-center"
                           style={{ minWidth: "96px" }}
                         >
-                          {items.status || "0"}
+                          {items.bank
+                            ? items.bank.bank
+                            : items.wallet.currency.currency}
                         </div>
                         <div
                           className={ClassNames(

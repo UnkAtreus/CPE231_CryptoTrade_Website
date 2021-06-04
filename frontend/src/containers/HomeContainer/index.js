@@ -22,7 +22,7 @@ import { marketController } from "apiService";
 import ClassNames from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import BigNumber from "bignumber.js";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useMutation, gql } from "@apollo/client";
 
 import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
 
@@ -30,6 +30,20 @@ const GET_ALL_DATA = gql`
   query {
     getUserWalletByToken {
       amount
+      inOrder
+      currency {
+        currency
+        currencyLongName
+      }
+    }
+  }
+`;
+
+const CREATE_ORDER = gql`
+  query {
+    getUserWalletByToken {
+      amount
+      inOrder
       currency {
         currency
         currencyLongName
@@ -128,6 +142,12 @@ const HomeContainer = (props) => {
     if (l.ticker.c !== r.ticker.c)
       if (l.ticker.c >= r.ticker.c) setIsUpPrice(true);
       else setIsUpPrice(false);
+  };
+  const getTotal = (flag) => {
+    return (
+      Number(userWallet[CRYPTO_INDEX[flag]].amount) +
+      Number(userWallet[CRYPTO_INDEX[flag]].inOrder)
+    );
   };
 
   const dispatch = useDispatch();
@@ -904,176 +924,214 @@ const HomeContainer = (props) => {
               <TabPane name="Limit" key="1">
                 <div className="limit-container">
                   <div className="content-row space-between">
-                    <div
-                      className="content-column mgr-16"
-                      style={{ marginRight: "7%", flex: "1 1 0%" }}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                      }}
                     >
-                      <div className="content-row space-between mgb-2">
-                        <div className="title white">Buy {cryptoSymbol}</div>
-                        <div className="content-row">
-                          <div className="label gray">
-                            {BigNumber(
-                              userWallet[CRYPTO_INDEX["usdt"]].amount
-                            ).toFormat(FORMAT_DECIMAL)}
+                      <div
+                        className="content-column mgr-16"
+                        style={{ marginRight: "7%", flex: "1 1 0%" }}
+                      >
+                        <div className="content-row space-between mgb-2">
+                          <div className="title white">Buy {cryptoSymbol}</div>
+                          <div className="content-row">
+                            <div className="label gray">
+                              {BigNumber(
+                                userWallet[CRYPTO_INDEX["usdt"]].amount
+                              ).toFormat(FORMAT_DECIMAL)}
+                            </div>
+                            <div className="label gray mgl-8">USDT</div>
                           </div>
-                          <div className="label gray mgl-8">USDT</div>
                         </div>
+
+                        <InputTrade
+                          prefix="Price"
+                          suffix="USDT"
+                          value={BigNumber(arg.cur_price.price).toFormat(
+                            2,
+                            FORMAT_DECIMAL
+                          )}
+                          onChange={(e) => {
+                            setPriceBuy(e);
+                            calPriceBuy("cryptoPrice", e);
+                          }}
+                        />
+                        <InputTrade
+                          prefix="Amount"
+                          suffix={cryptoSymbol}
+                          value={valueAmountBuy}
+                          onChange={(e) => {
+                            setValueAmountBuy(e);
+                            calPriceBuy("amount", e);
+                          }}
+                        />
+                        <ValueStep value={(e) => calPriceBuy("step", e)} />
+                        <InputTrade
+                          prefix="Total"
+                          suffix="USDT"
+                          value={valueTotalBuy}
+                          onChange={(e) => {
+                            setValueTotalBuy(e);
+                            calPriceBuy("total", e);
+                          }}
+                        />
+
+                        <Button label="Buy BTC" color="green" />
                       </div>
+                    </form>
 
-                      <InputTrade
-                        prefix="Price"
-                        suffix="USDT"
-                        value={BigNumber(arg.cur_price.price).toFormat(
-                          2,
-                          FORMAT_DECIMAL
-                        )}
-                        onChange={(e) => {
-                          setPriceBuy(e);
-                          calPriceBuy("cryptoPrice", e);
-                        }}
-                      />
-                      <InputTrade
-                        prefix="Amount"
-                        suffix={cryptoSymbol}
-                        value={valueAmountBuy}
-                        onChange={(e) => {
-                          setValueAmountBuy(e);
-                          calPriceBuy("amount", e);
-                        }}
-                      />
-                      <ValueStep value={(e) => calPriceBuy("step", e)} />
-                      <InputTrade
-                        prefix="Total"
-                        suffix="USDT"
-                        value={valueTotalBuy}
-                        onChange={(e) => {
-                          setValueTotalBuy(e);
-                          calPriceBuy("total", e);
-                        }}
-                      />
-
-                      <Button label="Buy BTC" color="green" />
-                    </div>
-
-                    <div className="content-column" style={{ flex: "1 1 0%" }}>
-                      <div className="content-row space-between mgb-2">
-                        <div className="title white">Sell {cryptoSymbol}</div>
-                        <div className="content-row">
-                          <div className="label gray">
-                            {BigNumber(
-                              userWallet[
-                                CRYPTO_INDEX[cryptoSymbol.toLowerCase()]
-                              ].amount
-                            ).toFormat(FORMAT_DECIMAL)}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      <div
+                        className="content-column"
+                        style={{ flex: "1 1 0%" }}
+                      >
+                        <div className="content-row space-between mgb-2">
+                          <div className="title white">Sell {cryptoSymbol}</div>
+                          <div className="content-row">
+                            <div className="label gray">
+                              {BigNumber(
+                                userWallet[
+                                  CRYPTO_INDEX[cryptoSymbol.toLowerCase()]
+                                ].amount
+                              ).toFormat(FORMAT_DECIMAL)}
+                            </div>
+                            <div className="label gray mgl-8">
+                              {cryptoSymbol}
+                            </div>
                           </div>
-                          <div className="label gray mgl-8">{cryptoSymbol}</div>
                         </div>
+                        <InputTrade
+                          prefix="Price"
+                          suffix="USDT"
+                          value={BigNumber(arg.cur_price.price).toFormat(
+                            2,
+                            FORMAT_DECIMAL
+                          )}
+                          onChange={(e) => {
+                            setPriceSell(e);
+                            calPriceSell("cryptoPrice", e);
+                          }}
+                        />
+                        <InputTrade
+                          prefix="Amount"
+                          suffix={cryptoSymbol}
+                          value={valueAmountSell}
+                          onChange={(e) => {
+                            setValueAmountSell(e);
+                            calPriceSell("amount", e);
+                          }}
+                        />
+                        <ValueStep value={(e) => calPriceSell("step", e)} />
+                        <InputTrade
+                          prefix="Total"
+                          suffix="USDT"
+                          value={valueTotalSell}
+                          onChange={(e) => {
+                            setValueTotalSell(e);
+                            calPriceSell("total", e);
+                          }}
+                        />
+                        <Button label="Sell BTC" color="red" />
                       </div>
-                      <InputTrade
-                        prefix="Price"
-                        suffix="USDT"
-                        value={BigNumber(arg.cur_price.price).toFormat(
-                          2,
-                          FORMAT_DECIMAL
-                        )}
-                        onChange={(e) => {
-                          setPriceSell(e);
-                          calPriceSell("cryptoPrice", e);
-                        }}
-                      />
-                      <InputTrade
-                        prefix="Amount"
-                        suffix={cryptoSymbol}
-                        value={valueAmountSell}
-                        onChange={(e) => {
-                          setValueAmountSell(e);
-                          calPriceSell("amount", e);
-                        }}
-                      />
-                      <ValueStep value={(e) => calPriceSell("step", e)} />
-                      <InputTrade
-                        prefix="Total"
-                        suffix="USDT"
-                        value={valueTotalSell}
-                        onChange={(e) => {
-                          setValueTotalSell(e);
-                          calPriceSell("total", e);
-                        }}
-                      />
-                      <Button label="Sell BTC" color="red" />
-                    </div>
+                    </form>
                   </div>
                 </div>
               </TabPane>
               <TabPane name="Market" key="2">
                 <div className="market-container">
                   <div className="content-row space-between">
-                    <div
-                      className="content-column mgr-16"
-                      style={{ marginRight: "7%", flex: "1 1 0%" }}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                      }}
                     >
-                      <div className="content-row space-between mgb-2">
-                        <div className="title white">Buy {cryptoSymbol}</div>
-                        <div className="content-row">
-                          <div className="label gray">
-                            {BigNumber(
-                              userWallet[CRYPTO_INDEX["usdt"]].amount
-                            ).toFormat(FORMAT_DECIMAL)}
+                      <div
+                        className="content-column mgr-16"
+                        style={{ marginRight: "7%", flex: "1 1 0%" }}
+                      >
+                        <div className="content-row space-between mgb-2">
+                          <div className="title white">Buy {cryptoSymbol}</div>
+                          <div className="content-row">
+                            <div className="label gray">
+                              {BigNumber(
+                                userWallet[CRYPTO_INDEX["usdt"]].amount
+                              ).toFormat(FORMAT_DECIMAL)}
+                            </div>
+                            <div className="label gray mgl-8">USDT</div>
                           </div>
-                          <div className="label gray mgl-8">USDT</div>
                         </div>
+                        <InputTrade
+                          prefix="Market"
+                          value="Market"
+                          disabled={true}
+                          suffix="USDT"
+                        />
+                        <InputTrade
+                          prefix="Amount"
+                          suffix={cryptoSymbol}
+                          value={valueAmountBuyMarket}
+                          onChange={(e) => {
+                            setValueAmountBuyMarket(e);
+                            calPriceMarket("amountbuy", e);
+                          }}
+                        />
+                        <ValueStep
+                          value={(e) => calPriceMarket("stepbuy", e)}
+                        />
+                        <Button label="Buy BTC" color="green" />
                       </div>
-                      <InputTrade
-                        prefix="Market"
-                        value="Market"
-                        disabled={true}
-                        suffix="USDT"
-                      />
-                      <InputTrade
-                        prefix="Amount"
-                        suffix={cryptoSymbol}
-                        value={valueAmountBuyMarket}
-                        onChange={(e) => {
-                          setValueAmountBuyMarket(e);
-                          calPriceMarket("amountbuy", e);
-                        }}
-                      />
-                      <ValueStep value={(e) => calPriceMarket("stepbuy", e)} />
-                      <Button label="Buy BTC" color="green" />
-                    </div>
+                    </form>
 
-                    <div className="content-column" style={{ flex: "1 1 0%" }}>
-                      <div className="content-row space-between mgb-2">
-                        <div className="title white">Sell {cryptoSymbol}</div>
-                        <div className="content-row">
-                          <div className="label gray">
-                            {BigNumber(
-                              userWallet[
-                                CRYPTO_INDEX[cryptoSymbol.toLowerCase()]
-                              ].amount
-                            ).toFormat(FORMAT_DECIMAL)}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      <div
+                        className="content-column"
+                        style={{ flex: "1 1 0%" }}
+                      >
+                        <div className="content-row space-between mgb-2">
+                          <div className="title white">Sell {cryptoSymbol}</div>
+                          <div className="content-row">
+                            <div className="label gray">
+                              {BigNumber(
+                                userWallet[
+                                  CRYPTO_INDEX[cryptoSymbol.toLowerCase()]
+                                ].amount
+                              ).toFormat(FORMAT_DECIMAL)}
+                            </div>
+                            <div className="label gray mgl-8">
+                              {cryptoSymbol}
+                            </div>
                           </div>
-                          <div className="label gray mgl-8">{cryptoSymbol}</div>
                         </div>
+                        <InputTrade
+                          prefix="Market"
+                          value="Market"
+                          disabled={true}
+                          suffix="USDT"
+                        />
+                        <InputTrade
+                          prefix="Amount"
+                          suffix={cryptoSymbol}
+                          value={valueAmountSellMarket}
+                          onChange={(e) => {
+                            setValueAmountSellMarket(e);
+                            calPriceMarket("amountsell", e);
+                          }}
+                        />
+                        <ValueStep
+                          value={(e) => calPriceMarket("stepsell", e)}
+                        />
+                        <Button label="Sell BTC" color="red" />
                       </div>
-                      <InputTrade
-                        prefix="Market"
-                        value="Market"
-                        disabled={true}
-                        suffix="USDT"
-                      />
-                      <InputTrade
-                        prefix="Amount"
-                        suffix={cryptoSymbol}
-                        value={valueAmountSellMarket}
-                        onChange={(e) => {
-                          setValueAmountSellMarket(e);
-                          calPriceMarket("amountsell", e);
-                        }}
-                      />
-                      <ValueStep value={(e) => calPriceMarket("stepsell", e)} />
-                      <Button label="Sell BTC" color="red" />
-                    </div>
+                    </form>
                   </div>
                 </div>
               </TabPane>
@@ -1195,17 +1253,11 @@ const HomeContainer = (props) => {
                   </div>
                   <div className="content-column text-right">
                     <div className="paragraph">
-                      {BigNumber(userWallet[5].amount).toFormat(
-                        2,
-                        FORMAT_DECIMAL
-                      )}
+                      {BigNumber(getTotal("usdt")).toFormat(2, FORMAT_DECIMAL)}
                     </div>
                     <div className="label gray">
                       ${" "}
-                      {BigNumber(userWallet[5].amount).toFormat(
-                        2,
-                        FORMAT_DECIMAL
-                      )}
+                      {BigNumber(getTotal("usdt")).toFormat(2, FORMAT_DECIMAL)}
                     </div>
                   </div>
                 </div>
@@ -1227,10 +1279,7 @@ const HomeContainer = (props) => {
                     </div>
                   </div>
                   <div className="label">
-                    {BigNumber(userWallet[0].amount).toFormat(
-                      3,
-                      FORMAT_DECIMAL
-                    )}
+                    {BigNumber(getTotal("btc")).toFormat(3, FORMAT_DECIMAL)}
                   </div>
                 </div>
 
@@ -1245,10 +1294,7 @@ const HomeContainer = (props) => {
                     </div>
                   </div>
                   <div className="label">
-                    {BigNumber(userWallet[1].amount).toFormat(
-                      3,
-                      FORMAT_DECIMAL
-                    )}
+                    {BigNumber(getTotal("ada")).toFormat(3, FORMAT_DECIMAL)}
                   </div>
                 </div>
 
@@ -1263,10 +1309,7 @@ const HomeContainer = (props) => {
                     </div>
                   </div>
                   <div className="label">
-                    {BigNumber(userWallet[2].amount).toFormat(
-                      3,
-                      FORMAT_DECIMAL
-                    )}
+                    {BigNumber(getTotal("eth")).toFormat(3, FORMAT_DECIMAL)}
                   </div>
                 </div>
 
@@ -1281,10 +1324,7 @@ const HomeContainer = (props) => {
                     </div>
                   </div>
                   <div className="label">
-                    {BigNumber(userWallet[3].amount).toFormat(
-                      3,
-                      FORMAT_DECIMAL
-                    )}
+                    {BigNumber(getTotal("bch")).toFormat(3, FORMAT_DECIMAL)}
                   </div>
                 </div>
 
@@ -1299,10 +1339,7 @@ const HomeContainer = (props) => {
                     </div>
                   </div>
                   <div className="label">
-                    {BigNumber(userWallet[4].amount).toFormat(
-                      3,
-                      FORMAT_DECIMAL
-                    )}
+                    {BigNumber(getTotal("dot")).toFormat(3, FORMAT_DECIMAL)}
                   </div>
                 </div>
               </div>

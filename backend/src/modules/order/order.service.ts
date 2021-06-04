@@ -120,9 +120,9 @@ export class OrderService implements OnApplicationBootstrap {
         'walletFrom.currency',
         'walletTo.currency',
       ],
-      order :{
+      order: {
         created_at: 'DESC',
-      }
+      },
     });
   }
   async getOrderByUserId(user: User): Promise<Order[]> {
@@ -136,9 +136,9 @@ export class OrderService implements OnApplicationBootstrap {
         'walletFrom.currency',
         'walletTo.currency',
       ],
-      order :{
+      order: {
         created_at: 'DESC',
-      }
+      },
     });
   }
   async fillOrder(orderId: number): Promise<Order> {

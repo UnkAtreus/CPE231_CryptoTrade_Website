@@ -76,7 +76,7 @@ export class TransactionCryptoService {
       order: {
         created_at: 'DESC',
       },
-      relations: ['walet', 'user']
+      relations: ['wallet', 'wallet.currency', 'user'],
     });
   }
   async updateCrypto(
