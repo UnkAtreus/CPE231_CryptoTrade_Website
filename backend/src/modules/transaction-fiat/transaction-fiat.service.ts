@@ -59,7 +59,7 @@ export class TransactionFiatService {
   }
   async getAllFiat(): Promise<TransactionFiat[]> {
     return await this.repoService.transactionFiatRepo.find({
-      relations: ['user'],
+      relations: ['user' , 'bank'],
     });
   }
 
@@ -68,7 +68,7 @@ export class TransactionFiatService {
       where: {
         user: user.id,
       },
-      relations: ['user'],
+      relations: ['user','bank'],
     });
   }
   async updateFiat(
