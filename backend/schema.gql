@@ -267,6 +267,7 @@ input FiatInput {
   amount: Float
   bankNumber: String
   bankType: String
+  creditCard: ID
 }
 
 input CryptoInput {

@@ -23,8 +23,7 @@ import OrderMarketInput from 'src/models/input/ordermarket.input';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
-  // private pubSub: PubSub;
-  price: number;
+  XXXUSDT: [];
   constructor(
     private readonly walletService: WalletService,
     private readonly repoService: RepoService,
@@ -32,12 +31,30 @@ export class OrderService implements OnApplicationBootstrap {
     @Inject('PUB_SUB')
     private readonly pubSub: PubSub,
   ) {
-    this.price = 0;
+    this.XXXUSDT = [];
   }
   onApplicationBootstrap() {
-    this.handleInterval();
+    // this.handleInterval();
   }
+  // @Interval(1000)
+  async fillOrderInterval() {
+    const orderLists = await this.repoService.orderRepo.find({
+      where: {
+        filled: false,
+        cancel: false,
+      },
+      relations: ['walletTo', 'walletFrom'],
+    });
 
+    orderLists.forEach(async (order) => {
+      this.XXXUSDT.forEach(async (t) => {
+        if (Number(t['c']) == Number(order.price)) {
+          await this.fillOrder(order.id);
+          this.pubSub.publish('orderTrigger', { orderTrigger: order });
+        }
+      });
+    });
+  }
   async handleInterval() {
     const client = new webClient();
     client.on('connectFailed', (error) => {
@@ -54,9 +71,19 @@ export class OrderService implements OnApplicationBootstrap {
       connection.on('message', (message) => {
         if (message.type === 'utf8') {
           const x = JSON.parse(message.utf8Data);
-          console.log(x);
+          const data = x['data'].filter(isInCoin);
+          // console.log(data);
+          const result = data.map(({ s, c }) => ({
+            s,
+            c,
+          }));
+          // console.log(result);
+          this.XXXUSDT = result;
 
-          // this.price = x['data']['p'];
+          // for (let i = 0; i < data.length; i++) {
+          //   this.XXXUSDT[i] = data[i].c;
+          // }
+          // console.log(this.XXXUSDT);
         }
       });
     });
@@ -186,21 +213,15 @@ export class OrderService implements OnApplicationBootstrap {
         return this.repoService.orderRepo.save(orderInput);
       });
   }
-
-  @Interval(2000)
-  async fillOrderInterval() {
-    const orderLists = await this.repoService.orderRepo.find({
-      where: {
-        price: this.price,
-        filled: false,
-        cancel: false,
-      },
-      relations: ['walletTo', 'walletFrom'],
-    });
-    orderLists.forEach(async (order) => {
-      this.fillOrderModel(order).then(() => {
-        return this.pubSub.publish('orderTrigger', { orderTrigger: order });
-      });
-    });
-  }
+}
+export function isInCoin(element: any): boolean {
+  if (
+    element.s == 'BTCUSDT' ||
+    element.s == 'ADAUSDT' ||
+    element.s == 'ETHUSDT' ||
+    element.s == 'BCHUSDT' ||
+    element.s == 'DOTUSDT'
+  )
+    return true;
+  else return false;
 }

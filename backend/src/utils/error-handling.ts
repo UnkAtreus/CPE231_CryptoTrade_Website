@@ -12,6 +12,14 @@ export const EmailAlreadyUsed = new ApolloError(
     showLocations: true,
   },
 );
+export const SelectMethod = new ApolloError(
+  'Please use Credit-Debit card or Bank number',
+  'TF-01',
+  {
+    showPath: true,
+    showLocations: true,
+  },
+);
 export const UserNotFound = new ApolloError('User not found.', '404', {
   showPath: true,
   showLocations: true,
