@@ -34,6 +34,11 @@ export class TransactionFiatResolver {
   ): Promise<TransactionFiat[]> {
     return await this.fiatService.getAllFiatByUser(user);
   }
+  @Query(() => Number)
+  @Roles(['staff'])
+  async countAllFiatByUser(): Promise<number> {
+    return await this.fiatService.countAllFiat();
+  }
   @Mutation(() => TransactionFiat)
   @Roles(['staff'])
   async updateFiatStatus(

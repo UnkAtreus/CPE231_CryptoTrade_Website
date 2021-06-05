@@ -56,7 +56,7 @@ const DeopsitContainer = ({ match, ...props }) => {
     },
   ]);
   const [allCard, setAllCard] = useState([]);
-  const [isNewCard, setIsNewCard] = useState(allCard ? false : true);
+  const [isNewCard, setIsNewCard] = useState(allCard === [] ? true : false);
   const [hasCard, setHasNewCard] = useState(false);
   const [cardNum, setCardNum] = useState("0");
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
@@ -67,7 +67,8 @@ const DeopsitContainer = ({ match, ...props }) => {
     method: 0,
     amount: 0,
     bankNumber: "",
-    bankType: "KBANK",
+    bankType: "",
+    cardNumber: "",
   });
   const [cardParam, setCardParam] = useState({
     cardNumber: "0",
@@ -80,15 +81,6 @@ const DeopsitContainer = ({ match, ...props }) => {
   const depositType = match.params.type
     ? match.params.type.toLowerCase()
     : "crypto";
-
-  const MOCK_USER_CURRENCY = {
-    btc: 0.00000091,
-    ada: 129.3349,
-    eth: 0.00138437,
-    bch: 0,
-    dot: 0,
-    usdt: 49657.01,
-  };
 
   const MOCK_FIAT = [
     {
@@ -132,13 +124,14 @@ const DeopsitContainer = ({ match, ...props }) => {
           firstName
         }
         bank {
-          bank
+          banktype {
+            bank
+          }
         }
         method
         status
         amount
         updated_at
-        bankNumber
         created_at
       }
       getAllCryptoByUser {
@@ -285,18 +278,20 @@ const DeopsitContainer = ({ match, ...props }) => {
                         isSelect={true}
                         isHeightAuto={true}
                       >
-                        {coinSymbol.map((data, index) => (
-                          <DropdownChild name={data.currency} key={index}>
-                            <div className="content-row align-items-end">
-                              <div className="label white mgr-8">
-                                {data.currency}
+                        {coinSymbol.map((data, index) => {
+                          return (
+                            <DropdownChild name={data.currency} key={index}>
+                              <div className="content-row align-items-end">
+                                <div className="label white mgr-8">
+                                  {data.currency}
+                                </div>
+                                <div className="text-9 gray">
+                                  {data.currencyLongName}
+                                </div>
                               </div>
-                              <div className="text-9 gray">
-                                {data.currencyLongName}
-                              </div>
-                            </div>
-                          </DropdownChild>
-                        ))}
+                            </DropdownChild>
+                          );
+                        })}
                       </Dropdown>
                     </CoinDropdown>
                     <div className="content-row space-between mgb-8">
@@ -442,12 +437,13 @@ const DeopsitContainer = ({ match, ...props }) => {
                     </div>
                     <Dropdown
                       style={{ marginTop: "12px" }}
-                      active={selectBank || "KBANK"}
+                      active={selectBank}
                       onChange={(e) => {
                         setSelectBank(e);
                         setOrderParam({
                           ...orderParam,
                           bankType: e,
+                          cardNumber: "",
                         });
                       }}
                       isSelect={true}
@@ -469,6 +465,7 @@ const DeopsitContainer = ({ match, ...props }) => {
                       setOrderParam({
                         ...orderParam,
                         bankNumber: e,
+                        cardNumber: "",
                       });
                     }}
                   ></Input>
@@ -488,6 +485,9 @@ const DeopsitContainer = ({ match, ...props }) => {
                         console.log(cardParam);
                         createCard({
                           variables: { input: cardParam },
+                        });
+                        createOrder({
+                          variables: { input: orderParam },
                         });
                       }}
                     >
@@ -512,10 +512,10 @@ const DeopsitContainer = ({ match, ...props }) => {
                         value={amount || 0}
                         onChange={(e) => {
                           setAmount(e);
-                          // setOrderParam({
-                          //   ...orderParam,
-                          //   bankNumber: e,
-                          // });
+                          setOrderParam({
+                            ...orderParam,
+                            amount: Number(e),
+                          });
                         }}
                       ></Input>
                       <Input
@@ -525,6 +525,12 @@ const DeopsitContainer = ({ match, ...props }) => {
                           setCardParam({
                             ...cardParam,
                             cardNumber: e,
+                          });
+                          setOrderParam({
+                            ...orderParam,
+                            cardNumber: e,
+                            bankType: "",
+                            bankNumber: "",
                           });
                         }}
                       ></Input>
@@ -615,7 +621,15 @@ const DeopsitContainer = ({ match, ...props }) => {
                       <Button label="Submit" color="green" fontColor="black" />
                     </form>
                   ) : (
-                    <form>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        console.log(orderParam);
+                        createOrder({
+                          variables: { input: orderParam },
+                        });
+                      }}
+                    >
                       <div className="content-row space-between">
                         <div className="title white mgb-8">Payment details</div>
                         {hasCard && (
@@ -637,6 +651,10 @@ const DeopsitContainer = ({ match, ...props }) => {
                         value={amount || 0}
                         onChange={(e) => {
                           setAmount(e);
+                          setOrderParam({
+                            ...orderParam,
+                            amount: Number(e),
+                          });
                         }}
                       ></Input>
                       <CoinDropdown>
@@ -661,7 +679,15 @@ const DeopsitContainer = ({ match, ...props }) => {
                         <Dropdown
                           style={{ marginTop: "12px" }}
                           active={cardNum}
-                          onChange={setCardNum}
+                          onChange={(e) => {
+                            setCardNum(e);
+                            setOrderParam({
+                              ...orderParam,
+                              cardNumber: e,
+                              bankType: "",
+                              bankNumber: "",
+                            });
+                          }}
                           isSelect={true}
                           isHeightAuto={true}
                         >

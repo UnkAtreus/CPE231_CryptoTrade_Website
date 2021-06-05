@@ -3,13 +3,13 @@ import { Field, InputType } from '@nestjs/graphql';
 class CardInput {
   @Field()
   readonly cardNumber?: string;
-  @Field()
+  @Field({ nullable: true })
   readonly expiredMonth?: string;
-  @Field()
+  @Field({ nullable: true })
   readonly expiredYear?: string;
-  @Field()
+  @Field({ nullable: true })
   readonly cvv?: string;
-  @Field()
-  readonly cardName: string;
+  @Field({ nullable: true })
+  readonly cardName?: string;
 }
 export default CardInput;

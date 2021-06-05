@@ -1,5 +1,6 @@
 import { Field, Float, ID, InputType } from '@nestjs/graphql';
 import { TranasctionMethod } from 'src/static/enum';
+import CardInput from './card.input';
 @InputType()
 class FiatInput {
   @Field()
@@ -10,7 +11,7 @@ class FiatInput {
   readonly bankNumber?: string;
   @Field({ nullable: true })
   readonly bankType?: string;
-  @Field(() => String)
-  readonly cardNumber?: string;
+  @Field({ nullable: true })
+  readonly cardInput?: CardInput;
 }
 export default FiatInput;

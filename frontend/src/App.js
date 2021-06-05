@@ -23,6 +23,8 @@ import SettingContainer from "./containers/SettingContainer";
 import LandingContainer from "./containers/LandingContainer";
 import { ROUTE_PATH } from "helpers";
 import { history } from "./store/configureStore";
+import StaffContainer from "./containers/StaffContainer";
+import StaffSubContainer from "./containers/StaffSubContainer";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:5000/graphql",
@@ -116,6 +118,21 @@ export const App = (props) => {
               exact={true}
               path={ROUTE_PATH.SETTING.LINK}
               component={SettingContainer}
+            />
+            <PrivateRoute
+              exact={true}
+              path={ROUTE_PATH.STAFF_SUB.LINK}
+              component={StaffSubContainer}
+            />
+            <PrivateRoute
+              exact={true}
+              path={ROUTE_PATH.STAFF.LINK}
+              component={StaffContainer}
+            />
+            <PrivateRoute
+              exact={true}
+              path={ROUTE_PATH.ADMIN.LINK}
+              component={StaffContainer}
             />
             <Route path={ROUTE_PATH.HOME.LINK} component={LandingContainer} />
           </Switch>

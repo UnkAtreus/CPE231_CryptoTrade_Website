@@ -31,6 +31,18 @@ export const ROUTE_PATH = {
     TEXT: "Setting",
     LINK: "/setting",
   },
+  STAFF: {
+    TEXT: "Staff",
+    LINK: "/staff",
+  },
+  STAFF_SUB: {
+    TEXT: "Staff_Sub",
+    LINK: "/staff/:type",
+  },
+  ADMIN: {
+    TEXT: "Admin",
+    LINK: "/admin",
+  },
   NEWS: {
     TEXT: "News",
     LINK: "/news/:groupId",

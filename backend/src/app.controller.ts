@@ -25,7 +25,6 @@ export class AppController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', storage))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
     return of({ imagePath: file.filename });
   }
 }
