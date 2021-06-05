@@ -34,7 +34,7 @@ export const Tab = React.memo(
             <li
               onClick={() => changeTab(item)}
               key={index}
-              className={item === active ? "active" : ""}
+              className={item === active ? "pointer active" : "pointer "}
             >
               {item}
             </li>
