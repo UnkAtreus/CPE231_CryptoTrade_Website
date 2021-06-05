@@ -212,8 +212,9 @@ export class OrderService implements OnApplicationBootstrap {
         return this.repoService.orderRepo.save(orderInput);
       });
   }
+}
 
-  //@Interval(2000)
+// @Interval(2000)
 //   async fillOrderInterval() {
 //     const orderLists = await this.repoService.orderRepo.find({
 //       where: {
@@ -229,7 +230,6 @@ export class OrderService implements OnApplicationBootstrap {
 //       });
 //     });
 //   }
-// }
 
 export function isInCoin(element: any): boolean {
   if (

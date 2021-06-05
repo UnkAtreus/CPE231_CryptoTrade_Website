@@ -8,7 +8,6 @@ import FiatInput from 'src/models/input/fiat.input';
 import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
 import { WalletService } from '../wallet/wallet.service';
 import { BankService } from '../bank/bank.service';
-import { NotEnoughBalanceInWallet } from 'src/utils/error-handling';
 import {
   NotEnoughBalanceInWallet,
   SelectMethod,
