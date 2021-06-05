@@ -9,13 +9,7 @@ class CardInput {
   readonly expiredYear?: string;
   @Field()
   readonly cvv?: string;
-  @Field({ nullable: true })
-  readonly address?: string;
-  @Field({ nullable: true })
-  readonly postcode?: string;
-  @Field({ nullable: true })
-  readonly city?: string;
-  @Field({ nullable: true })
-  readonly country?: string;
+  @Field()
+  readonly cardName: string;
 }
 export default CardInput;
