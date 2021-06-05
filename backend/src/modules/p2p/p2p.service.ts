@@ -63,6 +63,9 @@ export class P2PService {
         'walletTo.currency',
         'walletTo.user',
       ],
+      order: {
+        created_at: 'DESC',
+      },
     });
   }
   async getP2PByToken(user: User): Promise<PtoP[]> {
@@ -77,6 +80,9 @@ export class P2PService {
         'walletTo.currency',
         'walletTo.user',
       ],
+      order: {
+        created_at: 'DESC',
+      },
     });
   }
 }
