@@ -9,6 +9,7 @@ import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
 import { WalletService } from '../wallet/wallet.service';
 import { BankService } from '../bank/bank.service';
 import { NotEnoughBalanceInWallet } from 'src/utils/error-handling';
+import { CardService } from '../card/card.service';
 
 @Injectable()
 export class TransactionFiatService {
@@ -18,23 +19,31 @@ export class TransactionFiatService {
     private readonly userService: UserService,
     private readonly currencyService: CurrencyService,
     private readonly bankService: BankService,
+    private readonly cardService: CardService,
   ) {}
   async createFiat(input: FiatInput, user: User): Promise<TransactionFiat> {
     const fiat = new TransactionFiat();
-    fiat.bankNumber = input.bankNumber;
     fiat.method = input.method;
     fiat.amount = String(input.amount);
     fiat.status = TransactionStatus.Pending;
     fiat.user = await this.userService.getUserByID(user.id);
-    const getbank = await this.bankService.getBankByName(input.bankType);
+    if (input.bankNumber != '') {
+      console.log('4');
+      const banktype = await this.bankService.getBankByName(input.bankType);
+      fiat.bank = await this.bankService.getBankByNumAndType(
+        input.bankNumber,
+        banktype.id,
+      );
+    } else if (input.cardNumber != '') {
+      console.log('3');
+      fiat.creditCardId = await this.cardService.getCardByNum(input.cardNumber);
+    }
     const currency = await this.currencyService.getCurrencyByShortName('USDT');
     const wallet = await this.walletService.getWalletByCurrencyId(
       user.id,
       currency.id,
     );
-
     fiat.wallet = wallet;
-    fiat.bank = getbank;
 
     const temp1 = Number(wallet.amount);
     const temp2 = Number(input.amount);

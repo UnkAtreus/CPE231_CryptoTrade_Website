@@ -64,6 +64,14 @@ type TransactionCrypto {
 type Bank {
   id: Float
   bank: String
+  banknum: [BankNum!]
+}
+
+type BankNum {
+  id: Float
+  bankNumber: String
+  user: User
+  banktype: Bank
   transactionFiat: [TransactionFiat!]!
 }
 
@@ -73,25 +81,20 @@ type CreditCard {
   expiredMonth: String
   expiredYear: String
   cvv: String
-  address: String
-  postCode: String
-  city: String
-  country: String
   transactionFiat: [TransactionFiat!]
   id: Float
 }
 
 type TransactionFiat {
   user: User
-  bank: Bank
+  bank: BankNum
   status: String
   method: String
   wallet: Wallet
-  creditCard: CreditCard
+  creditCardId: CreditCard
   created_at: DateTime
   updated_at: DateTime
   amount: String
-  bankNumber: String
   totalBalanceLeft: String
   fee: String
   id: Float
@@ -138,6 +141,7 @@ type User {
   updated_at: DateTime
   wallet: [Wallet!]
   creditCard: [CreditCard!]
+  bank: [BankNum!]
   transactionFiat: [TransactionFiat!]
   id: Float
   verification: Verification
@@ -170,6 +174,8 @@ type Query {
   getAllFiatByUser: [TransactionFiat!]!
   getBankByName(name: String!): Bank!
   getAllBank: [Bank!]!
+  getAllBankNum: [BankNum!]!
+  getBankNumBytoken: [BankNum!]!
   getAllCrypto: [TransactionCrypto!]!
   getAllCryptoByUser: [TransactionCrypto!]!
   getAllP2P: [PtoP!]!
@@ -195,13 +201,14 @@ type Mutation {
   updateCurrency(volume: String, shortName: String, name: String, id: ID!): Currency!
   addCard(cardInput: CardInput!): CreditCard!
   updateCard(cardInput: CardInput!, id: Float!): CreditCard!
-  deleteCard(id: Float!): CreditCard!
+  deleteCard(id: Float!): BankNum!
   createOrder(input: OrderInput!): Order!
   cancelOrder(id: ID!): Order!
   fillOrder(id: ID!): Order!
   createFiat(fiatInput: FiatInput!): TransactionFiat!
   updateFiatStatus(id: ID!, status: Float!): TransactionFiat!
   createBank: [Bank!]!
+  addBankNum(name: String!, bankNum: String!): BankNum!
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
   updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
   createP2P(p2pInput: PtoPInput!): PtoP!
@@ -249,10 +256,7 @@ input CardInput {
   expiredMonth: String
   expiredYear: String
   cvv: String
-  address: String
-  postcode: String
-  city: String
-  country: String
+  cardName: String!
 }
 
 input OrderInput {
@@ -268,6 +272,7 @@ input FiatInput {
   amount: Float
   bankNumber: String
   bankType: String
+  cardNumber: String
 }
 
 input CryptoInput {

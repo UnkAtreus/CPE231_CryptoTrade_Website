@@ -10,5 +10,7 @@ class FiatInput {
   readonly bankNumber?: string;
   @Field({ nullable: true })
   readonly bankType?: string;
+  @Field(() => String)
+  readonly cardNumber?: string;
 }
 export default FiatInput;

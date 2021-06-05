@@ -1,5 +1,12 @@
+import { BankNum } from './banknum.model';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { TransactionFiat } from './transactionFiat.model';
 @ObjectType()
 @Entity()
@@ -9,10 +16,10 @@ export class Bank {
   id?: number;
 
   @Field()
-  @Column('varchar', { length: 64 })
+  @Column({ type: 'varchar', length: 6 })
   bank?: string;
 
-  @Field(() => [TransactionFiat])
-  @OneToMany(() => TransactionFiat, (transactionFiat) => transactionFiat.bank)
-  transactionFiat: TransactionFiat[];
+  @Field(() => [BankNum])
+  @OneToMany(() => BankNum, (bankNum) => bankNum.banktype)
+  banknum?: BankNum[];
 }

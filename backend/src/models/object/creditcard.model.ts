@@ -34,26 +34,10 @@ export class CreditCard {
   @Column('varchar', { length: 3 })
   cvv?: string;
 
-  @Field(() => String)
-  @Column('text', { nullable: true })
-  address?: string;
-
-  @Field(() => String)
-  @Column({ nullable: true })
-  postCode?: string;
-
-  @Field(() => String)
-  @Column({ nullable: true })
-  city?: string;
-
-  @Field(() => String)
-  @Column({ nullable: true })
-  country?: string;
-
   @Field(() => [TransactionFiat])
   @OneToMany(
     () => TransactionFiat,
-    (transactionFiat) => transactionFiat.creditCard,
+    (transactionFiat) => transactionFiat.creditCardId,
   )
   transactionFiat?: TransactionFiat[];
 }

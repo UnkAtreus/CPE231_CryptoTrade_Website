@@ -12,6 +12,7 @@ import { TransactionCrypto } from '../models/object/transactionCrypto.model';
 import { TransactionFiat } from '../models/object/transactionFiat.model';
 import { Wallet } from 'src/models/object/wallet.model';
 import { Verification } from 'src/models/object/verification.model';
+import { BankNum } from 'src/models/object/banknum.model';
 
 @Global()
 @Module({
@@ -20,6 +21,7 @@ import { Verification } from 'src/models/object/verification.model';
       User,
       Role,
       Bank,
+      BankNum,
       CreditCard,
       Currency,
       Order,

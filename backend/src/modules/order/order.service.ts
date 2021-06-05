@@ -35,7 +35,7 @@ export class OrderService implements OnApplicationBootstrap {
     this.price = 0;
   }
   onApplicationBootstrap() {
-    this.handleInterval();
+    // this.handleInterval();
   }
 
   async handleInterval() {
@@ -183,7 +183,7 @@ export class OrderService implements OnApplicationBootstrap {
       });
   }
 
-  @Interval(2000)
+  // @Interval(2000)
   async fillOrderInterval() {
     const orderLists = await this.repoService.orderRepo.find({
       where: {

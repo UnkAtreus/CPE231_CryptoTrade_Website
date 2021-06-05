@@ -1,3 +1,4 @@
+import { BankNum } from './../models/object/banknum.model';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bank } from 'src/models/object/bank.model';
@@ -19,6 +20,7 @@ export class RepoService {
     @InjectRepository(User) public readonly userRepo: Repository<User>,
     @InjectRepository(Role) public readonly roleRepo: Repository<Role>,
     @InjectRepository(Bank) public readonly bankRepo: Repository<Bank>,
+    @InjectRepository(BankNum) public readonly bankNumRepo: Repository<BankNum>,
     @InjectRepository(CreditCard)
     public readonly creditCardRepo: Repository<CreditCard>,
     @InjectRepository(Currency)
