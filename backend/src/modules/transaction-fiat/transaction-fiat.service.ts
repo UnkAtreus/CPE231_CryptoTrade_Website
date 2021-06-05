@@ -34,7 +34,12 @@ export class TransactionFiatService {
     fiat.amount = String(input.amount);
     fiat.status = TransactionStatus.Pending;
     fiat.user = await this.userService.getUserByID(user.id);
-    if (input.bankNumber != '') {
+    if (
+      !input.bankType &&
+      input.bankType != '' &&
+      !input.bankNumber &&
+      input.bankNumber != ''
+    ) {
       const banktype = await this.bankService.getBankByName(input.bankType);
       fiat.bank = await this.bankService
         .getBankByNumAndType(input.bankNumber, banktype.id)
@@ -49,7 +54,7 @@ export class TransactionFiatService {
             return result;
           }
         });
-    } else if (input.cardInput.cardNumber != '') {
+    } else if (!input.cardInput && input.cardInput.cardNumber != '') {
       fiat.creditCard = await this.cardService
         .getCardByNum(input.cardInput.cardNumber, user)
         .then(async (result) => {
@@ -59,6 +64,8 @@ export class TransactionFiatService {
             return result;
           }
         });
+    } else {
+      throw SelectMethod;
     }
     const currency = await this.currencyService.getCurrencyByShortName('USDT');
     const wallet = await this.walletService.getWalletByCurrencyId(
