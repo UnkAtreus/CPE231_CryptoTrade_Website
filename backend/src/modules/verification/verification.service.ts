@@ -1,26 +1,72 @@
 import { Injectable } from '@nestjs/common';
-import { CreateVerificationInput } from './dto/create-verification.input';
-import { UpdateVerificationInput } from './dto/update-verification.input';
+import { User } from 'src/models/object/user.model';
+import { RepoService } from 'src/repo/repo.service';
+import { Verification } from 'src/models/object/verification.model';
+import { TransactionStatus } from 'src/static/enum';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class VerificationService {
-  create(createVerificationInput: CreateVerificationInput) {
-    return 'This action adds a new verification';
+  constructor(
+    private readonly repoService: RepoService,
+    private readonly userService: UserService,
+  ) {}
+  async create(user: User, image: string) {
+    const veri: Verification = {
+      user: user,
+      imageUrl: image,
+      status: TransactionStatus.Pending,
+    };
+    return await this.repoService.veriRepo.save(veri);
   }
 
-  findAll() {
-    return `This action returns all verification`;
+  async findAll() {
+    return await this.repoService.veriRepo.find();
+  }
+  async findOne(id: number) {
+    return await this.repoService.veriRepo.findOne({ where: { id: id } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} verification`;
+  async findAllForStaff() {
+    return await this.repoService.veriRepo.find({
+      where: {
+        status: TransactionStatus.Pending,
+      },
+      relations: ['user'],
+      order: {
+        created_at: 'ASC',
+      },
+    });
   }
 
-  update(id: number, updateVerificationInput: UpdateVerificationInput) {
-    return `This action updates a #${id} verification`;
+  async findOneByUser(user: User) {
+    return await this.repoService.veriRepo.findOne({
+      where: {
+        user: user.id,
+        status: TransactionStatus.Pending,
+      },
+      relations: ['user'],
+      order: {
+        created_at: 'DESC',
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} verification`;
+  async update(id: number, status: TransactionStatus): Promise<boolean> {
+    const veri = await this.findOne(id);
+    veri.status = status;
+
+    return await this.repoService.veriRepo.save(veri).then(async (result) => {
+      if (result) {
+        if (status == TransactionStatus.Done) {
+          return await this.userService
+            .verifyUser(result.user.id)
+            .then((re) => {
+              if (!re) return false;
+              return true;
+            });
+        }
+      }
+    });
   }
 }

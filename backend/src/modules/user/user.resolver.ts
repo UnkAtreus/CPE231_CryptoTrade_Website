@@ -24,6 +24,13 @@ export class UserResolver {
   }
 
   @Mutation(() => TokenRole)
+  async createUser(
+    @Args('registerInput') input: RegisterInput,
+    @Args('role', { type: () => Number }) role: Role,
+  ): Promise<any> {
+    return this.userService.createUser(input, role);
+  }
+  @Mutation(() => TokenRole)
   async registerUser(
     @Args('registerInput') input: RegisterInput,
   ): Promise<any> {

@@ -1,10 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.model';
 import { Currency } from './currency.model';
@@ -23,12 +25,22 @@ export class Verification {
 
   @Field()
   @Column({ type: 'enum', enum: TransactionStatus })
-  status?: number;
+  status?: TransactionStatus;
 
   @Field()
   @Column({ type: 'text' })
-  imageUrl?: number;
+  imageUrl?: string;
 
   @OneToOne(() => User, (user) => user.wallet)
   user?: User;
+
+  @Field()
+  @Column()
+  @CreateDateColumn()
+  created_at?: Date;
+
+  @Field()
+  @Column()
+  @UpdateDateColumn()
+  updated_at?: Date;
 }
