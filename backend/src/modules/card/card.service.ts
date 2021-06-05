@@ -26,6 +26,13 @@ export class CardService {
     });
   }
 
+  async getCardByNum(num: string): Promise<CreditCard> {
+    return await this.repoService.creditCardRepo.findOne({
+      where: { cardNumber: num },
+      relations: ['user'],
+    });
+  }
+
   async getCardByID(id: number): Promise<CreditCard> {
     return await this.repoService.creditCardRepo.findOne({
       where: { id: id },

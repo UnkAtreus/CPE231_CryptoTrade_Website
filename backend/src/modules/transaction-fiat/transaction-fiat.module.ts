@@ -7,9 +7,10 @@ import { WalletModule } from '../wallet/wallet.module';
 import { WalletService } from '../wallet/wallet.service';
 import { TransactionFiatResolver } from './transaction-fiat.resolver';
 import { TransactionFiatService } from './transaction-fiat.service';
+import { CardModule } from '../card/card.module';
 
 @Module({
-  imports: [WalletModule, UserModule, BankModule, CurrencyModule],
+  imports: [WalletModule, UserModule, BankModule, CurrencyModule, CardModule],
   providers: [TransactionFiatResolver, TransactionFiatService],
   exports: [TransactionFiatService],
 })

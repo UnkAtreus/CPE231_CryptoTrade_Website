@@ -8,7 +8,12 @@ import FiatInput from 'src/models/input/fiat.input';
 import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
 import { WalletService } from '../wallet/wallet.service';
 import { BankService } from '../bank/bank.service';
-import { NotEnoughBalanceInWallet } from 'src/utils/error-handling';
+import {
+  NotEnoughBalanceInWallet,
+  SelectMethod,
+} from 'src/utils/error-handling';
+import { CreditCard } from 'src/models/object/creditcard.model';
+import { CardService } from '../card/card.service';
 
 @Injectable()
 export class TransactionFiatService {
@@ -17,35 +22,46 @@ export class TransactionFiatService {
     private readonly walletService: WalletService,
     private readonly userService: UserService,
     private readonly currencyService: CurrencyService,
+    private readonly cardService: CardService,
     private readonly bankService: BankService,
   ) {}
   async createFiat(input: FiatInput, user: User): Promise<TransactionFiat> {
     const fiat = new TransactionFiat();
-    fiat.bankNumber = input.bankNumber;
+    if (!input.bankNumber && !input.cardNumber) {
+      throw SelectMethod;
+    }
     fiat.method = input.method;
     fiat.amount = String(input.amount);
     fiat.status = TransactionStatus.Pending;
     fiat.user = await this.userService.getUserByID(user.id);
-    const getbank = await this.bankService.getBankByName(input.bankType);
+    if (input.bankNumber != '') {
+      console.log('4');
+      const banktype = await this.bankService.getBankByName(input.bankType);
+      fiat.bank = await this.bankService.getBankByNumAndType(
+        input.bankNumber,
+        banktype.id,
+      );
+    } else if (input.cardNumber != '') {
+      console.log('3');
+      fiat.creditCardId = await this.cardService.getCardByNum(input.cardNumber);
+    }
     const currency = await this.currencyService.getCurrencyByShortName('USDT');
     const wallet = await this.walletService.getWalletByCurrencyId(
       user.id,
       currency.id,
     );
-
     fiat.wallet = wallet;
-    fiat.bank = getbank;
 
-    const temp1 = Number(wallet.amount);
-    const temp2 = Number(input.amount);
+    const walletAmount = Number(wallet.amount);
+    const inputAmount = Number(input.amount);
     let result = 0;
 
     if (input.method == TranasctionMethod.Deposit) {
-      result = temp1 + temp2;
+      result = walletAmount + inputAmount;
       fiat.status = TransactionStatus.Done;
     } else {
-      result = temp1 - temp2;
-      fiat.fee = String(temp2 * 0.001);
+      result = walletAmount - inputAmount;
+      fiat.fee = String(inputAmount * 0.001);
       if (result < 0) {
         throw NotEnoughBalanceInWallet;
       }

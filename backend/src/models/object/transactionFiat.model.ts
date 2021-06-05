@@ -1,3 +1,4 @@
+import { BankNum } from './banknum.model';
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
 import {
@@ -25,9 +26,9 @@ export class TransactionFiat {
   @ManyToOne(() => User, (user) => user.transactionFiat)
   user?: User;
 
-  @Field(() => Bank)
-  @ManyToOne(() => Bank, (bank) => bank.transactionFiat)
-  bank?: Bank;
+  @Field(() => BankNum)
+  @ManyToOne(() => BankNum, (bankNum) => bankNum.transactionFiat)
+  bank?: BankNum;
 
   @Field(() => String)
   @Column({ type: 'enum', enum: TransactionStatus })
@@ -47,7 +48,7 @@ export class TransactionFiat {
   @ManyToOne(() => CreditCard, (creditCard) => creditCard.transactionFiat, {
     onDelete: 'CASCADE',
   })
-  creditCard?: CreditCard;
+  creditCardId?: CreditCard;
 
   @Field()
   @Column()
@@ -62,10 +63,6 @@ export class TransactionFiat {
   @Field(() => String)
   @Column()
   amount?: string;
-
-  @Field(() => String)
-  @Column()
-  bankNumber?: string;
 
   @Field(() => String)
   @Column()
