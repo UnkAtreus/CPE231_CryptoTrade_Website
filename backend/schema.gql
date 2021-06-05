@@ -21,6 +21,7 @@ type Order {
   id: ID
   user: User
   method: String
+  type: String
   walletFrom: Wallet
   walletTo: Wallet
   price: String
@@ -265,6 +266,7 @@ input OrderInput {
   currencyTo: String!
   price: Float!
   amount: Float!
+  type: Float!
 }
 
 input FiatInput {

@@ -27,7 +27,7 @@ import {
 } from "components";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
-import { num_list } from "helpers/constants/numList";
+import { num_list_month, num_list_year } from "helpers/constants/numList";
 import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
 import moment from "moment";
 import sortArray from "sort-array";
@@ -45,14 +45,20 @@ const DeopsitContainer = ({ match, ...props }) => {
     match.params.type.toLowerCase() === "fiat" ? "USD" : "BTC"
   );
   const [selectBank, setSelectBank] = useState("KBANK");
+
   const [monthExpiry, setMonthExpiry] = useState("1");
   const [yearExpiry, setYearExpiry] = useState("21");
+  const [amount, setAmount] = useState(0);
   const [payMentMethod, setPayMentMethod] = useState("Bank account");
   const [bankType, setBankType] = useState([
     {
       bank: "KBANK",
     },
   ]);
+  const [allCard, setAllCard] = useState([]);
+  const [isNewCard, setIsNewCard] = useState(allCard ? false : true);
+  const [hasCard, setHasNewCard] = useState(false);
+  const [cardNum, setCardNum] = useState("0");
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [withdrawHistoryFiat, setWithdrawHistoryFiat] = useState([]);
   const [withdrawHistoryCrypto, setWithdrawHistoryCrypto] = useState([]);
@@ -62,6 +68,13 @@ const DeopsitContainer = ({ match, ...props }) => {
     amount: 0,
     bankNumber: "",
     bankType: "KBANK",
+  });
+  const [cardParam, setCardParam] = useState({
+    cardNumber: "0",
+    expiredMonth: "01",
+    expiredYear: "21",
+    cvv: "000",
+    cardName: "",
   });
 
   const depositType = match.params.type
@@ -147,6 +160,13 @@ const DeopsitContainer = ({ match, ...props }) => {
       getAllBank {
         bank
       }
+      getCardByToken {
+        id
+        cardNumber
+        user {
+          email
+        }
+      }
     }
   `;
 
@@ -159,6 +179,19 @@ const DeopsitContainer = ({ match, ...props }) => {
       }
     }
   `;
+  const CREATE_CARD = gql`
+    mutation ($input: CardInput!) {
+      addCard(cardInput: $input) {
+        user {
+          email
+        }
+        cardNumber
+        expiredMonth
+        expiredYear
+        cvv
+      }
+    }
+  `;
 
   const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
 
@@ -166,6 +199,18 @@ const DeopsitContainer = ({ match, ...props }) => {
     onCompleted(order) {
       if (order) {
         console.log(order);
+        setAmount(0);
+        refetch();
+      }
+    },
+  });
+
+  const [createCard] = useMutation(CREATE_CARD, {
+    onCompleted(card) {
+      if (card) {
+        console.log(card);
+        setIsNewCard(false);
+        setHasNewCard(false);
         refetch();
       }
     },
@@ -203,6 +248,9 @@ const DeopsitContainer = ({ match, ...props }) => {
     }
     if (data && data.getAllBank) {
       setBankType(data.getAllBank);
+    }
+    if (data && data.getCardByToken) {
+      setAllCard(data.getCardByToken);
     }
   }, [data]);
 
@@ -405,8 +453,8 @@ const DeopsitContainer = ({ match, ...props }) => {
                       isSelect={true}
                       isHeightAuto={true}
                     >
-                      {bankType.map((data) => (
-                        <DropdownChild name={data.bank}>
+                      {bankType.map((data, index) => (
+                        <DropdownChild name={data.bank} key={index}>
                           <div className="content-row align-items-end">
                             <div className="label white mgr-8">{data.bank}</div>
                           </div>
@@ -433,92 +481,204 @@ const DeopsitContainer = ({ match, ...props }) => {
                 </form>
               ) : (
                 <>
-                  <div className="title white mgb-8">Payment details</div>
-                  <Input
-                    title="Amount"
-                    suffix={curSymbol || "USD"}
-                    value={"0"}
-                    onChange={(e) => {
-                      console.log(e);
-                    }}
-                  ></Input>
-                  <Input
-                    title="Card Number"
-                    placeholder="xxxx xxxx xxxx xxxx"
-                    onChange={(e) => {
-                      console.log(e);
-                    }}
-                  ></Input>
-                  <Input
-                    title="Card Holder's Name"
-                    placeholder="Name"
-                    onChange={(e) => {
-                      console.log(e);
-                    }}
-                  ></Input>
-                  <div className="content-row">
-                    <div style={{ marginRight: "8px", width: "200px" }}>
-                      <div className="content-row">
-                        <div
-                          className="label white"
-                          style={{ marginBottom: "-12px" }}
-                        >
-                          Card Expiry Date
-                        </div>
-                      </div>
-                      <CoinDropdown>
-                        <div className="inline-flex">
-                          <Dropdown
-                            style={{ marginTop: "12px" }}
-                            active={monthExpiry}
-                            onChange={setMonthExpiry}
-                            isSelect={true}
-                          >
-                            {num_list.map((data, index) => {
-                              if (index < 12)
-                                return (
-                                  <DropdownChild name={data}>
-                                    <div className="content-row align-items-end">
-                                      <div className="label white mgr-8">
-                                        {data}
-                                      </div>
-                                    </div>
-                                  </DropdownChild>
-                                );
-                              else return 0;
-                            })}
-                          </Dropdown>
-                          <Dropdown
-                            style={{ marginTop: "12px" }}
-                            active={yearExpiry}
-                            onChange={setYearExpiry}
-                            isSelect={true}
-                          >
-                            {num_list.map((data, index) => {
-                              if (index > 19)
-                                return (
-                                  <DropdownChild name={data}>
-                                    <div className="content-row align-items-end">
-                                      <div className="label white mgr-8">
-                                        {data}
-                                      </div>
-                                    </div>
-                                  </DropdownChild>
-                                );
-                            })}
-                          </Dropdown>
-                        </div>
-                      </CoinDropdown>
-                    </div>
-                    <Input
-                      title="CVV"
-                      placeholder="***"
-                      onChange={(e) => {
-                        console.log(e);
+                  {isNewCard ? (
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        console.log(cardParam);
+                        createCard({
+                          variables: { input: cardParam },
+                        });
                       }}
-                    ></Input>
-                  </div>
-                  <Button label="Submit" color="green" fontColor="black" />
+                    >
+                      <div className="content-row space-between">
+                        <div className="title white mgb-8">Payment details</div>
+                        {hasCard && (
+                          <div
+                            className="label gray mgb-8 pointer"
+                            style={{ alignSelf: "flex-end" }}
+                            onClick={() => {
+                              setIsNewCard(false);
+                              setHasNewCard(false);
+                            }}
+                          >
+                            select card
+                          </div>
+                        )}
+                      </div>
+                      <Input
+                        title="Amount"
+                        suffix={curSymbol || "USD"}
+                        value={amount || 0}
+                        onChange={(e) => {
+                          setAmount(e);
+                          // setOrderParam({
+                          //   ...orderParam,
+                          //   bankNumber: e,
+                          // });
+                        }}
+                      ></Input>
+                      <Input
+                        title="Card Number"
+                        placeholder="xxxx xxxx xxxx xxxx"
+                        onChange={(e) => {
+                          setCardParam({
+                            ...cardParam,
+                            cardNumber: e,
+                          });
+                        }}
+                      ></Input>
+                      <Input
+                        title="Card Holder's Name"
+                        placeholder="Name"
+                        onChange={(e) => {
+                          setCardParam({
+                            ...cardParam,
+                            cardName: e,
+                          });
+                        }}
+                      ></Input>
+                      <div className="content-row">
+                        <div style={{ marginRight: "8px", width: "200px" }}>
+                          <div className="content-row">
+                            <div
+                              className="label white"
+                              style={{ marginBottom: "-12px" }}
+                            >
+                              Card Expiry Date
+                            </div>
+                          </div>
+                          <CoinDropdown>
+                            <div className="inline-flex">
+                              <Dropdown
+                                style={{ marginTop: "12px" }}
+                                active={monthExpiry}
+                                onChange={(e) => {
+                                  setMonthExpiry(e);
+                                  setCardParam({
+                                    ...cardParam,
+                                    expiredMonth: e,
+                                  });
+                                }}
+                                isSelect={true}
+                              >
+                                {num_list_month.map((data, index) => {
+                                  return (
+                                    <DropdownChild name={data} key={index}>
+                                      <div className="content-row align-items-end">
+                                        <div className="label white mgr-8">
+                                          {data}
+                                        </div>
+                                      </div>
+                                    </DropdownChild>
+                                  );
+                                })}
+                              </Dropdown>
+                              <Dropdown
+                                style={{ marginTop: "12px" }}
+                                active={yearExpiry}
+                                onChange={(e) => {
+                                  setYearExpiry(e);
+                                  setCardParam({
+                                    ...cardParam,
+                                    expiredYear: e,
+                                  });
+                                }}
+                                isSelect={true}
+                              >
+                                {num_list_year.map((data, index) => {
+                                  return (
+                                    <DropdownChild name={data} key={index}>
+                                      <div className="content-row align-items-end">
+                                        <div className="label white mgr-8">
+                                          {data}
+                                        </div>
+                                      </div>
+                                    </DropdownChild>
+                                  );
+                                })}
+                              </Dropdown>
+                            </div>
+                          </CoinDropdown>
+                        </div>
+                        <Input
+                          title="CVV"
+                          placeholder="***"
+                          onChange={(e) => {
+                            setCardParam({
+                              ...cardParam,
+                              cvv: e,
+                            });
+                          }}
+                        ></Input>
+                      </div>
+                      <Button label="Submit" color="green" fontColor="black" />
+                    </form>
+                  ) : (
+                    <form>
+                      <div className="content-row space-between">
+                        <div className="title white mgb-8">Payment details</div>
+                        {hasCard && (
+                          <div
+                            className="label gray mgb-8 pointer"
+                            style={{ alignSelf: "flex-end" }}
+                            onClick={() => {
+                              setIsNewCard(false);
+                              setHasNewCard(false);
+                            }}
+                          >
+                            select card
+                          </div>
+                        )}
+                      </div>
+                      <Input
+                        title="Amount"
+                        suffix={curSymbol || "USD"}
+                        value={amount || 0}
+                        onChange={(e) => {
+                          setAmount(e);
+                        }}
+                      ></Input>
+                      <CoinDropdown>
+                        <div className="content-row space-between">
+                          <div
+                            className="label white"
+                            style={{ marginBottom: "-12px" }}
+                          >
+                            Card Selected
+                          </div>
+                          <div
+                            className="label gray pointer"
+                            style={{ marginBottom: "-12px" }}
+                            onClick={() => {
+                              setIsNewCard(true);
+                              setHasNewCard(true);
+                            }}
+                          >
+                            +Add card
+                          </div>
+                        </div>
+                        <Dropdown
+                          style={{ marginTop: "12px" }}
+                          active={cardNum}
+                          onChange={setCardNum}
+                          isSelect={true}
+                          isHeightAuto={true}
+                        >
+                          {allCard.map((data, index) => (
+                            <DropdownChild name={index} key={index}>
+                              <div className="content-row align-items-end">
+                                <div className="label white mgr-8">
+                                  {data.cardNumber}
+                                </div>
+                              </div>
+                            </DropdownChild>
+                          ))}
+                        </Dropdown>
+                      </CoinDropdown>
+                      <Button label="Submit" color="green" fontColor="black" />
+                    </form>
+                  )}
                 </>
               )
             ) : (
