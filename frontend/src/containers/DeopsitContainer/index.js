@@ -27,7 +27,7 @@ import {
 } from "components";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
-import { num_list } from "helpers/constants/numList";
+import { num_list_month, num_list_year } from "helpers/constants/numList";
 import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
 import moment from "moment";
 import sortArray from "sort-array";
@@ -45,8 +45,11 @@ const DeopsitContainer = ({ match, ...props }) => {
     match.params.type.toLowerCase() === "fiat" ? "USD" : "BTC"
   );
   const [selectBank, setSelectBank] = useState("KBANK");
+  const [isNewCard, setIsNewCard] = useState(true);
+  const [hasCard, setHasNewCard] = useState(true);
   const [monthExpiry, setMonthExpiry] = useState("1");
   const [yearExpiry, setYearExpiry] = useState("21");
+  const [amount, setAmount] = useState(0);
   const [payMentMethod, setPayMentMethod] = useState("Bank account");
   const [bankType, setBankType] = useState([
     {
@@ -405,8 +408,8 @@ const DeopsitContainer = ({ match, ...props }) => {
                       isSelect={true}
                       isHeightAuto={true}
                     >
-                      {bankType.map((data) => (
-                        <DropdownChild name={data.bank}>
+                      {bankType.map((data, index) => (
+                        <DropdownChild name={data.bank} key={index}>
                           <div className="content-row align-items-end">
                             <div className="label white mgr-8">{data.bank}</div>
                           </div>
@@ -433,92 +436,169 @@ const DeopsitContainer = ({ match, ...props }) => {
                 </form>
               ) : (
                 <>
-                  <div className="title white mgb-8">Payment details</div>
-                  <Input
-                    title="Amount"
-                    suffix={curSymbol || "USD"}
-                    value={"0"}
-                    onChange={(e) => {
-                      console.log(e);
-                    }}
-                  ></Input>
-                  <Input
-                    title="Card Number"
-                    placeholder="xxxx xxxx xxxx xxxx"
-                    onChange={(e) => {
-                      console.log(e);
-                    }}
-                  ></Input>
-                  <Input
-                    title="Card Holder's Name"
-                    placeholder="Name"
-                    onChange={(e) => {
-                      console.log(e);
-                    }}
-                  ></Input>
-                  <div className="content-row">
-                    <div style={{ marginRight: "8px", width: "200px" }}>
-                      <div className="content-row">
-                        <div
-                          className="label white"
-                          style={{ marginBottom: "-12px" }}
-                        >
-                          Card Expiry Date
-                        </div>
-                      </div>
-                      <CoinDropdown>
-                        <div className="inline-flex">
-                          <Dropdown
-                            style={{ marginTop: "12px" }}
-                            active={monthExpiry}
-                            onChange={setMonthExpiry}
-                            isSelect={true}
-                          >
-                            {num_list.map((data, index) => {
-                              if (index < 12)
-                                return (
-                                  <DropdownChild name={data}>
-                                    <div className="content-row align-items-end">
-                                      <div className="label white mgr-8">
-                                        {data}
-                                      </div>
-                                    </div>
-                                  </DropdownChild>
-                                );
-                              else return 0;
-                            })}
-                          </Dropdown>
-                          <Dropdown
-                            style={{ marginTop: "12px" }}
-                            active={yearExpiry}
-                            onChange={setYearExpiry}
-                            isSelect={true}
-                          >
-                            {num_list.map((data, index) => {
-                              if (index > 19)
-                                return (
-                                  <DropdownChild name={data}>
-                                    <div className="content-row align-items-end">
-                                      <div className="label white mgr-8">
-                                        {data}
-                                      </div>
-                                    </div>
-                                  </DropdownChild>
-                                );
-                            })}
-                          </Dropdown>
-                        </div>
-                      </CoinDropdown>
-                    </div>
-                    <Input
-                      title="CVV"
-                      placeholder="***"
-                      onChange={(e) => {
-                        console.log(e);
+                  {isNewCard ? (
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        // console.log(orderParamFiat);
+                        // createOrderFiat({
+                        //   variables: { inputFiat: orderParamFiat },
+                        // });
                       }}
-                    ></Input>
-                  </div>
-                  <Button label="Submit" color="green" fontColor="black" />
+                    >
+                      <div className="content-row space-between">
+                        <div className="title white mgb-8">Payment details</div>
+                        {hasCard && (
+                          <div
+                            className="label gray mgb-8 pointer"
+                            style={{ alignSelf: "flex-end" }}
+                            onClick={() => {
+                              setIsNewCard(false);
+                            }}
+                          >
+                            select card
+                          </div>
+                        )}
+                      </div>
+                      <Input
+                        title="Amount"
+                        suffix={curSymbol || "USD"}
+                        value={"0"}
+                        onChange={(e) => {
+                          console.log(e);
+                        }}
+                      ></Input>
+                      <Input
+                        title="Card Number"
+                        placeholder="xxxx xxxx xxxx xxxx"
+                        onChange={(e) => {
+                          console.log(e);
+                        }}
+                      ></Input>
+                      <Input
+                        title="Card Holder's Name"
+                        placeholder="Name"
+                        onChange={(e) => {
+                          console.log(e);
+                        }}
+                      ></Input>
+                      <div className="content-row">
+                        <div style={{ marginRight: "8px", width: "200px" }}>
+                          <div className="content-row">
+                            <div
+                              className="label white"
+                              style={{ marginBottom: "-12px" }}
+                            >
+                              Card Expiry Date
+                            </div>
+                          </div>
+                          <CoinDropdown>
+                            <div className="inline-flex">
+                              <Dropdown
+                                style={{ marginTop: "12px" }}
+                                active={monthExpiry}
+                                onChange={setMonthExpiry}
+                                isSelect={true}
+                              >
+                                {num_list_month.map((data, index) => {
+                                  return (
+                                    <DropdownChild name={data} key={index}>
+                                      <div className="content-row align-items-end">
+                                        <div className="label white mgr-8">
+                                          {data}
+                                        </div>
+                                      </div>
+                                    </DropdownChild>
+                                  );
+                                })}
+                              </Dropdown>
+                              <Dropdown
+                                style={{ marginTop: "12px" }}
+                                active={yearExpiry}
+                                onChange={setYearExpiry}
+                                isSelect={true}
+                              >
+                                {num_list_year.map((data, index) => {
+                                  return (
+                                    <DropdownChild name={data} key={index}>
+                                      <div className="content-row align-items-end">
+                                        <div className="label white mgr-8">
+                                          {data}
+                                        </div>
+                                      </div>
+                                    </DropdownChild>
+                                  );
+                                })}
+                              </Dropdown>
+                            </div>
+                          </CoinDropdown>
+                        </div>
+                        <Input
+                          title="CVV"
+                          placeholder="***"
+                          onChange={(e) => {
+                            console.log(e);
+                          }}
+                        ></Input>
+                      </div>
+                      <Button label="Submit" color="green" fontColor="black" />
+                    </form>
+                  ) : (
+                    <form>
+                      <div className="title white mgb-8">Payment details</div>
+                      <Input
+                        title="Amount"
+                        suffix={curSymbol || "USD"}
+                        value={amount || 0}
+                        onChange={(e) => {
+                          setAmount(e);
+                        }}
+                      ></Input>
+                      <CoinDropdown>
+                        <div className="content-row space-between">
+                          <div
+                            className="label white"
+                            style={{ marginBottom: "-12px" }}
+                          >
+                            Coin
+                          </div>
+                          <div
+                            className="label gray pointer"
+                            style={{ marginBottom: "-12px" }}
+                            onClick={() => {
+                              setIsNewCard(true);
+                            }}
+                          >
+                            +Add card
+                          </div>
+                        </div>
+                        <Dropdown
+                          style={{ marginTop: "12px" }}
+                          active={curSymbol || "USD"}
+                          onChange={setCurSymbol}
+                          isSelect={true}
+                          isHeightAuto={true}
+                        >
+                          {MOCK_FIAT.map((data, index) => (
+                            <DropdownChild
+                              name={data.currencyShortName}
+                              key={index}
+                            >
+                              <div className="content-row align-items-end">
+                                <div className="label white mgr-8">
+                                  {data.currencyShortName}
+                                </div>
+                                <div className="text-9 gray">
+                                  {data.currency}
+                                </div>
+                              </div>
+                            </DropdownChild>
+                          ))}
+                        </Dropdown>
+                      </CoinDropdown>
+                      <Button label="Submit" color="green" fontColor="black" />
+                    </form>
+                  )}
                 </>
               )
             ) : (

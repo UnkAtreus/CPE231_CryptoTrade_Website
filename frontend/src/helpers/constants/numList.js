@@ -1,4 +1,4 @@
-export const num_list = [
+export const num_list_month = [
   "1",
   "2",
   "3",
@@ -11,14 +11,9 @@ export const num_list = [
   "10",
   "11",
   "12",
-  "13",
-  "14",
-  "15",
-  "16",
-  "17",
-  "18",
-  "19",
-  "20",
+];
+
+export const num_list_year = [
   "21",
   "22",
   "23",

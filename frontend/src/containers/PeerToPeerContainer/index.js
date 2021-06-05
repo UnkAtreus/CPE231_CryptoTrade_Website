@@ -102,6 +102,21 @@ const PeerToPeerContainer = ({ match, ...props }) => {
           currencyLongName
         }
       }
+      getP2PByToken {
+        walletTo {
+          currency {
+            currency
+          }
+        }
+        walletFrom {
+          currency {
+            currency
+          }
+        }
+        amount
+        walletFromBalance
+        walletToBalance
+      }
     }
   `;
 
@@ -147,6 +162,9 @@ const PeerToPeerContainer = ({ match, ...props }) => {
     }
     if (data && data.getUserWalletByToken) {
       setUserWallet(data.getUserWalletByToken);
+    }
+    if (data && data.getP2PByToken) {
+      setP2PHistory(data.getP2PByToken);
     }
   }, [data]);
 
@@ -319,47 +337,38 @@ const PeerToPeerContainer = ({ match, ...props }) => {
           <HistoryContainer>
             {p2pHistory &&
               p2pHistory.map((items, index) => {
-                if (items.method === "1")
-                  return (
+                return (
+                  <div className="content-row space-between mgb-8" key={index}>
                     <div
-                      className="content-row space-between mgb-8"
-                      key={index}
+                      className="label white text-center"
+                      style={{ minWidth: "96px" }}
                     >
-                      <div
-                        className="label white text-center"
-                        style={{ minWidth: "96px" }}
-                      >
-                        {items.bank
-                          ? items.bank.bank
-                          : items.wallet.currency.currency}
-                      </div>
-                      <div
-                        className={ClassNames(
-                          "label text-center",
-                          items.status === "0" ? "green" : "red"
-                        )}
-                        style={{ minWidth: "64px" }}
-                      >
-                        {items.status === "0" ? "success" : "cancle"}
-                      </div>
-                      <div
-                        className="label white text-center"
-                        style={{ minWidth: "64px" }}
-                      >
-                        {items.amount}
-                      </div>
-                      <div
-                        className="label gray text-center"
-                        style={{ minWidth: "126px" }}
-                      >
-                        {moment(items.updated_at).format("DD-MM HH:MM:SS")}
-                      </div>
-                      <div
-                        className="label gray"
-                        style={{ minWidth: "296px" }}
-                      ></div>
+                      {items.walletTo.currency.currency}
                     </div>
-                  );
+                    <div
+                      className={ClassNames("label text-center", "green")}
+                      style={{ minWidth: "64px" }}
+                    >
+                      {"success"}
+                    </div>
+                    <div
+                      className="label white text-center"
+                      style={{ minWidth: "64px" }}
+                    >
+                      {items.amount}
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      {moment(items.updated_at).format("DD-MM HH:MM:SS") || "0"}
+                    </div>
+                    <div
+                      className="label gray"
+                      style={{ minWidth: "296px" }}
+                    ></div>
+                  </div>
+                );
               })}
           </HistoryContainer>
         </PeerToPeerHistory>
