@@ -3,7 +3,10 @@ import PtoPInput from 'src/models/input/p2p.input';
 import { PtoP } from 'src/models/object/ptop.model';
 import { User } from 'src/models/object/user.model';
 import { RepoService } from 'src/repo/repo.service';
-import { NotEnoughBalanceInWallet } from 'src/utils/error-handling';
+import {
+  NotEnoughBalanceInWallet,
+  YouCantP2Pyourself,
+} from 'src/utils/error-handling';
 import { CurrencyService } from '../currency/currency.service';
 import { UserService } from '../user/user.service';
 import { WalletService } from '../wallet/wallet.service';
@@ -18,6 +21,10 @@ export class P2PService {
   ) {}
 
   async createP2P(input: PtoPInput, user: User): Promise<PtoP> {
+    // let checktaget = input.targetUser;
+    // if ((checktaget = user.id)) {
+    //   throw YouCantP2Pyourself;
+    // } else {
     const p2p = new PtoP();
     const curreny = await this.currencyService.getCurrencyByShortName(
       input.currency,
@@ -43,5 +50,28 @@ export class P2PService {
     await this.walletService.updateWallet(walletFrom.id, temp1);
     await this.walletService.updateWallet(walletTo.id, temp2);
     return this.repoService.ptopRepo.save(p2p);
+    // }
+  }
+
+  async getAllP2P(): Promise<PtoP[]> {
+    return await this.repoService.ptopRepo.find({
+      relations: [
+        'walletFrom',
+        'walletFrom.currency',
+        'walletTo',
+        'walletTo.currency',
+      ],
+    });
+  }
+  async getP2PByToken(user: User): Promise<PtoP[]> {
+    return await this.repoService.ptopRepo.find({
+      where: { id: user.id },
+      relations: [
+        'walletFrom',
+        'walletFrom.currency',
+        'walletTo',
+        'walletTo.currency',
+      ],
+    });
   }
 }

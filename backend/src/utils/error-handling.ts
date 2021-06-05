@@ -16,6 +16,14 @@ export const UserNotFound = new ApolloError('User not found.', '404', {
   showPath: true,
   showLocations: true,
 });
+export const YouCantP2Pyourself = new ApolloError(
+  'You cant P2P function by your self',
+  'WL-01',
+  {
+    showPath: true,
+    showLocations: true,
+  },
+);
 export const NotEnoughBalanceInWallet = new ApolloError(
   'Your wallet balance is not enough',
   'WL-01',

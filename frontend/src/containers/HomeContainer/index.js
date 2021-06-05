@@ -22,7 +22,9 @@ import { marketController } from "apiService";
 import ClassNames from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import BigNumber from "bignumber.js";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useMutation, gql } from "@apollo/client";
+import moment from "moment";
+import sortArray from "sort-array";
 
 import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
 
@@ -30,6 +32,46 @@ const GET_ALL_DATA = gql`
   query {
     getUserWalletByToken {
       amount
+      inOrder
+      currency {
+        currency
+        currencyLongName
+      }
+    }
+
+    Orders {
+      id
+      user {
+        email
+      }
+      walletTo {
+        currency {
+          currency
+        }
+      }
+      walletFrom {
+        currency {
+          currency
+        }
+      }
+      method
+      price
+      amount
+      totalBalance
+      fee
+      cancel
+      filled
+      created_at
+      updated_at
+    }
+  }
+`;
+
+const CREATE_ORDER = gql`
+  query {
+    getUserWalletByToken {
+      amount
+      inOrder
       currency {
         currency
         currencyLongName
@@ -68,6 +110,7 @@ const HomeContainer = (props) => {
   const [valueAmountSellMarket, setValueAmountSellMarket] = useState(0);
   const [valueTotalSellMarket, setValueTotalSellMarket] = useState(0);
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
+  const [allOrder, setAllOrder] = useState([]);
 
   const MOCK_USER_CURRENCY = {
     btc: 0.00000091,
@@ -92,6 +135,17 @@ const HomeContainer = (props) => {
   const SYMBOL = props.match.params.symbol
     ? props.match.params.symbol.toLowerCase()
     : "btcusdt";
+
+  const getOpenOrder = (data) => {
+    var order = [];
+    data.map((data) => {
+      if (!data.cancel && !data.filled) {
+        order.push(data);
+      }
+    });
+    // console.log(order);
+    return order;
+  };
 
   const hasCrypto = (symbol) => {
     switch (symbol) {
@@ -128,6 +182,12 @@ const HomeContainer = (props) => {
     if (l.ticker.c !== r.ticker.c)
       if (l.ticker.c >= r.ticker.c) setIsUpPrice(true);
       else setIsUpPrice(false);
+  };
+  const getTotal = (flag) => {
+    return (
+      Number(userWallet[CRYPTO_INDEX[flag]].amount) +
+      Number(userWallet[CRYPTO_INDEX[flag]].inOrder)
+    );
   };
 
   const dispatch = useDispatch();
@@ -316,6 +376,9 @@ const HomeContainer = (props) => {
   useEffect(() => {
     if (data && data.getUserWalletByToken) {
       setUserWallet(data.getUserWalletByToken);
+    }
+    if (data && data.Orders) {
+      setAllOrder(data.Orders);
     }
   }, [data]);
 
@@ -904,176 +967,214 @@ const HomeContainer = (props) => {
               <TabPane name="Limit" key="1">
                 <div className="limit-container">
                   <div className="content-row space-between">
-                    <div
-                      className="content-column mgr-16"
-                      style={{ marginRight: "7%", flex: "1 1 0%" }}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                      }}
                     >
-                      <div className="content-row space-between mgb-2">
-                        <div className="title white">Buy {cryptoSymbol}</div>
-                        <div className="content-row">
-                          <div className="label gray">
-                            {BigNumber(
-                              userWallet[CRYPTO_INDEX["usdt"]].amount
-                            ).toFormat(FORMAT_DECIMAL)}
+                      <div
+                        className="content-column mgr-16"
+                        style={{ marginRight: "7%", flex: "1 1 0%" }}
+                      >
+                        <div className="content-row space-between mgb-2">
+                          <div className="title white">Buy {cryptoSymbol}</div>
+                          <div className="content-row">
+                            <div className="label gray">
+                              {BigNumber(
+                                userWallet[CRYPTO_INDEX["usdt"]].amount
+                              ).toFormat(FORMAT_DECIMAL)}
+                            </div>
+                            <div className="label gray mgl-8">USDT</div>
                           </div>
-                          <div className="label gray mgl-8">USDT</div>
                         </div>
+
+                        <InputTrade
+                          prefix="Price"
+                          suffix="USDT"
+                          value={BigNumber(arg.cur_price.price).toFormat(
+                            2,
+                            FORMAT_DECIMAL
+                          )}
+                          onChange={(e) => {
+                            setPriceBuy(e);
+                            calPriceBuy("cryptoPrice", e);
+                          }}
+                        />
+                        <InputTrade
+                          prefix="Amount"
+                          suffix={cryptoSymbol}
+                          value={valueAmountBuy}
+                          onChange={(e) => {
+                            setValueAmountBuy(e);
+                            calPriceBuy("amount", e);
+                          }}
+                        />
+                        <ValueStep value={(e) => calPriceBuy("step", e)} />
+                        <InputTrade
+                          prefix="Total"
+                          suffix="USDT"
+                          value={valueTotalBuy}
+                          onChange={(e) => {
+                            setValueTotalBuy(e);
+                            calPriceBuy("total", e);
+                          }}
+                        />
+
+                        <Button label="Buy BTC" color="green" />
                       </div>
+                    </form>
 
-                      <InputTrade
-                        prefix="Price"
-                        suffix="USDT"
-                        value={BigNumber(arg.cur_price.price).toFormat(
-                          2,
-                          FORMAT_DECIMAL
-                        )}
-                        onChange={(e) => {
-                          setPriceBuy(e);
-                          calPriceBuy("cryptoPrice", e);
-                        }}
-                      />
-                      <InputTrade
-                        prefix="Amount"
-                        suffix={cryptoSymbol}
-                        value={valueAmountBuy}
-                        onChange={(e) => {
-                          setValueAmountBuy(e);
-                          calPriceBuy("amount", e);
-                        }}
-                      />
-                      <ValueStep value={(e) => calPriceBuy("step", e)} />
-                      <InputTrade
-                        prefix="Total"
-                        suffix="USDT"
-                        value={valueTotalBuy}
-                        onChange={(e) => {
-                          setValueTotalBuy(e);
-                          calPriceBuy("total", e);
-                        }}
-                      />
-
-                      <Button label="Buy BTC" color="green" />
-                    </div>
-
-                    <div className="content-column" style={{ flex: "1 1 0%" }}>
-                      <div className="content-row space-between mgb-2">
-                        <div className="title white">Sell {cryptoSymbol}</div>
-                        <div className="content-row">
-                          <div className="label gray">
-                            {BigNumber(
-                              userWallet[
-                                CRYPTO_INDEX[cryptoSymbol.toLowerCase()]
-                              ].amount
-                            ).toFormat(FORMAT_DECIMAL)}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      <div
+                        className="content-column"
+                        style={{ flex: "1 1 0%" }}
+                      >
+                        <div className="content-row space-between mgb-2">
+                          <div className="title white">Sell {cryptoSymbol}</div>
+                          <div className="content-row">
+                            <div className="label gray">
+                              {BigNumber(
+                                userWallet[
+                                  CRYPTO_INDEX[cryptoSymbol.toLowerCase()]
+                                ].amount
+                              ).toFormat(FORMAT_DECIMAL)}
+                            </div>
+                            <div className="label gray mgl-8">
+                              {cryptoSymbol}
+                            </div>
                           </div>
-                          <div className="label gray mgl-8">{cryptoSymbol}</div>
                         </div>
+                        <InputTrade
+                          prefix="Price"
+                          suffix="USDT"
+                          value={BigNumber(arg.cur_price.price).toFormat(
+                            2,
+                            FORMAT_DECIMAL
+                          )}
+                          onChange={(e) => {
+                            setPriceSell(e);
+                            calPriceSell("cryptoPrice", e);
+                          }}
+                        />
+                        <InputTrade
+                          prefix="Amount"
+                          suffix={cryptoSymbol}
+                          value={valueAmountSell}
+                          onChange={(e) => {
+                            setValueAmountSell(e);
+                            calPriceSell("amount", e);
+                          }}
+                        />
+                        <ValueStep value={(e) => calPriceSell("step", e)} />
+                        <InputTrade
+                          prefix="Total"
+                          suffix="USDT"
+                          value={valueTotalSell}
+                          onChange={(e) => {
+                            setValueTotalSell(e);
+                            calPriceSell("total", e);
+                          }}
+                        />
+                        <Button label="Sell BTC" color="red" />
                       </div>
-                      <InputTrade
-                        prefix="Price"
-                        suffix="USDT"
-                        value={BigNumber(arg.cur_price.price).toFormat(
-                          2,
-                          FORMAT_DECIMAL
-                        )}
-                        onChange={(e) => {
-                          setPriceSell(e);
-                          calPriceSell("cryptoPrice", e);
-                        }}
-                      />
-                      <InputTrade
-                        prefix="Amount"
-                        suffix={cryptoSymbol}
-                        value={valueAmountSell}
-                        onChange={(e) => {
-                          setValueAmountSell(e);
-                          calPriceSell("amount", e);
-                        }}
-                      />
-                      <ValueStep value={(e) => calPriceSell("step", e)} />
-                      <InputTrade
-                        prefix="Total"
-                        suffix="USDT"
-                        value={valueTotalSell}
-                        onChange={(e) => {
-                          setValueTotalSell(e);
-                          calPriceSell("total", e);
-                        }}
-                      />
-                      <Button label="Sell BTC" color="red" />
-                    </div>
+                    </form>
                   </div>
                 </div>
               </TabPane>
               <TabPane name="Market" key="2">
                 <div className="market-container">
                   <div className="content-row space-between">
-                    <div
-                      className="content-column mgr-16"
-                      style={{ marginRight: "7%", flex: "1 1 0%" }}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                      }}
                     >
-                      <div className="content-row space-between mgb-2">
-                        <div className="title white">Buy {cryptoSymbol}</div>
-                        <div className="content-row">
-                          <div className="label gray">
-                            {BigNumber(
-                              userWallet[CRYPTO_INDEX["usdt"]].amount
-                            ).toFormat(FORMAT_DECIMAL)}
+                      <div
+                        className="content-column mgr-16"
+                        style={{ marginRight: "7%", flex: "1 1 0%" }}
+                      >
+                        <div className="content-row space-between mgb-2">
+                          <div className="title white">Buy {cryptoSymbol}</div>
+                          <div className="content-row">
+                            <div className="label gray">
+                              {BigNumber(
+                                userWallet[CRYPTO_INDEX["usdt"]].amount
+                              ).toFormat(FORMAT_DECIMAL)}
+                            </div>
+                            <div className="label gray mgl-8">USDT</div>
                           </div>
-                          <div className="label gray mgl-8">USDT</div>
                         </div>
+                        <InputTrade
+                          prefix="Market"
+                          value="Market"
+                          disabled={true}
+                          suffix="USDT"
+                        />
+                        <InputTrade
+                          prefix="Amount"
+                          suffix={cryptoSymbol}
+                          value={valueAmountBuyMarket}
+                          onChange={(e) => {
+                            setValueAmountBuyMarket(e);
+                            calPriceMarket("amountbuy", e);
+                          }}
+                        />
+                        <ValueStep
+                          value={(e) => calPriceMarket("stepbuy", e)}
+                        />
+                        <Button label="Buy BTC" color="green" />
                       </div>
-                      <InputTrade
-                        prefix="Market"
-                        value="Market"
-                        disabled={true}
-                        suffix="USDT"
-                      />
-                      <InputTrade
-                        prefix="Amount"
-                        suffix={cryptoSymbol}
-                        value={valueAmountBuyMarket}
-                        onChange={(e) => {
-                          setValueAmountBuyMarket(e);
-                          calPriceMarket("amountbuy", e);
-                        }}
-                      />
-                      <ValueStep value={(e) => calPriceMarket("stepbuy", e)} />
-                      <Button label="Buy BTC" color="green" />
-                    </div>
+                    </form>
 
-                    <div className="content-column" style={{ flex: "1 1 0%" }}>
-                      <div className="content-row space-between mgb-2">
-                        <div className="title white">Sell {cryptoSymbol}</div>
-                        <div className="content-row">
-                          <div className="label gray">
-                            {BigNumber(
-                              userWallet[
-                                CRYPTO_INDEX[cryptoSymbol.toLowerCase()]
-                              ].amount
-                            ).toFormat(FORMAT_DECIMAL)}
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      <div
+                        className="content-column"
+                        style={{ flex: "1 1 0%" }}
+                      >
+                        <div className="content-row space-between mgb-2">
+                          <div className="title white">Sell {cryptoSymbol}</div>
+                          <div className="content-row">
+                            <div className="label gray">
+                              {BigNumber(
+                                userWallet[
+                                  CRYPTO_INDEX[cryptoSymbol.toLowerCase()]
+                                ].amount
+                              ).toFormat(FORMAT_DECIMAL)}
+                            </div>
+                            <div className="label gray mgl-8">
+                              {cryptoSymbol}
+                            </div>
                           </div>
-                          <div className="label gray mgl-8">{cryptoSymbol}</div>
                         </div>
+                        <InputTrade
+                          prefix="Market"
+                          value="Market"
+                          disabled={true}
+                          suffix="USDT"
+                        />
+                        <InputTrade
+                          prefix="Amount"
+                          suffix={cryptoSymbol}
+                          value={valueAmountSellMarket}
+                          onChange={(e) => {
+                            setValueAmountSellMarket(e);
+                            calPriceMarket("amountsell", e);
+                          }}
+                        />
+                        <ValueStep
+                          value={(e) => calPriceMarket("stepsell", e)}
+                        />
+                        <Button label="Sell BTC" color="red" />
                       </div>
-                      <InputTrade
-                        prefix="Market"
-                        value="Market"
-                        disabled={true}
-                        suffix="USDT"
-                      />
-                      <InputTrade
-                        prefix="Amount"
-                        suffix={cryptoSymbol}
-                        value={valueAmountSellMarket}
-                        onChange={(e) => {
-                          setValueAmountSellMarket(e);
-                          calPriceMarket("amountsell", e);
-                        }}
-                      />
-                      <ValueStep value={(e) => calPriceMarket("stepsell", e)} />
-                      <Button label="Sell BTC" color="red" />
-                    </div>
+                    </form>
                   </div>
                 </div>
               </TabPane>
@@ -1195,17 +1296,11 @@ const HomeContainer = (props) => {
                   </div>
                   <div className="content-column text-right">
                     <div className="paragraph">
-                      {BigNumber(userWallet[5].amount).toFormat(
-                        2,
-                        FORMAT_DECIMAL
-                      )}
+                      {BigNumber(getTotal("usdt")).toFormat(2, FORMAT_DECIMAL)}
                     </div>
                     <div className="label gray">
                       ${" "}
-                      {BigNumber(userWallet[5].amount).toFormat(
-                        2,
-                        FORMAT_DECIMAL
-                      )}
+                      {BigNumber(getTotal("usdt")).toFormat(2, FORMAT_DECIMAL)}
                     </div>
                   </div>
                 </div>
@@ -1227,10 +1322,7 @@ const HomeContainer = (props) => {
                     </div>
                   </div>
                   <div className="label">
-                    {BigNumber(userWallet[0].amount).toFormat(
-                      3,
-                      FORMAT_DECIMAL
-                    )}
+                    {BigNumber(getTotal("btc")).toFormat(3, FORMAT_DECIMAL)}
                   </div>
                 </div>
 
@@ -1245,10 +1337,7 @@ const HomeContainer = (props) => {
                     </div>
                   </div>
                   <div className="label">
-                    {BigNumber(userWallet[1].amount).toFormat(
-                      3,
-                      FORMAT_DECIMAL
-                    )}
+                    {BigNumber(getTotal("ada")).toFormat(3, FORMAT_DECIMAL)}
                   </div>
                 </div>
 
@@ -1263,10 +1352,7 @@ const HomeContainer = (props) => {
                     </div>
                   </div>
                   <div className="label">
-                    {BigNumber(userWallet[2].amount).toFormat(
-                      3,
-                      FORMAT_DECIMAL
-                    )}
+                    {BigNumber(getTotal("eth")).toFormat(3, FORMAT_DECIMAL)}
                   </div>
                 </div>
 
@@ -1281,10 +1367,7 @@ const HomeContainer = (props) => {
                     </div>
                   </div>
                   <div className="label">
-                    {BigNumber(userWallet[3].amount).toFormat(
-                      3,
-                      FORMAT_DECIMAL
-                    )}
+                    {BigNumber(getTotal("bch")).toFormat(3, FORMAT_DECIMAL)}
                   </div>
                 </div>
 
@@ -1299,10 +1382,7 @@ const HomeContainer = (props) => {
                     </div>
                   </div>
                   <div className="label">
-                    {BigNumber(userWallet[4].amount).toFormat(
-                      3,
-                      FORMAT_DECIMAL
-                    )}
+                    {BigNumber(getTotal("dot")).toFormat(3, FORMAT_DECIMAL)}
                   </div>
                 </div>
               </div>
@@ -1369,183 +1449,360 @@ const HomeContainer = (props) => {
                     </div>
                   </div>
 
-                  <div className="content-row space-between order-container align-items-center">
-                    <div
-                      className="label gray text-center"
-                      style={{ minWidth: "126px" }}
-                    >
-                      03-09 11:29:32
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "64px" }}
-                    >
-                      {cryptoSymbol}/USDT
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "28px" }}
-                    >
-                      Limit
-                    </div>
-                    <div
-                      className="label red text-center"
-                      style={{ minWidth: "24px" }}
-                    >
-                      Sell
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "96px" }}
-                    >
-                      52276.99
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "96px" }}
-                    >
-                      0.000001
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "52px" }}
-                    >
-                      100.00%
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "126px" }}
-                    >
-                      258.00000699 USDT
-                    </div>
-                    <div
-                      className="label red text-center pointer"
-                      style={{ minWidth: "126px" }}
-                    >
-                      Cancel
-                    </div>
-                  </div>
-
-                  <div className="content-row space-between order-container even align-items-center">
-                    <div
-                      className="label gray text-center"
-                      style={{ minWidth: "126px" }}
-                    >
-                      03-09 11:29:32
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "64px" }}
-                    >
-                      {cryptoSymbol}/USDT
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "28px" }}
-                    >
-                      Limit
-                    </div>
-                    <div
-                      className="label red text-center"
-                      style={{ minWidth: "24px" }}
-                    >
-                      Sell
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "96px" }}
-                    >
-                      52276.99
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "96px" }}
-                    >
-                      0.000001
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "52px" }}
-                    >
-                      100.00%
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "126px" }}
-                    >
-                      258.00000699 USDT
-                    </div>
-                    <div
-                      className="label red text-center pointer"
-                      style={{ minWidth: "126px" }}
-                    >
-                      Cancel
-                    </div>
-                  </div>
-
-                  <div className="content-row space-between order-container  align-items-center">
-                    <div
-                      className="label gray text-center"
-                      style={{ minWidth: "126px" }}
-                    >
-                      03-09 11:29:32
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "64px" }}
-                    >
-                      {cryptoSymbol}/USDT
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "28px" }}
-                    >
-                      Limit
-                    </div>
-                    <div
-                      className="label red text-center"
-                      style={{ minWidth: "24px" }}
-                    >
-                      Sell
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "96px" }}
-                    >
-                      52276.99
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "96px" }}
-                    >
-                      0.000001
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "52px" }}
-                    >
-                      100.00%
-                    </div>
-                    <div
-                      className="label white text-center"
-                      style={{ minWidth: "126px" }}
-                    >
-                      258.00000699 USDT
-                    </div>
-                    <div
-                      className="label red text-center pointer"
-                      style={{ minWidth: "126px" }}
-                    >
-                      Cancel
-                    </div>
-                  </div>
+                  {getOpenOrder(allOrder) &&
+                    getOpenOrder(allOrder).map((items, index) => {
+                      return (
+                        <div
+                          className={ClassNames(
+                            "content-row space-between order-container align-items-center",
+                            index % 2 !== 0 && "even"
+                          )}
+                          key={index}
+                        >
+                          <div
+                            className="label gray text-center"
+                            style={{ minWidth: "126px" }}
+                          >
+                            {moment(items.updated_at).format("DD-MM HH:MM:SS")}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "64px" }}
+                          >
+                            {items.walletFrom.currency.currency}/USDT
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "28px" }}
+                          >
+                            Limit
+                          </div>
+                          <div
+                            className={ClassNames(
+                              "label red text-center",
+                              items.method ? "red" : "green"
+                            )}
+                            style={{ minWidth: "24px" }}
+                          >
+                            {items.method ? "sell" : "buy"}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "96px" }}
+                          >
+                            {BigNumber(items.price).toFormat(2, FORMAT_DECIMAL)}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "96px" }}
+                          >
+                            {BigNumber(items.amount).toFormat(
+                              2,
+                              FORMAT_DECIMAL
+                            )}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "52px" }}
+                          >
+                            {!items.filled && "pending"}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "126px" }}
+                          >
+                            {BigNumber(items.totalBalance).toFormat(
+                              6,
+                              FORMAT_DECIMAL
+                            )}{" "}
+                            USDT
+                          </div>
+                          <div
+                            className="label red text-center pointer"
+                            style={{ minWidth: "126px" }}
+                          >
+                            Cancel
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               </TabPane>
               <TabPane name="Order History" key="2">
-                Content of Tab Pane 2
+                <div className="open-order-container">
+                  <div className="content-row space-between mgb-8">
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      Date
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "64px" }}
+                    >
+                      Pair
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "28px" }}
+                    >
+                      Type
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "24px" }}
+                    >
+                      Side
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "96px" }}
+                    >
+                      Price
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "96px" }}
+                    >
+                      Amount
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "52px" }}
+                    >
+                      Filled
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      Total
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      Action
+                    </div>
+                  </div>
+
+                  {getOpenOrder(allOrder) &&
+                    getOpenOrder(allOrder).map((items, index) => {
+                      return (
+                        <div
+                          className={ClassNames(
+                            "content-row space-between order-container align-items-center",
+                            index % 2 !== 0 && "even"
+                          )}
+                          key={index}
+                        >
+                          <div
+                            className="label gray text-center"
+                            style={{ minWidth: "126px" }}
+                          >
+                            {moment(items.updated_at).format("DD-MM HH:MM:SS")}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "64px" }}
+                          >
+                            {items.walletFrom.currency.currency}/USDT
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "28px" }}
+                          >
+                            Limit
+                          </div>
+                          <div
+                            className={ClassNames(
+                              "label red text-center",
+                              items.method ? "red" : "green"
+                            )}
+                            style={{ minWidth: "24px" }}
+                          >
+                            {items.method ? "sell" : "buy"}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "96px" }}
+                          >
+                            {BigNumber(items.price).toFormat(2, FORMAT_DECIMAL)}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "96px" }}
+                          >
+                            {BigNumber(items.amount).toFormat(
+                              2,
+                              FORMAT_DECIMAL
+                            )}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "52px" }}
+                          >
+                            {!items.filled && "pending"}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "126px" }}
+                          >
+                            {BigNumber(items.totalBalance).toFormat(
+                              6,
+                              FORMAT_DECIMAL
+                            )}{" "}
+                            USDT
+                          </div>
+                          <div
+                            className="label red text-center pointer"
+                            style={{ minWidth: "126px" }}
+                          >
+                            Cancel
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
               </TabPane>
               <TabPane name="Trade History" key="3">
-                Content of Tab Pane 3
+                <div className="open-order-container">
+                  <div className="content-row space-between mgb-8">
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      Date
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "64px" }}
+                    >
+                      Pair
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "28px" }}
+                    >
+                      Type
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "24px" }}
+                    >
+                      Side
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "96px" }}
+                    >
+                      Price
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "96px" }}
+                    >
+                      Amount
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "52px" }}
+                    >
+                      Filled
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      Total
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      Action
+                    </div>
+                  </div>
+
+                  {getOpenOrder(allOrder) &&
+                    getOpenOrder(allOrder).map((items, index) => {
+                      return (
+                        <div
+                          className={ClassNames(
+                            "content-row space-between order-container align-items-center",
+                            index % 2 !== 0 && "even"
+                          )}
+                          key={index}
+                        >
+                          <div
+                            className="label gray text-center"
+                            style={{ minWidth: "126px" }}
+                          >
+                            {moment(items.updated_at).format("DD-MM HH:MM:SS")}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "64px" }}
+                          >
+                            {items.walletFrom.currency.currency}/USDT
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "28px" }}
+                          >
+                            Limit
+                          </div>
+                          <div
+                            className={ClassNames(
+                              "label red text-center",
+                              items.method ? "red" : "green"
+                            )}
+                            style={{ minWidth: "24px" }}
+                          >
+                            {items.method ? "sell" : "buy"}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "96px" }}
+                          >
+                            {BigNumber(items.price).toFormat(2, FORMAT_DECIMAL)}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "96px" }}
+                          >
+                            {BigNumber(items.amount).toFormat(
+                              2,
+                              FORMAT_DECIMAL
+                            )}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "52px" }}
+                          >
+                            {!items.filled && "pending"}
+                          </div>
+                          <div
+                            className="label white text-center"
+                            style={{ minWidth: "126px" }}
+                          >
+                            {BigNumber(items.totalBalance).toFormat(
+                              6,
+                              FORMAT_DECIMAL
+                            )}{" "}
+                            USDT
+                          </div>
+                          <div
+                            className="label red text-center pointer"
+                            style={{ minWidth: "126px" }}
+                          >
+                            Cancel
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
               </TabPane>
             </Tab>
           </OrderHistory>

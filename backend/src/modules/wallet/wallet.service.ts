@@ -39,6 +39,7 @@ export class WalletService {
         user: userId,
         currency: currencyId,
       },
+      relations: ['currency'],
     });
   }
 

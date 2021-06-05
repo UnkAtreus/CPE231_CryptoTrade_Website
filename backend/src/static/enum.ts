@@ -13,12 +13,11 @@ export enum OrderType {
 }
 
 export enum OrderMethod {
-  Sell,
-  Buy,
+  limit,
+  market,
 }
 
 export enum TransactionStatus {
-  Order,
   Pending,
   Done,
   Cancel,

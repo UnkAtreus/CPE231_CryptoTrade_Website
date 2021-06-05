@@ -69,4 +69,8 @@ export class OrderResolver {
   async Orders(@Context('user') user: User): Promise<Order[]> {
     return await this.orderService.getOrderByUserId(user);
   }
+  @Query(() => [Order])
+  async AllOrders(): Promise<Order[]> {
+    return await this.orderService.getOrderAll();
+  }
 }

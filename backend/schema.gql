@@ -31,7 +31,7 @@ type Order {
   cancel: Boolean
   filled: Boolean
   created_at: DateTime
-  tradeDateTime: DateTime
+  updated_at: DateTime
 }
 
 """
@@ -157,6 +157,7 @@ type Query {
   getAllWallet: [Wallet!]!
   getUserWalletByToken: [Wallet!]!
   getWalletById(id: ID!): Wallet!
+  getWalletByCurrency(userId: Float!, currencyID: Float!): Wallet!
   getAllCurrency: [Currency!]!
   getCurrencyId(id: ID!): Currency!
   getCurrencyByShortName(shortName: String!): Currency!
@@ -165,12 +166,15 @@ type Query {
   getCardByID(idcardInput: Float!): CreditCard!
   getCardByToken: [CreditCard!]!
   Orders: [Order!]!
+  AllOrders: [Order!]!
   getAllFiat: [TransactionFiat!]!
   getAllFiatByUser: [TransactionFiat!]!
   getBankByName(name: String!): Bank!
   getAllBank: [Bank!]!
   getAllCrypto: [TransactionCrypto!]!
   getAllCryptoByUser: [TransactionCrypto!]!
+  getAllP2P: [PtoP!]!
+  getP2PByToken: [PtoP!]!
   verification(id: Int!): Verification!
 }
 
@@ -246,10 +250,7 @@ input CardInput {
   expiredMonth: String
   expiredYear: String
   cvv: String
-  address: String
-  postcode: String
-  city: String
-  country: String
+  cardName: String!
 }
 
 input OrderInput {

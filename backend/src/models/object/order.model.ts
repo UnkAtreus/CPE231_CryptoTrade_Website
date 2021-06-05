@@ -6,6 +6,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.model';
 import { Wallet } from './wallet.model';
@@ -65,9 +66,10 @@ export class Order {
   @CreateDateColumn()
   created_at?: Date;
 
-  @Field(() => Date)
-  @Column({ nullable: true })
-  tradeDateTime?: Date;
+  @Field()
+  @Column()
+  @UpdateDateColumn()
+  updated_at?: Date;
 
   //   @OneToMany(() => User, (user) => user.role)
   //   user: User[];
