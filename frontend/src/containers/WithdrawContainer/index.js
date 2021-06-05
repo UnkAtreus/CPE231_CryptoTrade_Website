@@ -69,6 +69,9 @@ const WithdrawContainer = ({ match, ...props }) => {
     amount: 0,
     bankNumber: "",
     bankType: "KBANK",
+    cardInput: {
+      cardNumber: "",
+    },
   });
   const [selectBank, setSelectBank] = useState("KBANK");
 
@@ -123,13 +126,14 @@ const WithdrawContainer = ({ match, ...props }) => {
           firstName
         }
         bank {
-          bank
+          banktype {
+            bank
+          }
         }
         method
         status
         amount
         updated_at
-        bankNumber
         created_at
       }
       getAllCryptoByUser {
@@ -162,7 +166,9 @@ const WithdrawContainer = ({ match, ...props }) => {
           firstName
         }
         bank {
-          bank
+          banktype {
+            bank
+          }
         }
         status
         amount
@@ -615,7 +621,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                           style={{ minWidth: "96px" }}
                         >
                           {items.bank
-                            ? items.bank.bank
+                            ? items.bank.banktype.bank
                             : items.wallet.currency.currency}
                         </div>
                         <div
@@ -637,7 +643,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                           className="label gray text-center"
                           style={{ minWidth: "126px" }}
                         >
-                          {moment(items.updated_at).format("DD-MM HH:MM:SS")}
+                          {moment(items.updated_at).format("DD-MM HH:mm:ss")}
                         </div>
                         <div
                           className="label gray"

@@ -177,6 +177,7 @@ export class OrderService implements OnApplicationBootstrap {
         'walletTo',
         'walletFrom.currency',
         'walletTo.currency',
+        'user',
       ],
       order: {
         created_at: 'DESC',

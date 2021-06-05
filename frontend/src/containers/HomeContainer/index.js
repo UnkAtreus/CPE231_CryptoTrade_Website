@@ -967,14 +967,14 @@ const HomeContainer = (props) => {
               <TabPane name="Limit" key="1">
                 <div className="limit-container">
                   <div className="content-row space-between">
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                      }}
+                    <div
+                      className="content-column mgr-16"
+                      style={{ marginRight: "7%", flex: "1 1 0%" }}
                     >
-                      <div
-                        className="content-column mgr-16"
-                        style={{ marginRight: "7%", flex: "1 1 0%" }}
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                        }}
                       >
                         <div className="content-row space-between mgb-2">
                           <div className="title white">Buy {cryptoSymbol}</div>
@@ -1021,17 +1021,14 @@ const HomeContainer = (props) => {
                         />
 
                         <Button label="Buy BTC" color="green" />
-                      </div>
-                    </form>
+                      </form>
+                    </div>
 
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                      }}
-                    >
-                      <div
-                        className="content-column"
-                        style={{ flex: "1 1 0%" }}
+                    <div className="content-column" style={{ flex: "1 1 0%" }}>
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                        }}
                       >
                         <div className="content-row space-between mgb-2">
                           <div className="title white">Sell {cryptoSymbol}</div>
@@ -1080,22 +1077,22 @@ const HomeContainer = (props) => {
                           }}
                         />
                         <Button label="Sell BTC" color="red" />
-                      </div>
-                    </form>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </TabPane>
               <TabPane name="Market" key="2">
                 <div className="market-container">
                   <div className="content-row space-between">
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                      }}
+                    <div
+                      className="content-column mgr-16"
+                      style={{ marginRight: "7%", flex: "1 1 0%" }}
                     >
-                      <div
-                        className="content-column mgr-16"
-                        style={{ marginRight: "7%", flex: "1 1 0%" }}
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                        }}
                       >
                         <div className="content-row space-between mgb-2">
                           <div className="title white">Buy {cryptoSymbol}</div>
@@ -1127,17 +1124,14 @@ const HomeContainer = (props) => {
                           value={(e) => calPriceMarket("stepbuy", e)}
                         />
                         <Button label="Buy BTC" color="green" />
-                      </div>
-                    </form>
+                      </form>
+                    </div>
 
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                      }}
-                    >
-                      <div
-                        className="content-column"
-                        style={{ flex: "1 1 0%" }}
+                    <div className="content-column" style={{ flex: "1 1 0%" }}>
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                        }}
                       >
                         <div className="content-row space-between mgb-2">
                           <div className="title white">Sell {cryptoSymbol}</div>
@@ -1173,8 +1167,8 @@ const HomeContainer = (props) => {
                           value={(e) => calPriceMarket("stepsell", e)}
                         />
                         <Button label="Sell BTC" color="red" />
-                      </div>
-                    </form>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </TabPane>
@@ -1463,7 +1457,7 @@ const HomeContainer = (props) => {
                             className="label gray text-center"
                             style={{ minWidth: "126px" }}
                           >
-                            {moment(items.updated_at).format("DD-MM HH:MM:SS")}
+                            {moment(items.updated_at).format("DD-MM HH:mm:ss")}
                           </div>
                           <div
                             className="label white text-center"
@@ -1601,7 +1595,7 @@ const HomeContainer = (props) => {
                             className="label gray text-center"
                             style={{ minWidth: "126px" }}
                           >
-                            {moment(items.updated_at).format("DD-MM HH:MM:SS")}
+                            {moment(items.updated_at).format("DD-MM HH:mm:ss")}
                           </div>
                           <div
                             className="label white text-center"
@@ -1739,7 +1733,7 @@ const HomeContainer = (props) => {
                             className="label gray text-center"
                             style={{ minWidth: "126px" }}
                           >
-                            {moment(items.updated_at).format("DD-MM HH:MM:SS")}
+                            {moment(items.updated_at).format("DD-MM HH:mm:ss")}
                           </div>
                           <div
                             className="label white text-center"
