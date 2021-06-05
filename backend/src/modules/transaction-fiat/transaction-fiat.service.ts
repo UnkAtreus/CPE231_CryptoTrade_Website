@@ -50,7 +50,7 @@ export class TransactionFiatService {
           }
         });
     } else if (input.cardInput.cardNumber != '') {
-      fiat.creditCardId = await this.cardService
+      fiat.creditCard = await this.cardService
         .getCardByNum(input.cardInput.cardNumber, user)
         .then(async (result) => {
           if (!result) {
@@ -106,7 +106,7 @@ export class TransactionFiatService {
       where: {
         user: user.id,
       },
-      relations: ['user', 'bank', 'bank.banktype'],
+      relations: ['user', 'bank', 'bank.banktype', 'creditCard'],
       order: {
         created_at: 'DESC',
       },

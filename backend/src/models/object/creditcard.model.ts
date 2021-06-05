@@ -37,7 +37,7 @@ export class CreditCard {
   @Field(() => [TransactionFiat])
   @OneToMany(
     () => TransactionFiat,
-    (transactionFiat) => transactionFiat.creditCardId,
+    (transactionFiat) => transactionFiat.creditCard,
   )
   transactionFiat?: TransactionFiat[];
 }

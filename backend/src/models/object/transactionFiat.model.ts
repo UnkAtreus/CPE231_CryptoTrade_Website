@@ -48,7 +48,7 @@ export class TransactionFiat {
   @ManyToOne(() => CreditCard, (creditCard) => creditCard.transactionFiat, {
     onDelete: 'CASCADE',
   })
-  creditCardId?: CreditCard;
+  creditCard?: CreditCard;
 
   @Field()
   @Column()
