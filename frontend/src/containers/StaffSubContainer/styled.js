@@ -5,10 +5,9 @@ import { SHARDS } from "../../themes";
 
 // Wrapper
 // ============================================================
-export const LandingStyled = styled.div`
+export const SettingStyled = styled.div`
   /* Parent styles
   ------------------------------- */
-  padding-bottom: 8px;
 
   /* Child element styles
   ------------------------------- */
@@ -90,14 +89,7 @@ export const InfoWrapper = styled.div`
 `;
 
 export const CryptoBalance = styled.div`
-  display: flex;
-  justify-content: center;
-  background-color: rgb(127 73 232);
-  padding-bottom: 16px;
-  background-position: center;
-  background-size: cover;
-  background-image: url(${SHARDS["wave-bg.svg"]});
-  background-repeat: no-repeat;
+  width: 800px;
 
   .bitcoin {
     background: url("${LOGOS["bitcoin.png"]}") center center;
@@ -122,22 +114,59 @@ export const CryptoBalance = styled.div`
   }
 `;
 
-export const StartTradingSection = styled.div`
+export const CardContainer = styled.div`
+  background-color: ${VARIABLES.COLORS.BACKGROUND_2};
+  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+  cursor: pointer;
+  width: 324px;
+  height: 160px;
   display: flex;
-  justify-content: center;
-  background-color: rgb(127 73 232);
-  padding-bottom: 4rem;
-  padding-top: 4rem;
+  align-items: center;
+  padding: 16px 32px;
 `;
-export const GetStartedSection = styled.div`
+
+export const HistorySection = styled.div`
+  height: 512px;
+  width: 100%;
+  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+  background-color: ${VARIABLES.COLORS.BACKGROUND_2};
+  padding: 24px;
+  margin-bottom: 8px;
+`;
+
+export const HistoryContainer = styled.div`
+  overflow: auto;
+  height: 410px;
+  .history-container {
+    height: 32px;
+    border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
+  }
+
+  .even {
+    background-color: ${VARIABLES.COLORS.BACKGROUND_5};
+  }
+`;
+
+export const CancleBtn = styled.div`
+  height: 24px;
+  width: 24px;
+  border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
+  background-color: #f14763cf;
   display: flex;
+  align-items: center;
   justify-content: center;
-  background-color: #ffffff;
-  padding-bottom: 4rem;
-  padding-top: 4rem;
-  height: 600px;
-  background-position: top;
-  background-size: cover;
-  background-image: url(${SHARDS["wave-bottom-bg.svg"]});
-  background-repeat: no-repeat;
+  cursor: pointer;
+`;
+
+export const VertifyBtn = styled.div`
+  height: 24px;
+  width: 80px;
+  padding: 8px 8px;
+  border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
+  background-color: #47f19f52;
+  /* color: ${VARIABLES.COLORS.GREEN}; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 `;

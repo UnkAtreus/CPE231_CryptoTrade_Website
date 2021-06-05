@@ -1,10 +1,17 @@
+import { User } from 'src/models/object/user.model';
 import { RepoService } from 'src/repo/repo.service';
 import { Injectable } from '@nestjs/common';
 import { Bank } from 'src/models/object/bank.model';
+import { BankNum } from 'src/models/object/banknum.model';
+import { UserService } from '../user/user.service';
+import { DeleteResult } from 'typeorm';
 
 @Injectable()
 export class BankService {
-  constructor(private readonly repoService: RepoService) {}
+  constructor(
+    private readonly repoService: RepoService,
+    private readonly userService: UserService,
+  ) {}
   async createBank(): Promise<Bank[]> {
     const bank: string[] = ['KBANK', 'SCB', 'TMB', 'KMA', 'KTB'];
     for (let index = 0; index < bank.length; index++) {
@@ -16,10 +23,46 @@ export class BankService {
   }
 
   async getBankByName(name: string): Promise<Bank> {
-    return await this.repoService.bankRepo.findOne({ where: { bank: name } });
+    return await this.repoService.bankRepo.findOne({
+      where: { bank: name },
+    });
+  }
+
+  async getBankByNumAndType(numCard: string, name: number): Promise<BankNum> {
+    return await this.repoService.bankNumRepo.findOne({
+      where: { bankNumber: numCard, banktype: name },
+      relations: ['banktype'],
+    });
   }
 
   async getBankAll(): Promise<Bank[]> {
     return await this.repoService.bankRepo.find();
+  }
+
+  async addBankNumber(
+    numCard: string,
+    name: string,
+    user: User,
+  ): Promise<BankNum> {
+    const numBank = new BankNum();
+    numBank.banktype = await this.getBankByName(name);
+    numBank.user = await this.userService.getUserByToken(user.id);
+    numBank.bankNumber = numCard;
+    return await this.repoService.bankNumRepo.save(numBank);
+  }
+
+  async getBankNumAll(): Promise<BankNum[]> {
+    return await this.repoService.bankNumRepo.find();
+  }
+
+  async getBankNumByToken(user: User): Promise<BankNum[]> {
+    return await this.repoService.bankNumRepo.find({
+      where: { user: user.id },
+      relations: ['banktype', 'user'],
+    });
+  }
+
+  async deleteBankByID(id: number): Promise<DeleteResult> {
+    return await this.repoService.bankNumRepo.delete({ id: id });
   }
 }

@@ -1,3 +1,5 @@
+import { Bank } from 'src/models/object/bank.model';
+import { BankNum } from 'src/models/object/banknum.model';
 import {
   Entity,
   Column,
@@ -104,6 +106,10 @@ export class User {
   @Field(() => [CreditCard])
   @OneToMany(() => CreditCard, (creditCard) => creditCard.user)
   creditCard?: CreditCard[];
+
+  @Field(() => [BankNum])
+  @OneToMany(() => BankNum, (bankNum) => bankNum.user)
+  bank?: BankNum[];
 
   @Field(() => [TransactionFiat])
   @OneToMany(() => TransactionFiat, (transactionFiat) => transactionFiat.user)

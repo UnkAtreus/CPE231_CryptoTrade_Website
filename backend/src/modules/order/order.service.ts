@@ -4,7 +4,6 @@ import {
   Injectable,
   OnApplicationBootstrap,
 } from '@nestjs/common';
-import { Interval } from '@nestjs/schedule';
 import { Order } from 'src/models/object/order.model';
 import * as Websocket from 'websocket';
 import { WalletService } from '../wallet/wallet.service';
@@ -34,7 +33,7 @@ export class OrderService implements OnApplicationBootstrap {
     this.XXXUSDT = [];
   }
   onApplicationBootstrap() {
-    // this.handleInterval();
+    this.handleInterval();
   }
   // @Interval(1000)
   async fillOrderInterval() {
@@ -214,6 +213,24 @@ export class OrderService implements OnApplicationBootstrap {
       });
   }
 }
+
+// @Interval(2000)
+//   async fillOrderInterval() {
+//     const orderLists = await this.repoService.orderRepo.find({
+//       where: {
+//         price: this.price,
+//         filled: false,
+//         cancel: false,
+//       },
+//       relations: ['walletTo', 'walletFrom'],
+//     });
+//     orderLists.forEach(async (order) => {
+//       this.fillOrderModel(order).then(() => {
+//         return this.pubSub.publish('orderTrigger', { orderTrigger: order });
+//       });
+//     });
+//   }
+
 export function isInCoin(element: any): boolean {
   if (
     element.s == 'BTCUSDT' ||

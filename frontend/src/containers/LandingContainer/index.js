@@ -8,8 +8,10 @@ import {
   InfomationContainer,
   FiatBalanceContainer,
   SpotBalanceContainer,
+  GetStartedSection,
   CryptoBalance,
   InfoWrapper,
+  StartTradingSection,
 } from "./styled";
 import { Container, NavBar, Button } from "components";
 import { useQuery, gql } from "@apollo/client";
@@ -143,7 +145,7 @@ const LandingContainer = ({ match, ...props }) => {
         <NavBar />
       </Header>
       <Container>
-        <div className="content-column">
+        <div className="content-column " style={{ marginTop: "8rem" }}>
           <div className="headline white">LET’S Rich TOGETHER!!!!</div>
           <div className="paragraph gray mgb-24">
             Add cash or crypto funds to your wallet and start trading right away
@@ -156,7 +158,10 @@ const LandingContainer = ({ match, ...props }) => {
           />
         </div>
 
-        <div className="content-row space-between mgb-32">
+        <div
+          className="content-row space-between mgb-16"
+          style={{ marginTop: "8rem" }}
+        >
           <div className="content-column">
             <div className="content-row">
               <div className="label gray">BTC/USDT</div>
@@ -198,29 +203,35 @@ const LandingContainer = ({ match, ...props }) => {
             <div className="label gray">$421.03</div>
           </div>
         </div>
+      </Container>
 
-        <div className="feature-card-title white mgb-32">Market trend</div>
-
-        <CryptoBalance>
+      <CryptoBalance>
+        <div className="p-16" style={{ width: "1024px" }}>
+          <div
+            className="feature-card-title white mgb-32 mgt-32"
+            style={{ marginTop: "12rem" }}
+          >
+            Market trend
+          </div>
           <div className="content-row space-between mgb-24">
-            <div className="label gray text-left" style={{ minWidth: "96px" }}>
+            <div className="label white text-left" style={{ minWidth: "96px" }}>
               Coin
             </div>
             <div className="content-row">
               <div
-                className="label gray text-right"
+                className="label white text-right"
                 style={{ minWidth: "200px" }}
               >
                 Vloumn
               </div>
               <div
-                className="label gray text-right"
+                className="label white text-right"
                 style={{ minWidth: "200px" }}
               >
                 Last Price
               </div>
               <div
-                className="label gray text-right"
+                className="label white text-right"
                 style={{ minWidth: "200px" }}
               >
                 24h Change
@@ -235,7 +246,7 @@ const LandingContainer = ({ match, ...props }) => {
               </div>
               <div className="content-row">
                 <div className="paragraph mgr-8">BTC</div>
-                <div className="paragraph gray">Bitcoin</div>
+                <div className="paragraph white">Bitcoin</div>
               </div>
             </div>
             <div className="content-row">
@@ -274,7 +285,7 @@ const LandingContainer = ({ match, ...props }) => {
               </div>
               <div className="content-row">
                 <div className="paragraph mgr-8">ADA</div>
-                <div className="paragraph gray">Cardano</div>
+                <div className="paragraph white">Cardano</div>
               </div>
             </div>
             <div className="content-row">
@@ -312,7 +323,7 @@ const LandingContainer = ({ match, ...props }) => {
               </div>
               <div className="content-row">
                 <div className="paragraph mgr-8">ETH</div>
-                <div className="paragraph gray">Ethereum</div>
+                <div className="paragraph white">Ethereum</div>
               </div>
             </div>
             <div className="content-row">
@@ -350,7 +361,7 @@ const LandingContainer = ({ match, ...props }) => {
               </div>
               <div className="content-row">
                 <div className="paragraph mgr-8">BCH</div>
-                <div className="paragraph gray">Bitcoin Cash</div>
+                <div className="paragraph white">Bitcoin Cash</div>
               </div>
             </div>
             <div className="content-row">
@@ -388,7 +399,7 @@ const LandingContainer = ({ match, ...props }) => {
               </div>
               <div className="content-row">
                 <div className="paragraph mgr-8">DOT</div>
-                <div className="paragraph gray">Polkadot</div>
+                <div className="paragraph white">Polkadot</div>
               </div>
             </div>
             <div className="content-row">
@@ -418,26 +429,39 @@ const LandingContainer = ({ match, ...props }) => {
               </div>
             </div>
           </div>
-        </CryptoBalance>
-
-        <div className="content-row justify-content-center">
-          <div className="content-column">
-            <div className="feature-card-title white mgb-24">
-              Start trading now
+        </div>
+      </CryptoBalance>
+      <StartTradingSection className="content-row justify-content-center">
+        <div
+          className="p-16"
+          style={{
+            width: "728px",
+            background: "#ffffff",
+            borderRadius: "30px",
+          }}
+        >
+          <div className="content-row justify-content-center mgt-32">
+            <div className="content-column">
+              <div className="section-headline black mgb-24">
+                Start trading now
+              </div>
+              <Button
+                style={{
+                  marginTop: "16px",
+                  width: "200px",
+                  marginBottom: "48px",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                }}
+                label="Trade Now"
+                color="purple"
+                fontColor="white"
+              />
             </div>
-            <Button
-              style={{
-                marginTop: "16px",
-                width: "200px",
-                marginBottom: "48px",
-              }}
-              label="Trade Now"
-              color="purple"
-              fontColor="white"
-            />
           </div>
         </div>
-      </Container>
+      </StartTradingSection>
+      <GetStartedSection></GetStartedSection>
     </LandingStyled>
   );
 };

@@ -5,10 +5,9 @@ import { SHARDS } from "../../themes";
 
 // Wrapper
 // ============================================================
-export const LandingStyled = styled.div`
+export const SettingStyled = styled.div`
   /* Parent styles
   ------------------------------- */
-  padding-bottom: 8px;
 
   /* Child element styles
   ------------------------------- */
@@ -90,14 +89,7 @@ export const InfoWrapper = styled.div`
 `;
 
 export const CryptoBalance = styled.div`
-  display: flex;
-  justify-content: center;
-  background-color: rgb(127 73 232);
-  padding-bottom: 16px;
-  background-position: center;
-  background-size: cover;
-  background-image: url(${SHARDS["wave-bg.svg"]});
-  background-repeat: no-repeat;
+  width: 800px;
 
   .bitcoin {
     background: url("${LOGOS["bitcoin.png"]}") center center;
@@ -122,22 +114,13 @@ export const CryptoBalance = styled.div`
   }
 `;
 
-export const StartTradingSection = styled.div`
+export const CardContainer = styled.a`
+  background-color: ${VARIABLES.COLORS.BACKGROUND_2};
+  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+  cursor: pointer;
+  width: 324px;
+  height: 160px;
   display: flex;
-  justify-content: center;
-  background-color: rgb(127 73 232);
-  padding-bottom: 4rem;
-  padding-top: 4rem;
-`;
-export const GetStartedSection = styled.div`
-  display: flex;
-  justify-content: center;
-  background-color: #ffffff;
-  padding-bottom: 4rem;
-  padding-top: 4rem;
-  height: 600px;
-  background-position: top;
-  background-size: cover;
-  background-image: url(${SHARDS["wave-bottom-bg.svg"]});
-  background-repeat: no-repeat;
+  align-items: center;
+  padding: 16px 32px;
 `;
