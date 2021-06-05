@@ -249,10 +249,7 @@ input CardInput {
   expiredMonth: String
   expiredYear: String
   cvv: String
-  address: String
-  postcode: String
-  city: String
-  country: String
+  cardName: String!
 }
 
 input OrderInput {

@@ -45,8 +45,7 @@ const DeopsitContainer = ({ match, ...props }) => {
     match.params.type.toLowerCase() === "fiat" ? "USD" : "BTC"
   );
   const [selectBank, setSelectBank] = useState("KBANK");
-  const [isNewCard, setIsNewCard] = useState(true);
-  const [hasCard, setHasNewCard] = useState(true);
+
   const [monthExpiry, setMonthExpiry] = useState("1");
   const [yearExpiry, setYearExpiry] = useState("21");
   const [amount, setAmount] = useState(0);
@@ -56,6 +55,10 @@ const DeopsitContainer = ({ match, ...props }) => {
       bank: "KBANK",
     },
   ]);
+  const [allCard, setAllCard] = useState([]);
+  const [isNewCard, setIsNewCard] = useState(allCard ? false : true);
+  const [hasCard, setHasNewCard] = useState(false);
+  const [cardNum, setCardNum] = useState("0");
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [withdrawHistoryFiat, setWithdrawHistoryFiat] = useState([]);
   const [withdrawHistoryCrypto, setWithdrawHistoryCrypto] = useState([]);
@@ -65,6 +68,13 @@ const DeopsitContainer = ({ match, ...props }) => {
     amount: 0,
     bankNumber: "",
     bankType: "KBANK",
+  });
+  const [cardParam, setCardParam] = useState({
+    cardNumber: "0",
+    expiredMonth: "01",
+    expiredYear: "21",
+    cvv: "000",
+    cardName: "",
   });
 
   const depositType = match.params.type
@@ -150,6 +160,13 @@ const DeopsitContainer = ({ match, ...props }) => {
       getAllBank {
         bank
       }
+      getCardByToken {
+        id
+        cardNumber
+        user {
+          email
+        }
+      }
     }
   `;
 
@@ -162,6 +179,19 @@ const DeopsitContainer = ({ match, ...props }) => {
       }
     }
   `;
+  const CREATE_CARD = gql`
+    mutation ($input: CardInput!) {
+      addCard(cardInput: $input) {
+        user {
+          email
+        }
+        cardNumber
+        expiredMonth
+        expiredYear
+        cvv
+      }
+    }
+  `;
 
   const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
 
@@ -169,6 +199,18 @@ const DeopsitContainer = ({ match, ...props }) => {
     onCompleted(order) {
       if (order) {
         console.log(order);
+        setAmount(0);
+        refetch();
+      }
+    },
+  });
+
+  const [createCard] = useMutation(CREATE_CARD, {
+    onCompleted(card) {
+      if (card) {
+        console.log(card);
+        setIsNewCard(false);
+        setHasNewCard(false);
         refetch();
       }
     },
@@ -206,6 +248,9 @@ const DeopsitContainer = ({ match, ...props }) => {
     }
     if (data && data.getAllBank) {
       setBankType(data.getAllBank);
+    }
+    if (data && data.getCardByToken) {
+      setAllCard(data.getCardByToken);
     }
   }, [data]);
 
@@ -440,10 +485,10 @@ const DeopsitContainer = ({ match, ...props }) => {
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
-                        // console.log(orderParamFiat);
-                        // createOrderFiat({
-                        //   variables: { inputFiat: orderParamFiat },
-                        // });
+                        console.log(cardParam);
+                        createCard({
+                          variables: { input: cardParam },
+                        });
                       }}
                     >
                       <div className="content-row space-between">
@@ -454,6 +499,7 @@ const DeopsitContainer = ({ match, ...props }) => {
                             style={{ alignSelf: "flex-end" }}
                             onClick={() => {
                               setIsNewCard(false);
+                              setHasNewCard(false);
                             }}
                           >
                             select card
@@ -463,23 +509,33 @@ const DeopsitContainer = ({ match, ...props }) => {
                       <Input
                         title="Amount"
                         suffix={curSymbol || "USD"}
-                        value={"0"}
+                        value={amount || 0}
                         onChange={(e) => {
-                          console.log(e);
+                          setAmount(e);
+                          // setOrderParam({
+                          //   ...orderParam,
+                          //   bankNumber: e,
+                          // });
                         }}
                       ></Input>
                       <Input
                         title="Card Number"
                         placeholder="xxxx xxxx xxxx xxxx"
                         onChange={(e) => {
-                          console.log(e);
+                          setCardParam({
+                            ...cardParam,
+                            cardNumber: e,
+                          });
                         }}
                       ></Input>
                       <Input
                         title="Card Holder's Name"
                         placeholder="Name"
                         onChange={(e) => {
-                          console.log(e);
+                          setCardParam({
+                            ...cardParam,
+                            cardName: e,
+                          });
                         }}
                       ></Input>
                       <div className="content-row">
@@ -497,7 +553,13 @@ const DeopsitContainer = ({ match, ...props }) => {
                               <Dropdown
                                 style={{ marginTop: "12px" }}
                                 active={monthExpiry}
-                                onChange={setMonthExpiry}
+                                onChange={(e) => {
+                                  setMonthExpiry(e);
+                                  setCardParam({
+                                    ...cardParam,
+                                    expiredMonth: e,
+                                  });
+                                }}
                                 isSelect={true}
                               >
                                 {num_list_month.map((data, index) => {
@@ -515,7 +577,13 @@ const DeopsitContainer = ({ match, ...props }) => {
                               <Dropdown
                                 style={{ marginTop: "12px" }}
                                 active={yearExpiry}
-                                onChange={setYearExpiry}
+                                onChange={(e) => {
+                                  setYearExpiry(e);
+                                  setCardParam({
+                                    ...cardParam,
+                                    expiredYear: e,
+                                  });
+                                }}
                                 isSelect={true}
                               >
                                 {num_list_year.map((data, index) => {
@@ -537,7 +605,10 @@ const DeopsitContainer = ({ match, ...props }) => {
                           title="CVV"
                           placeholder="***"
                           onChange={(e) => {
-                            console.log(e);
+                            setCardParam({
+                              ...cardParam,
+                              cvv: e,
+                            });
                           }}
                         ></Input>
                       </div>
@@ -545,7 +616,21 @@ const DeopsitContainer = ({ match, ...props }) => {
                     </form>
                   ) : (
                     <form>
-                      <div className="title white mgb-8">Payment details</div>
+                      <div className="content-row space-between">
+                        <div className="title white mgb-8">Payment details</div>
+                        {hasCard && (
+                          <div
+                            className="label gray mgb-8 pointer"
+                            style={{ alignSelf: "flex-end" }}
+                            onClick={() => {
+                              setIsNewCard(false);
+                              setHasNewCard(false);
+                            }}
+                          >
+                            select card
+                          </div>
+                        )}
+                      </div>
                       <Input
                         title="Amount"
                         suffix={curSymbol || "USD"}
@@ -560,13 +645,14 @@ const DeopsitContainer = ({ match, ...props }) => {
                             className="label white"
                             style={{ marginBottom: "-12px" }}
                           >
-                            Coin
+                            Card Selected
                           </div>
                           <div
                             className="label gray pointer"
                             style={{ marginBottom: "-12px" }}
                             onClick={() => {
                               setIsNewCard(true);
+                              setHasNewCard(true);
                             }}
                           >
                             +Add card
@@ -574,22 +660,16 @@ const DeopsitContainer = ({ match, ...props }) => {
                         </div>
                         <Dropdown
                           style={{ marginTop: "12px" }}
-                          active={curSymbol || "USD"}
-                          onChange={setCurSymbol}
+                          active={cardNum}
+                          onChange={setCardNum}
                           isSelect={true}
                           isHeightAuto={true}
                         >
-                          {MOCK_FIAT.map((data, index) => (
-                            <DropdownChild
-                              name={data.currencyShortName}
-                              key={index}
-                            >
+                          {allCard.map((data, index) => (
+                            <DropdownChild name={index} key={index}>
                               <div className="content-row align-items-end">
                                 <div className="label white mgr-8">
-                                  {data.currencyShortName}
-                                </div>
-                                <div className="text-9 gray">
-                                  {data.currency}
+                                  {data.cardNumber}
                                 </div>
                               </div>
                             </DropdownChild>
