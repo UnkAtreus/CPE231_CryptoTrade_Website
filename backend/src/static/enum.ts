@@ -7,6 +7,10 @@ export enum TranasctionMethod {
   Deposit,
   Withdraw,
 }
+export enum OrderType {
+  Limit,
+  Market,
+}
 
 export enum OrderMethod {
   Sell,

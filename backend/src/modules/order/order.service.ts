@@ -53,12 +53,14 @@ export class OrderService implements OnApplicationBootstrap {
       connection.on('message', (message) => {
         if (message.type === 'utf8') {
           const x = JSON.parse(message.utf8Data);
-          this.price = x['data']['p'];
+          console.log(x);
+
+          // this.price = x['data']['p'];
         }
       });
     });
     client.connect(
-      'wss://stream.binance.com:9443/stream?streams=btcusdt@aggTrade',
+      'wss://stream.binance.com:9443/stream?streams=!ticker@arr',
       '',
     );
   }
@@ -87,6 +89,7 @@ export class OrderService implements OnApplicationBootstrap {
       totalBalance: String(total),
       cancel: false,
       filled: false,
+      type: input.type,
     };
 
     await this.walletService.Sell(order.walletFrom.id, input.amount);
@@ -107,7 +110,8 @@ export class OrderService implements OnApplicationBootstrap {
       );
       order.cancel = true;
 
-      return await this.repoService.orderRepo.save(order);
+      const orderResult = await this.repoService.orderRepo.save(order);
+      return await this.getOrderById(orderResult.id);
     } else {
       throw Unauthorized;
     }

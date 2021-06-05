@@ -1,5 +1,5 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
-import { OrderMethod } from 'src/static/enum';
+import { OrderMethod, OrderType } from 'src/static/enum';
 import {
   Column,
   CreateDateColumn,
@@ -23,6 +23,10 @@ export class Order {
   @Field(() => String)
   @Column({ type: 'enum', enum: OrderMethod })
   method?: OrderMethod;
+
+  @Field(() => String)
+  @Column({ type: 'enum', enum: OrderType })
+  type?: OrderType;
 
   @Field(() => Wallet)
   @ManyToOne(() => Wallet, (walletFrom) => walletFrom.order)

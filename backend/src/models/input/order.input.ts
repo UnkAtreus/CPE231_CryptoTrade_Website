@@ -1,5 +1,5 @@
 import { Field, ID, InputType, Float } from '@nestjs/graphql';
-import { OrderMethod } from 'src/static/enum';
+import { OrderMethod, OrderType } from 'src/static/enum';
 
 @InputType()
 class OrderInput {
@@ -17,5 +17,8 @@ class OrderInput {
 
   @Field(() => Float)
   readonly amount: number;
+
+  @Field()
+  readonly type: OrderType;
 }
 export default OrderInput;
