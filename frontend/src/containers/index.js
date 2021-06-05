@@ -7,3 +7,5 @@ export * from "./DeopsitContainer";
 export * from "./WithdrawContainer";
 export * from "./PeerToPeerContainer";
 export * from "./LandingContainer";
+export * from "./StaffContainer";
+export * from "./StaffSubContainer";

@@ -8,6 +8,7 @@ import {
   InfomationContainer,
   FiatBalanceContainer,
   SpotBalanceContainer,
+  GetStartedSection,
   CryptoBalance,
   InfoWrapper,
   StartTradingSection,
@@ -460,6 +461,7 @@ const LandingContainer = ({ match, ...props }) => {
           </div>
         </div>
       </StartTradingSection>
+      <GetStartedSection></GetStartedSection>
     </LandingStyled>
   );
 };
