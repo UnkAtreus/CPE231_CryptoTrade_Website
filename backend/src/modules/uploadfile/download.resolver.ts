@@ -11,8 +11,6 @@ export class DownloadResolver {
     @Args({ name: 'file', type: () => GraphQLUpload })
     { createReadStream, filename },
   ): Promise<boolean> {
-    console.log(filename);
-
     return new Promise(async (resolve, reject) =>
       createReadStream()
         .pipe(createWriteStream(`./uploads/${filename}`))

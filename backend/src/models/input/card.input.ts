@@ -10,6 +10,6 @@ class CardInput {
   @Field()
   readonly cvv?: string;
   @Field()
-  readonly cardName: string;
+  readonly cardName?: string;
 }
 export default CardInput;

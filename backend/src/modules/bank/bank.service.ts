@@ -45,10 +45,25 @@ export class BankService {
     user: User,
   ): Promise<BankNum> {
     const numBank = new BankNum();
-    numBank.banktype = await this.getBankByName(name);
-    numBank.user = await this.userService.getUserByToken(user.id);
-    numBank.bankNumber = numCard;
-    return await this.repoService.bankNumRepo.save(numBank);
+    const bankType = await this.getBankByName(name);
+    numBank.banktype = bankType;
+    numBank.user = await this.userService.getUserById(user.id);
+    return await this.repoService.bankNumRepo
+      .findOne({
+        where: {
+          user: user.id,
+          bankNumber: numCard,
+          banktype: bankType,
+        },
+      })
+      .then(async (result) => {
+        if (!result) {
+          numBank.bankNumber = numCard;
+          return await this.repoService.bankNumRepo.save(numBank);
+        } else {
+          return result;
+        }
+      });
   }
 
   async getBankNumAll(): Promise<BankNum[]> {

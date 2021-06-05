@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
-
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { UserModule } from './modules/user/user.module';
 import { RepoModule } from './repo/repo.module';
 import { CardModule } from './modules/card/card.module';
@@ -23,12 +23,16 @@ import { DownloadResolver } from './modules/uploadfile/download.resolver';
 import { AppController } from './app.controller';
 import { VerificationModule } from './modules/verification/verification.module';
 import { RoleModule } from './modules/role/role.module';
+import { join } from 'path';
 
 @Module({
   imports: [
     GraphQLModule.forRoot(graphql_config),
     TypeOrmModule.forRoot(typeorm_config),
     ScheduleModule.forRoot(),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+    }),
     RepoModule,
     UserModule,
     CardModule,

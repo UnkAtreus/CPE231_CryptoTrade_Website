@@ -24,7 +24,6 @@ export class UserResolver {
   }
 
   @Mutation(() => TokenRole)
-  // @Mutation(() => String)
   async registerUser(
     @Args('registerInput') input: RegisterInput,
   ): Promise<any> {
@@ -34,7 +33,7 @@ export class UserResolver {
   @Query(() => User)
   @Roles(['customer', 'staff', 'owner', 'admin'])
   async getUserByToken(@Context('user') user: User) {
-    return this.userService.getUserByToken(user.id);
+    return this.userService.getUserById(user.id);
   }
 
   @Mutation(() => String)
@@ -72,5 +71,13 @@ export class UserResolver {
   @Query(() => Number)
   async registerCount(@Args('date', { nullable: true }) date?: Date) {
     return await this.userService.getCountUserRegister(date);
+  }
+  @Query(() => Boolean)
+  @Roles(['customer'])
+  async checkPin(
+    @Context('user') user: User,
+    @Args('pin') input: string,
+  ): Promise<boolean> {
+    return await this.userService.checkPincode(input, user);
   }
 }
