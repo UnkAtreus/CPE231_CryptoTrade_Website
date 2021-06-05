@@ -154,6 +154,7 @@ type Query {
   login(login: LoginInput!): TokenRole!
   getUserByToken: User!
   registerCount(date: DateTime): Float!
+  checkPin(pin: String!): Boolean!
   getAllWallet: [Wallet!]!
   getUserWalletByToken: [Wallet!]!
   getWalletById(id: ID!): Wallet!
@@ -169,6 +170,7 @@ type Query {
   AllOrders: [Order!]!
   getAllFiat: [TransactionFiat!]!
   getAllFiatByUser: [TransactionFiat!]!
+  countAllFiatByUser: Float!
   getBankByName(name: String!): Bank!
   getAllBank: [Bank!]!
   getAllCrypto: [TransactionCrypto!]!

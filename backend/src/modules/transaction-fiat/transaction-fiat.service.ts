@@ -79,6 +79,9 @@ export class TransactionFiatService {
       },
     });
   }
+  async countAllFiat(): Promise<number> {
+    return await this.repoService.transactionFiatRepo.count({});
+  }
 
   async getAllFiatByUser(user: User): Promise<TransactionFiat[]> {
     return await this.repoService.transactionFiatRepo.find({
