@@ -90,6 +90,15 @@ export const InfoWrapper = styled.div`
 `;
 
 export const CryptoBalance = styled.div`
+  display: flex;
+  justify-content: center;
+  background-color: rgb(127 73 232);
+  padding-bottom: 16px;
+  background-position: center;
+  background-size: cover;
+  background-image: url(${SHARDS["wave-bg.svg"]});
+  background-repeat: no-repeat;
+
   .bitcoin {
     background: url("${LOGOS["bitcoin.png"]}") center center;
   }
@@ -111,4 +120,12 @@ export const CryptoBalance = styled.div`
     background-repeat: no-repeat;
     background-color: #ffffff;
   }
+`;
+
+export const StartTradingSection = styled.div`
+  display: flex;
+  justify-content: center;
+  background-color: rgb(127 73 232);
+  padding-bottom: 4rem;
+  padding-top: 4rem;
 `;
