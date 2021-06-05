@@ -31,6 +31,7 @@ import { num_list } from "helpers/constants/numList";
 import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
 import moment from "moment";
 import sortArray from "sort-array";
+import QRCode from "qrcode.react";
 
 const DeopsitContainer = ({ match, ...props }) => {
   const [coinSymbol, setCoinSymbol] = useState([
@@ -58,9 +59,9 @@ const DeopsitContainer = ({ match, ...props }) => {
   const [bankAmount, setBankAmount] = useState(0);
   const [orderParam, setOrderParam] = useState({
     method: 0,
-    amount: 4000,
+    amount: 0,
     bankNumber: "",
-    bankType: "",
+    bankType: "KBANK",
   });
 
   const depositType = match.params.type
@@ -106,6 +107,7 @@ const DeopsitContainer = ({ match, ...props }) => {
       }
       getUserWalletByToken {
         amount
+        inOrder
         currency {
           currency
           currencyLongName
@@ -179,6 +181,13 @@ const DeopsitContainer = ({ match, ...props }) => {
     return sort;
   };
 
+  const getTotal = (flag) => {
+    return (
+      Number(userWallet[CRYPTO_INDEX[flag]].amount) +
+      Number(userWallet[CRYPTO_INDEX[flag]].inOrder)
+    );
+  };
+
   useEffect(() => {
     if (data && data.getAllCurrencyWithNoStatic) {
       setCoinSymbol(data.getAllCurrencyWithNoStatic);
@@ -245,10 +254,9 @@ const DeopsitContainer = ({ match, ...props }) => {
                     <div className="content-row space-between mgb-8">
                       <div className="label gray">Total balance:</div>
                       <div className="label white">
-                        {BigNumber(
-                          userWallet[CRYPTO_INDEX[curSymbol.toLowerCase()]]
-                            .amount
-                        ).toFormat(FORMAT_DECIMAL) +
+                        {BigNumber(getTotal(curSymbol.toLowerCase())).toFormat(
+                          FORMAT_DECIMAL
+                        ) +
                           " " +
                           curSymbol.toUpperCase()}
                       </div>
@@ -321,9 +329,7 @@ const DeopsitContainer = ({ match, ...props }) => {
                     <div className="content-row space-between mgb-8">
                       <div className="label gray">Total balance:</div>
                       <div className="label white">
-                        {BigNumber(
-                          userWallet[CRYPTO_INDEX["usdt"]].amount
-                        ).toFormat(FORMAT_DECIMAL)}{" "}
+                        {BigNumber(getTotal("usdt")).toFormat(FORMAT_DECIMAL)}{" "}
                         USDT
                       </div>
                     </div>
@@ -523,7 +529,9 @@ const DeopsitContainer = ({ match, ...props }) => {
                     <div className="paragraph white">{curSymbol} Address</div>
                   </div>
                   <div className="content-row justify-content-center mgb-24">
-                    <div className="qr-container"></div>
+                    <div className="content-row justify-content-center align-items-center qr-container">
+                      <QRCode value={curSymbol} />
+                    </div>
                   </div>
                   <div className="content-row justify-content-center">
                     <div className="label white">
@@ -580,16 +588,20 @@ const DeopsitContainer = ({ match, ...props }) => {
                           className="label white text-center"
                           style={{ minWidth: "96px" }}
                         >
-                          {items.bank || items.wallet}
+                          {items.bank
+                            ? items.bank.bank
+                            : items.wallet
+                            ? items.wallet.currency.currency
+                            : ""}
                         </div>
                         <div
                           className={ClassNames(
                             "label text-center",
-                            items.status === "0" ? "green" : "red"
+                            items.status === "1" ? "green" : "red"
                           )}
                           style={{ minWidth: "64px" }}
                         >
-                          {items.status === "0" ? "success" : "cancle"}
+                          {items.status === "1" ? "success" : "cancle"}
                         </div>
                         <div
                           className="label white text-center"

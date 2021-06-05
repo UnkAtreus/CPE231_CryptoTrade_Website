@@ -90,7 +90,7 @@ export const PeerToPeerTypeContainer = styled.div`
   }
 `;
 
-export const PeerToPeerDetail = styled.div`
+export const PeerToPeerDetail = styled.form`
   height: 340px;
   width: 512px;
   border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
@@ -116,4 +116,9 @@ export const PeerToPeerHistory = styled.div`
   background-color: ${VARIABLES.COLORS.BACKGROUND_2};
   padding: 24px;
   margin-bottom: 8px;
+`;
+
+export const HistoryContainer = styled.div`
+  overflow: auto;
+  height: 196px;
 `;

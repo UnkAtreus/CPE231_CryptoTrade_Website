@@ -9,6 +9,7 @@ import {
   PeerToPeerTypeContainer,
   CoinDropdown,
   PeerToPeerHistory,
+  HistoryContainer,
 } from "./styled";
 import {
   Container,
@@ -20,8 +21,11 @@ import {
   TabWithLink,
   TabPane,
 } from "components";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useMutation, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
+import ClassNames from "classnames";
+import sortArray from "sort-array";
+import moment from "moment";
 
 import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
 
@@ -38,7 +42,13 @@ const PeerToPeerContainer = ({ match, ...props }) => {
   );
   const [payMentMethod, setPayMentMethod] = useState("Bank account");
   const [cryptoAmount, setCryptoAmount] = useState();
+  const [p2pHistory, setP2PHistory] = useState([]);
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
+  const [orderParam, setOrderParam] = useState({
+    amount: 0,
+    targetUser: 30,
+    currency: "BTC",
+  });
 
   const depositType = match.params.type
     ? match.params.type.toLowerCase()
@@ -95,7 +105,38 @@ const PeerToPeerContainer = ({ match, ...props }) => {
     }
   `;
 
-  const { loading, error, data } = useQuery(GET_ALL_SYMBOL);
+  const CREATE_ORDER_P2P = gql`
+    mutation ($input: PtoPInput!) {
+      createP2P(p2pInput: $input) {
+        walletFrom {
+          amount
+          currency {
+            currency
+          }
+        }
+        walletTo {
+          amount
+          currency {
+            currency
+          }
+        }
+        amount
+        walletFromBalance
+        walletToBalance
+      }
+    }
+  `;
+
+  const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
+
+  const [createOrder] = useMutation(CREATE_ORDER_P2P, {
+    onCompleted(order) {
+      if (order) {
+        console.log(order);
+        refetch();
+      }
+    },
+  });
 
   useEffect(() => {
     if (data && data.getAllCurrencyWithNoStatic) {
@@ -136,7 +177,13 @@ const PeerToPeerContainer = ({ match, ...props }) => {
                       <Dropdown
                         style={{ marginTop: "12px" }}
                         active={curSymbol || "BTC"}
-                        onChange={setCurSymbol}
+                        onChange={(e) => {
+                          setCurSymbol(e);
+                          setOrderParam({
+                            ...orderParam,
+                            currency: e,
+                          });
+                        }}
                         isSelect={true}
                         isHeightAuto={true}
                       >
@@ -184,12 +231,24 @@ const PeerToPeerContainer = ({ match, ...props }) => {
               </TabPane>
             </TabWithLink>
           </PeerToPeerType>
-          <PeerToPeerDetail>
+          <PeerToPeerDetail
+            onSubmit={(e) => {
+              e.preventDefault();
+              createOrder({
+                variables: { input: orderParam },
+              });
+            }}
+          >
             <div className="title white mgb-8">P2P detail</div>
             <Input
               title="UserID"
               placeholder="UserID"
-              onChange={(e) => console.log(e)}
+              onChange={(e) =>
+                setOrderParam({
+                  ...orderParam,
+                  targetUser: Number(e),
+                })
+              }
             />
             <Input
               title="Amount"
@@ -197,6 +256,10 @@ const PeerToPeerContainer = ({ match, ...props }) => {
               value={cryptoAmount}
               onChange={(e) => {
                 setCryptoAmount(e);
+                setOrderParam({
+                  ...orderParam,
+                  amount: Number(e),
+                });
               }}
             />
             <div className="content-row mgb-8">
@@ -227,7 +290,7 @@ const PeerToPeerContainer = ({ match, ...props }) => {
           <div className="content-row space-between mgb-8">
             <div
               className="label gray text-center"
-              style={{ minWidth: "64px" }}
+              style={{ minWidth: "96px" }}
             >
               Coin
             </div>
@@ -253,6 +316,52 @@ const PeerToPeerContainer = ({ match, ...props }) => {
               Infomation
             </div>
           </div>
+          <HistoryContainer>
+            {p2pHistory &&
+              p2pHistory.map((items, index) => {
+                if (items.method === "1")
+                  return (
+                    <div
+                      className="content-row space-between mgb-8"
+                      key={index}
+                    >
+                      <div
+                        className="label white text-center"
+                        style={{ minWidth: "96px" }}
+                      >
+                        {items.bank
+                          ? items.bank.bank
+                          : items.wallet.currency.currency}
+                      </div>
+                      <div
+                        className={ClassNames(
+                          "label text-center",
+                          items.status === "0" ? "green" : "red"
+                        )}
+                        style={{ minWidth: "64px" }}
+                      >
+                        {items.status === "0" ? "success" : "cancle"}
+                      </div>
+                      <div
+                        className="label white text-center"
+                        style={{ minWidth: "64px" }}
+                      >
+                        {items.amount}
+                      </div>
+                      <div
+                        className="label gray text-center"
+                        style={{ minWidth: "126px" }}
+                      >
+                        {moment(items.updated_at).format("DD-MM HH:MM:SS")}
+                      </div>
+                      <div
+                        className="label gray"
+                        style={{ minWidth: "296px" }}
+                      ></div>
+                    </div>
+                  );
+              })}
+          </HistoryContainer>
         </PeerToPeerHistory>
       </Container>
     </PeerToPeerStyled>
