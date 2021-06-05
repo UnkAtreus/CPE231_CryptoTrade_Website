@@ -71,7 +71,6 @@ export class OrderService implements OnApplicationBootstrap {
         if (message.type === 'utf8') {
           const x = JSON.parse(message.utf8Data);
           const data = x['data'].filter(isInCoin);
-          // console.log(data);
           const result = data.map(({ s, c }) => ({
             s,
             c,
