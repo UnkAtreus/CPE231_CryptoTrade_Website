@@ -5,6 +5,7 @@ import { RepoService } from 'src/repo/repo.service';
 import { UserService } from 'src/modules/user/user.service';
 import CardInput from '../../models/input/card.input';
 import { DeleteResult } from 'typeorm';
+import e from 'express';
 
 @Injectable()
 export class CardService {
@@ -13,11 +14,27 @@ export class CardService {
     private readonly userService: UserService,
   ) {}
   async createCard(input: CardInput, user: User): Promise<CreditCard> {
-    const card: CreditCard = {
-      ...input,
-      user: await this.userService.getUserByToken(user.id),
-    };
-    return await this.repoService.creditCardRepo.save(card);
+    return await this.repoService.creditCardRepo
+      .findOne({
+        where: {
+          cardNumber: input.cardNumber,
+          cvv: input.cvv,
+          expiredMonth: input.expiredMonth,
+          expiredYear: input.expiredYear,
+          user: user.id,
+        },
+      })
+      .then(async (result) => {
+        if (!result) {
+          const card: CreditCard = {
+            ...input,
+            user: await this.userService.getUserById(user.id),
+          };
+          return await this.repoService.creditCardRepo.save(card);
+        } else {
+          return result;
+        }
+      });
   }
 
   async getAllCard(): Promise<CreditCard[]> {
@@ -26,9 +43,9 @@ export class CardService {
     });
   }
 
-  async getCardByNum(num: string): Promise<CreditCard> {
+  async getCardByNum(num: string, user: User): Promise<CreditCard> {
     return await this.repoService.creditCardRepo.findOne({
-      where: { cardNumber: num },
+      where: { cardNumber: num, user: user.id },
       relations: ['user'],
     });
   }

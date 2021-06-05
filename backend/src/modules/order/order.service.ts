@@ -93,7 +93,7 @@ export class OrderService implements OnApplicationBootstrap {
   }
 
   async createOrder(userId: number, input: OrderInput): Promise<Order> {
-    const user = await this.userService.getUserByToken(userId);
+    const user = await this.userService.getUserById(userId);
     const walletFrom = await this.walletService.getWalletByCurrency(
       userId,
       input.currencyFrom,

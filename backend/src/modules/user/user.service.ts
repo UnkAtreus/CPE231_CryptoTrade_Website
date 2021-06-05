@@ -35,7 +35,7 @@ export class UserService {
     return await this.repoService.userRepo.save(user);
   }
 
-  async getUserByToken(id: number): Promise<User> {
+  async getUserById(id: number): Promise<User> {
     return await this.repoService.userRepo.findOne({
       where: { id: id },
       relations: ['role', 'wallet', 'creditCard', 'wallet.currency'],

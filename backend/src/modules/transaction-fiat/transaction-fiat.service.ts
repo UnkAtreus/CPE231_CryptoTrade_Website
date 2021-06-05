@@ -27,7 +27,7 @@ export class TransactionFiatService {
   ) {}
   async createFiat(input: FiatInput, user: User): Promise<TransactionFiat> {
     const fiat = new TransactionFiat();
-    if (!input.bankNumber && !input.cardNumber) {
+    if (!input.bankNumber && !input.cardInput) {
       throw SelectMethod;
     }
     fiat.method = input.method;
@@ -35,15 +35,30 @@ export class TransactionFiatService {
     fiat.status = TransactionStatus.Pending;
     fiat.user = await this.userService.getUserByID(user.id);
     if (input.bankNumber != '') {
-      console.log('4');
       const banktype = await this.bankService.getBankByName(input.bankType);
-      fiat.bank = await this.bankService.getBankByNumAndType(
-        input.bankNumber,
-        banktype.id,
-      );
-    } else if (input.cardNumber != '') {
-      console.log('3');
-      fiat.creditCardId = await this.cardService.getCardByNum(input.cardNumber);
+      fiat.bank = await this.bankService
+        .getBankByNumAndType(input.bankNumber, banktype.id)
+        .then(async (result) => {
+          if (!result) {
+            return await this.bankService.addBankNumber(
+              input.bankNumber,
+              input.bankType,
+              user,
+            );
+          } else {
+            return result;
+          }
+        });
+    } else if (input.cardInput.cardNumber != '') {
+      fiat.creditCardId = await this.cardService
+        .getCardByNum(input.cardInput.cardNumber, user)
+        .then(async (result) => {
+          if (!result) {
+            return await this.cardService.createCard(input.cardInput, user);
+          } else {
+            return result;
+          }
+        });
     }
     const currency = await this.currencyService.getCurrencyByShortName('USDT');
     const wallet = await this.walletService.getWalletByCurrencyId(

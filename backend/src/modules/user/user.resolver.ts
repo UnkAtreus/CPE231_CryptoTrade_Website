@@ -33,7 +33,7 @@ export class UserResolver {
   @Query(() => User)
   @Roles(['customer', 'staff', 'owner', 'admin'])
   async getUserByToken(@Context('user') user: User) {
-    return this.userService.getUserByToken(user.id);
+    return this.userService.getUserById(user.id);
   }
 
   @Mutation(() => String)
