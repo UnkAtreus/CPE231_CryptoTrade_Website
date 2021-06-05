@@ -43,17 +43,25 @@ export class OrderService implements OnApplicationBootstrap {
         filled: false,
         cancel: false,
       },
-      relations: ['walletTo', 'walletFrom'],
+      relations: [
+        'walletTo',
+        'walletFrom',
+        'walletFrom.currency',
+        'walletTo.currency',
+      ],
     });
 
     orderLists.forEach(async (order) => {
       this.XXXUSDT.forEach(async (t) => {
-        console.log(order.price, t['c']);
-        if (Number(t['c']) > Number(order.price)) {
-          console.log(order.id);
-
-          await this.fillOrder(order.id);
-          this.pubSub.publish('orderTrigger', { orderTrigger: order });
+        if (
+          String(t['s']).includes(order.walletFrom.currency.currency) &&
+          String(t['s']).includes(order.walletTo.currency.currency)
+        ) {
+          if (Number(t['c']) > Number(order.price)) {
+            console.log(order.id);
+            await this.fillOrder(order.id);
+            this.pubSub.publish('orderTrigger', { orderTrigger: order });
+          }
         }
       });
     });
