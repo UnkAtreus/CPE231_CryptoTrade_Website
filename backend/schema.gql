@@ -46,6 +46,8 @@ type PtoP {
   amount: String
   walletFromBalance: String
   walletToBalance: String
+  created_at: DateTime
+  updated_at: DateTime
 }
 
 type TransactionCrypto {

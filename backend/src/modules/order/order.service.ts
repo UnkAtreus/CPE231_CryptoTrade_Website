@@ -19,6 +19,7 @@ import { throws } from 'assert';
 import { User } from 'src/models/object/user.model';
 import { PubSub } from 'graphql-subscriptions';
 import OrderMarketInput from 'src/models/input/ordermarket.input';
+import { Interval } from '@nestjs/schedule';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
@@ -35,7 +36,7 @@ export class OrderService implements OnApplicationBootstrap {
   onApplicationBootstrap() {
     this.handleInterval();
   }
-  // @Interval(1000)
+  @Interval(1000)
   async fillOrderInterval() {
     const orderLists = await this.repoService.orderRepo.find({
       where: {
@@ -47,7 +48,10 @@ export class OrderService implements OnApplicationBootstrap {
 
     orderLists.forEach(async (order) => {
       this.XXXUSDT.forEach(async (t) => {
-        if (Number(t['c']) == Number(order.price)) {
+        console.log(order.price, t['c']);
+        if (Number(t['c']) > Number(order.price)) {
+          console.log(order.id);
+
           await this.fillOrder(order.id);
           this.pubSub.publish('orderTrigger', { orderTrigger: order });
         }
@@ -75,13 +79,7 @@ export class OrderService implements OnApplicationBootstrap {
             s,
             c,
           }));
-          // console.log(result);
           this.XXXUSDT = result;
-
-          // for (let i = 0; i < data.length; i++) {
-          //   this.XXXUSDT[i] = data[i].c;
-          // }
-          // console.log(this.XXXUSDT);
         }
       });
     });
@@ -122,13 +120,6 @@ export class OrderService implements OnApplicationBootstrap {
 
     return await this.repoService.orderRepo.save(order);
   }
-
-  // async createOrderMarket(
-  //   userId: number,
-  //   input: OrderMarketInput,
-  // ): Promise<any> {
-  //   return '0';
-  // }
 
   async getOrderById(orderId: number): Promise<Order> {
     return await this.repoService.orderRepo.findOne(orderId, {
