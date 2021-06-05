@@ -92,7 +92,7 @@ type TransactionFiat {
   status: String
   method: String
   wallet: Wallet
-  creditCardId: CreditCard
+  creditCard: CreditCard
   created_at: DateTime
   updated_at: DateTime
   amount: String
@@ -259,7 +259,7 @@ input CardInput {
   expiredMonth: String
   expiredYear: String
   cvv: String
-  cardName: String!
+  cardName: String
 }
 
 input OrderInput {
@@ -276,7 +276,7 @@ input FiatInput {
   amount: Float
   bankNumber: String
   bankType: String
-  cardNumber: String
+  cardInput: CardInput
 }
 
 input CryptoInput {

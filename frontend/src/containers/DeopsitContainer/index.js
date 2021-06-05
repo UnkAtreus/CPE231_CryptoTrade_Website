@@ -34,9 +34,11 @@ import sortArray from "sort-array";
 import QRCode from "qrcode.react";
 
 const DeopsitContainer = ({ match, ...props }) => {
+  const depositType = match.params.type
+    ? match.params.type.toLowerCase()
+    : "crypto";
   const [coinSymbol, setCoinSymbol] = useState([
     {
-      __typename: "Currency",
       currencyShortName: "BTC",
       currency: "Bitcoin",
     },
@@ -68,7 +70,9 @@ const DeopsitContainer = ({ match, ...props }) => {
     amount: 0,
     bankNumber: "",
     bankType: "",
-    cardNumber: "",
+    cardInput: {
+      cardNumber: "",
+    },
   });
   const [cardParam, setCardParam] = useState({
     cardNumber: "0",
@@ -77,10 +81,6 @@ const DeopsitContainer = ({ match, ...props }) => {
     cvv: "000",
     cardName: "",
   });
-
-  const depositType = match.params.type
-    ? match.params.type.toLowerCase()
-    : "crypto";
 
   const MOCK_FIAT = [
     {
@@ -128,6 +128,9 @@ const DeopsitContainer = ({ match, ...props }) => {
             bank
           }
         }
+        creditCard {
+          cardNumber
+        }
         method
         status
         amount
@@ -166,6 +169,14 @@ const DeopsitContainer = ({ match, ...props }) => {
   const CREATE_ORDER = gql`
     mutation ($input: FiatInput!) {
       createFiat(fiatInput: $input) {
+        bank {
+          banktype {
+            bank
+          }
+        }
+        creditCard {
+          cardNumber
+        }
         wallet {
           amount
         }
@@ -246,6 +257,37 @@ const DeopsitContainer = ({ match, ...props }) => {
       setAllCard(data.getCardByToken);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (payMentMethod === "Bank account")
+      setOrderParam({
+        ...orderParam,
+        bankType: "KBANK",
+        bankNumber: "",
+        cardInput: {
+          cardNumber: "",
+        },
+      });
+    else if (payMentMethod === "Cradit / Dabit card")
+      if (isNewCard)
+        setOrderParam({
+          ...orderParam,
+          bankType: "",
+          bankNumber: "",
+          cardInput: {
+            cardNumber: "",
+          },
+        });
+      else
+        setOrderParam({
+          ...orderParam,
+          bankType: "",
+          bankNumber: "",
+          cardInput: {
+            cardNumber: allCard[0].cardNumber,
+          },
+        });
+  }, [payMentMethod, isNewCard]);
 
   return (
     <DeopsitStyled>
@@ -400,7 +442,9 @@ const DeopsitContainer = ({ match, ...props }) => {
                   onSubmit={(e) => {
                     e.preventDefault();
                     console.log(orderParam);
-                    createOrder({ variables: { input: orderParam } });
+                    createOrder({
+                      variables: { input: orderParam },
+                    });
                   }}
                 >
                   <div className="title white mgb-8">Payment details</div>
@@ -437,13 +481,15 @@ const DeopsitContainer = ({ match, ...props }) => {
                     </div>
                     <Dropdown
                       style={{ marginTop: "12px" }}
-                      active={selectBank}
+                      active={selectBank || "KBANK"}
                       onChange={(e) => {
                         setSelectBank(e);
                         setOrderParam({
                           ...orderParam,
                           bankType: e,
-                          cardNumber: "",
+                          cardInput: {
+                            cardNumber: "",
+                          },
                         });
                       }}
                       isSelect={true}
@@ -465,7 +511,9 @@ const DeopsitContainer = ({ match, ...props }) => {
                       setOrderParam({
                         ...orderParam,
                         bankNumber: e,
-                        cardNumber: "",
+                        cardInput: {
+                          cardNumber: "",
+                        },
                       });
                     }}
                   ></Input>
@@ -483,6 +531,7 @@ const DeopsitContainer = ({ match, ...props }) => {
                       onSubmit={(e) => {
                         e.preventDefault();
                         console.log(cardParam);
+                        console.log(orderParam);
                         createCard({
                           variables: { input: cardParam },
                         });
@@ -528,9 +577,11 @@ const DeopsitContainer = ({ match, ...props }) => {
                           });
                           setOrderParam({
                             ...orderParam,
-                            cardNumber: e,
                             bankType: "",
                             bankNumber: "",
+                            cardInput: {
+                              cardNumber: e,
+                            },
                           });
                         }}
                       ></Input>
@@ -683,7 +734,9 @@ const DeopsitContainer = ({ match, ...props }) => {
                             setCardNum(e);
                             setOrderParam({
                               ...orderParam,
-                              cardNumber: e,
+                              cardInput: {
+                                cardNumber: allCard[e].cardNumber,
+                              },
                               bankType: "",
                               bankNumber: "",
                             });
@@ -775,9 +828,11 @@ const DeopsitContainer = ({ match, ...props }) => {
                           style={{ minWidth: "96px" }}
                         >
                           {items.bank
-                            ? items.bank.bank
+                            ? items.bank.banktype.bank
                             : items.wallet
                             ? items.wallet.currency.currency
+                            : items.creditCard
+                            ? "CraditCard"
                             : ""}
                         </div>
                         <div
@@ -799,7 +854,7 @@ const DeopsitContainer = ({ match, ...props }) => {
                           className="label gray text-center"
                           style={{ minWidth: "126px" }}
                         >
-                          {moment(items.updated_at).format("DD-MM HH:MM:SS")}
+                          {moment(items.updated_at).format("DD-MM HH:mm:ss")}
                         </div>
                         <div
                           className="label gray"

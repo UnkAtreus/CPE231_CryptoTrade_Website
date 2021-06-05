@@ -30,9 +30,9 @@ import { join } from 'path';
     GraphQLModule.forRoot(graphql_config),
     TypeOrmModule.forRoot(typeorm_config),
     ScheduleModule.forRoot(),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'uploads'),
+    // }),
     RepoModule,
     UserModule,
     CardModule,

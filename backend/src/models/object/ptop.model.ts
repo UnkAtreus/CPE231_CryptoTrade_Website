@@ -1,5 +1,5 @@
 import { Field, Float, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Wallet } from './wallet.model';
 @ObjectType()
 @Entity()
@@ -27,4 +27,13 @@ export class PtoP {
   @Field()
   @Column()
   walletToBalance?: string;
+
+  @Field(() => Date)
+  @CreateDateColumn()
+  created_at?: Date;
+
+  @Field()
+  @Column()
+  @UpdateDateColumn()
+  updated_at?: Date;
 }

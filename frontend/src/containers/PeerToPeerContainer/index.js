@@ -361,7 +361,7 @@ const PeerToPeerContainer = ({ match, ...props }) => {
                       className="label gray text-center"
                       style={{ minWidth: "126px" }}
                     >
-                      {moment(items.updated_at).format("DD-MM HH:MM:SS") || "0"}
+                      {moment(items.updated_at).format("DD-MM HH:mm:ss") || "0"}
                     </div>
                     <div
                       className="label gray"
