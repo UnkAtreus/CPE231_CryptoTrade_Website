@@ -44,21 +44,21 @@ const GET_ALL_DATA = gql`
       user {
         email
       }
-      walletTo {
-        currency {
-          currency
-        }
-      }
+      method
+      type
       walletFrom {
         currency {
           currency
         }
       }
-      method
+      walletTo {
+        currency {
+          currency
+        }
+      }
       price
       amount
       totalBalance
-      fee
       cancel
       filled
       created_at
@@ -68,14 +68,26 @@ const GET_ALL_DATA = gql`
 `;
 
 const CREATE_ORDER = gql`
-  query {
-    getUserWalletByToken {
-      amount
-      inOrder
-      currency {
-        currency
-        currencyLongName
+  mutation ($input: OrderInput!) {
+    createOrder(input: $input) {
+      method
+      type
+      walletFrom {
+        currency {
+          currency
+        }
       }
+      walletTo {
+        currency {
+          currency
+        }
+      }
+      price
+      amount
+      totalBalance
+      cancel
+      filled
+      updated_at
     }
   }
 `;
@@ -111,6 +123,14 @@ const HomeContainer = (props) => {
   const [valueTotalSellMarket, setValueTotalSellMarket] = useState(0);
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [allOrder, setAllOrder] = useState([]);
+  const [orderParams, setOrderParams] = useState({
+    method: 0,
+    currencyFrom: "USDT",
+    currencyTo: "BTC",
+    price: 0,
+    amount: 0,
+    type: 0,
+  });
 
   const MOCK_USER_CURRENCY = {
     btc: 0.00000091,
@@ -140,6 +160,36 @@ const HomeContainer = (props) => {
     var order = [];
     data.map((data) => {
       if (!data.cancel && !data.filled) {
+        order.push(data);
+      }
+    });
+    // console.log(order);
+    return order;
+  };
+
+  const getOrderHistory = (data) => {
+    var order = [];
+    data.map((data) => {
+      if (!data.cancel && data.filled) {
+        order.push(data);
+      }
+      if (data.cancel && !data.filled) {
+        order.push(data);
+      }
+    });
+    // console.log(order);
+    var sort = sortArray(order, {
+      by: "created_at",
+      order: "desc",
+    });
+
+    return sort;
+  };
+
+  const getTradeHistory = (data) => {
+    var order = [];
+    data.map((data) => {
+      if (!data.cancel && data.filled) {
         order.push(data);
       }
     });
@@ -193,7 +243,15 @@ const HomeContainer = (props) => {
   const dispatch = useDispatch();
   const arg = useSelector((state) => state, isEqual);
 
-  const { loading, error, data } = useQuery(GET_ALL_DATA);
+  const { loading, error, data, refetch } = useQuery(GET_ALL_DATA);
+  const [createOrder] = useMutation(CREATE_ORDER, {
+    onCompleted(order) {
+      if (order) {
+        console.log(order);
+        refetch();
+      }
+    },
+  });
 
   const GetPrice = async () => {
     const crypto_price = await marketController().getPrice(
@@ -206,6 +264,10 @@ const HomeContainer = (props) => {
     setPrice(BigNumber(crypto_price.price).toFormat(2, FORMAT_DECIMAL));
     setPriceSell(BigNumber(crypto_price.price).toFormat(2, FORMAT_DECIMAL));
     setPriceBuy(BigNumber(crypto_price.price).toFormat(2, FORMAT_DECIMAL));
+    setOrderParams({
+      ...orderParams,
+      price: Number(BigNumber(crypto_price.price).toFormat(2, FORMAT_DECIMAL)),
+    });
     setIsLoading(false);
   };
 
@@ -310,6 +372,7 @@ const HomeContainer = (props) => {
         setValueTotalBuy(
           BigNumber(valueAmountBuy * priceBuy).toFormat(2, FORMAT_DECIMAL)
         );
+        // return BigNumber(valueAmountBuy * priceBuy).toFormat(2, FORMAT_DECIMAL);
         break;
       case "step":
         setValueAmountBuy(
@@ -974,6 +1037,34 @@ const HomeContainer = (props) => {
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
+                          // setOrderParams({
+                          //   ...orderParams,
+                          //   type: 0,
+                          //   price: Number(priceBuy),
+                          //   amount: Number(valueAmountBuy),
+                          // });
+                          console.log({
+                            ...orderParams,
+                            method: 0,
+                            type: 0,
+                            currencyTo: cryptoSymbol,
+                            currencyFrom: "USDT",
+                            price: Number(priceBuy),
+                            amount: Number(valueAmountBuy),
+                          });
+
+                          createOrder({
+                            variables: {
+                              input: {
+                                ...orderParams,
+                                type: 0,
+                                currencyTo: cryptoSymbol,
+                                currencyFrom: "USDT",
+                                price: Number(priceBuy),
+                                amount: Number(valueAmountBuy),
+                              },
+                            },
+                          });
                         }}
                       >
                         <div className="content-row space-between mgb-2">
@@ -991,10 +1082,11 @@ const HomeContainer = (props) => {
                         <InputTrade
                           prefix="Price"
                           suffix="USDT"
-                          value={BigNumber(arg.cur_price.price).toFormat(
-                            2,
-                            FORMAT_DECIMAL
-                          )}
+                          // value={BigNumber(arg.cur_price.price).toFormat(
+                          //   2,
+                          //   FORMAT_DECIMAL
+                          // )}
+                          value={priceBuy}
                           onChange={(e) => {
                             setPriceBuy(e);
                             calPriceBuy("cryptoPrice", e);
@@ -1007,6 +1099,11 @@ const HomeContainer = (props) => {
                           onChange={(e) => {
                             setValueAmountBuy(e);
                             calPriceBuy("amount", e);
+                            setOrderParams({
+                              ...orderParams,
+                              type: 0,
+                              amount: Number(e),
+                            });
                           }}
                         />
                         <ValueStep value={(e) => calPriceBuy("step", e)} />
@@ -1028,6 +1125,35 @@ const HomeContainer = (props) => {
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
+                          // setOrderParams({
+                          //   ...orderParams,
+                          //   type: 0,
+                          //   price: Number(priceBuy),
+                          //   amount: Number(valueAmountBuy),
+                          // });
+                          console.log({
+                            ...orderParams,
+                            method: 1,
+                            type: 0,
+                            currencyTo: "USDT",
+                            currencyFrom: cryptoSymbol,
+                            price: Number(priceSell),
+                            amount: Number(valueAmountSell),
+                          });
+
+                          createOrder({
+                            variables: {
+                              input: {
+                                ...orderParams,
+                                method: 1,
+                                type: 0,
+                                currencyTo: "USDT",
+                                currencyFrom: cryptoSymbol,
+                                price: Number(priceSell),
+                                amount: Number(valueAmountSell),
+                              },
+                            },
+                          });
                         }}
                       >
                         <div className="content-row space-between mgb-2">
@@ -1092,6 +1218,29 @@ const HomeContainer = (props) => {
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
+                          console.log({
+                            ...orderParams,
+                            method: 0,
+                            type: 1,
+                            currencyTo: cryptoSymbol,
+                            currencyFrom: "USDT",
+                            price: Number(arg.ticker.c),
+                            amount: Number(valueAmountBuyMarket),
+                          });
+
+                          createOrder({
+                            variables: {
+                              input: {
+                                ...orderParams,
+                                method: 0,
+                                type: 1,
+                                currencyTo: cryptoSymbol,
+                                currencyFrom: "USDT",
+                                price: Number(arg.ticker.c),
+                                amount: Number(valueAmountBuyMarket),
+                              },
+                            },
+                          });
                         }}
                       >
                         <div className="content-row space-between mgb-2">
@@ -1121,7 +1270,8 @@ const HomeContainer = (props) => {
                           }}
                         />
                         <ValueStep
-                          value={(e) => calPriceMarket("stepbuy", e)}
+                          // value={(e) => calPriceMarket("stepbuy", e)}
+                          value={(e) => {}}
                         />
                         <Button label="Buy BTC" color="green" />
                       </form>
@@ -1131,6 +1281,29 @@ const HomeContainer = (props) => {
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
+                          console.log({
+                            ...orderParams,
+                            method: 1,
+                            type: 1,
+                            currencyTo: "USDT",
+                            currencyFrom: cryptoSymbol,
+                            price: Number(arg.ticker.c),
+                            amount: Number(valueAmountSellMarket),
+                          });
+
+                          createOrder({
+                            variables: {
+                              input: {
+                                ...orderParams,
+                                method: 1,
+                                type: 1,
+                                currencyTo: "USDT",
+                                currencyFrom: cryptoSymbol,
+                                price: Number(arg.ticker.c),
+                                amount: Number(valueAmountSellMarket),
+                              },
+                            },
+                          });
                         }}
                       >
                         <div className="content-row space-between mgb-2">
@@ -1401,13 +1574,13 @@ const HomeContainer = (props) => {
                     </div>
                     <div
                       className="label gray text-center"
-                      style={{ minWidth: "28px" }}
+                      style={{ minWidth: "52px" }}
                     >
                       Type
                     </div>
                     <div
                       className="label gray text-center"
-                      style={{ minWidth: "24px" }}
+                      style={{ minWidth: "32px" }}
                     >
                       Side
                     </div>
@@ -1431,7 +1604,7 @@ const HomeContainer = (props) => {
                     </div>
                     <div
                       className="label gray text-center"
-                      style={{ minWidth: "126px" }}
+                      style={{ minWidth: "156px" }}
                     >
                       Total
                     </div>
@@ -1442,84 +1615,93 @@ const HomeContainer = (props) => {
                       Action
                     </div>
                   </div>
-
-                  {getOpenOrder(allOrder) &&
-                    getOpenOrder(allOrder).map((items, index) => {
-                      return (
-                        <div
-                          className={ClassNames(
-                            "content-row space-between order-container align-items-center",
-                            index % 2 !== 0 && "even"
-                          )}
-                          key={index}
-                        >
-                          <div
-                            className="label gray text-center"
-                            style={{ minWidth: "126px" }}
-                          >
-                            {moment(items.updated_at).format("DD-MM HH:mm:ss")}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "64px" }}
-                          >
-                            {items.walletFrom.currency.currency}/USDT
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "28px" }}
-                          >
-                            Limit
-                          </div>
+                  <div style={{ overflow: "auto", height: "186px" }}>
+                    {getOpenOrder(allOrder) &&
+                      getOpenOrder(allOrder).map((items, index) => {
+                        return (
                           <div
                             className={ClassNames(
-                              "label red text-center",
-                              items.method ? "red" : "green"
+                              "content-row space-between order-container align-items-center",
+                              index % 2 !== 0 && "even"
                             )}
-                            style={{ minWidth: "24px" }}
+                            key={index}
                           >
-                            {items.method ? "sell" : "buy"}
+                            <div
+                              className="label gray text-center"
+                              style={{ minWidth: "126px" }}
+                            >
+                              {moment(items.updated_at).format(
+                                "DD-MM HH:mm:ss"
+                              )}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "64px" }}
+                            >
+                              {items.walletFrom.currency.currency === "USDT"
+                                ? items.walletTo.currency.currency
+                                : items.walletFrom.currency.currency}
+                              /USDT
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "52px" }}
+                            >
+                              {items.type === "0" ? "Limit" : "Market"}
+                            </div>
+                            <div
+                              className={ClassNames(
+                                "label red text-center",
+                                items.method === "1" ? "red" : "green"
+                              )}
+                              style={{ minWidth: "32px" }}
+                            >
+                              {items.method === "1" ? "sell" : "buy"}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "96px" }}
+                            >
+                              {BigNumber(items.price).toFormat(
+                                2,
+                                FORMAT_DECIMAL
+                              )}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "96px" }}
+                            >
+                              {BigNumber(items.amount).toFormat(
+                                2,
+                                FORMAT_DECIMAL
+                              )}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "52px" }}
+                            >
+                              {!items.filled && "pending"}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "156px" }}
+                            >
+                              {BigNumber(items.totalBalance).toFormat(
+                                3,
+                                FORMAT_DECIMAL
+                              )}{" "}
+                              USDT
+                            </div>
+                            <div
+                              className="label red text-center pointer"
+                              style={{ minWidth: "126px" }}
+                            >
+                              Cancel
+                            </div>
                           </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "96px" }}
-                          >
-                            {BigNumber(items.price).toFormat(2, FORMAT_DECIMAL)}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "96px" }}
-                          >
-                            {BigNumber(items.amount).toFormat(
-                              2,
-                              FORMAT_DECIMAL
-                            )}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "52px" }}
-                          >
-                            {!items.filled && "pending"}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "126px" }}
-                          >
-                            {BigNumber(items.totalBalance).toFormat(
-                              6,
-                              FORMAT_DECIMAL
-                            )}{" "}
-                            USDT
-                          </div>
-                          <div
-                            className="label red text-center pointer"
-                            style={{ minWidth: "126px" }}
-                          >
-                            Cancel
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                  </div>
                 </div>
               </TabPane>
               <TabPane name="Order History" key="2">
@@ -1539,13 +1721,13 @@ const HomeContainer = (props) => {
                     </div>
                     <div
                       className="label gray text-center"
-                      style={{ minWidth: "28px" }}
+                      style={{ minWidth: "52px" }}
                     >
                       Type
                     </div>
                     <div
                       className="label gray text-center"
-                      style={{ minWidth: "24px" }}
+                      style={{ minWidth: "32px" }}
                     >
                       Side
                     </div>
@@ -1569,7 +1751,7 @@ const HomeContainer = (props) => {
                     </div>
                     <div
                       className="label gray text-center"
-                      style={{ minWidth: "126px" }}
+                      style={{ minWidth: "156px" }}
                     >
                       Total
                     </div>
@@ -1580,84 +1762,93 @@ const HomeContainer = (props) => {
                       Action
                     </div>
                   </div>
-
-                  {getOpenOrder(allOrder) &&
-                    getOpenOrder(allOrder).map((items, index) => {
-                      return (
-                        <div
-                          className={ClassNames(
-                            "content-row space-between order-container align-items-center",
-                            index % 2 !== 0 && "even"
-                          )}
-                          key={index}
-                        >
-                          <div
-                            className="label gray text-center"
-                            style={{ minWidth: "126px" }}
-                          >
-                            {moment(items.updated_at).format("DD-MM HH:mm:ss")}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "64px" }}
-                          >
-                            {items.walletFrom.currency.currency}/USDT
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "28px" }}
-                          >
-                            Limit
-                          </div>
+                  <div style={{ overflow: "auto", height: "186px" }}>
+                    {getOrderHistory(allOrder) &&
+                      getOrderHistory(allOrder).map((items, index) => {
+                        return (
                           <div
                             className={ClassNames(
-                              "label red text-center",
-                              items.method ? "red" : "green"
+                              "content-row space-between order-container align-items-center",
+                              index % 2 !== 0 && "even"
                             )}
-                            style={{ minWidth: "24px" }}
+                            key={index}
                           >
-                            {items.method ? "sell" : "buy"}
+                            <div
+                              className="label gray text-center"
+                              style={{ minWidth: "126px" }}
+                            >
+                              {moment(items.updated_at).format(
+                                "DD-MM HH:mm:ss"
+                              )}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "64px" }}
+                            >
+                              {items.walletFrom.currency.currency === "USDT"
+                                ? items.walletTo.currency.currency
+                                : items.walletFrom.currency.currency}
+                              /USDT
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "52px" }}
+                            >
+                              {items.type === "0" ? "Limit" : "Market"}
+                            </div>
+                            <div
+                              className={ClassNames(
+                                "label red text-center",
+                                items.method === "1" ? "red" : "green"
+                              )}
+                              style={{ minWidth: "32px" }}
+                            >
+                              {items.method === "1" ? "sell" : "buy"}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "96px" }}
+                            >
+                              {BigNumber(items.price).toFormat(
+                                2,
+                                FORMAT_DECIMAL
+                              )}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "96px" }}
+                            >
+                              {BigNumber(items.amount).toFormat(
+                                2,
+                                FORMAT_DECIMAL
+                              )}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "52px" }}
+                            >
+                              {!items.filled && "pending"}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "156px" }}
+                            >
+                              {BigNumber(items.totalBalance).toFormat(
+                                3,
+                                FORMAT_DECIMAL
+                              )}{" "}
+                              USDT
+                            </div>
+                            <div
+                              className="label red text-center pointer"
+                              style={{ minWidth: "126px" }}
+                            >
+                              Cancel
+                            </div>
                           </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "96px" }}
-                          >
-                            {BigNumber(items.price).toFormat(2, FORMAT_DECIMAL)}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "96px" }}
-                          >
-                            {BigNumber(items.amount).toFormat(
-                              2,
-                              FORMAT_DECIMAL
-                            )}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "52px" }}
-                          >
-                            {!items.filled && "pending"}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "126px" }}
-                          >
-                            {BigNumber(items.totalBalance).toFormat(
-                              6,
-                              FORMAT_DECIMAL
-                            )}{" "}
-                            USDT
-                          </div>
-                          <div
-                            className="label red text-center pointer"
-                            style={{ minWidth: "126px" }}
-                          >
-                            Cancel
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                  </div>
                 </div>
               </TabPane>
               <TabPane name="Trade History" key="3">
@@ -1677,13 +1868,13 @@ const HomeContainer = (props) => {
                     </div>
                     <div
                       className="label gray text-center"
-                      style={{ minWidth: "28px" }}
+                      style={{ minWidth: "52px" }}
                     >
                       Type
                     </div>
                     <div
                       className="label gray text-center"
-                      style={{ minWidth: "24px" }}
+                      style={{ minWidth: "32px" }}
                     >
                       Side
                     </div>
@@ -1707,7 +1898,7 @@ const HomeContainer = (props) => {
                     </div>
                     <div
                       className="label gray text-center"
-                      style={{ minWidth: "126px" }}
+                      style={{ minWidth: "156px" }}
                     >
                       Total
                     </div>
@@ -1718,84 +1909,93 @@ const HomeContainer = (props) => {
                       Action
                     </div>
                   </div>
-
-                  {getOpenOrder(allOrder) &&
-                    getOpenOrder(allOrder).map((items, index) => {
-                      return (
-                        <div
-                          className={ClassNames(
-                            "content-row space-between order-container align-items-center",
-                            index % 2 !== 0 && "even"
-                          )}
-                          key={index}
-                        >
-                          <div
-                            className="label gray text-center"
-                            style={{ minWidth: "126px" }}
-                          >
-                            {moment(items.updated_at).format("DD-MM HH:mm:ss")}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "64px" }}
-                          >
-                            {items.walletFrom.currency.currency}/USDT
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "28px" }}
-                          >
-                            Limit
-                          </div>
+                  <div style={{ overflow: "auto", height: "186px" }}>
+                    {getTradeHistory(allOrder) &&
+                      getTradeHistory(allOrder).map((items, index) => {
+                        return (
                           <div
                             className={ClassNames(
-                              "label red text-center",
-                              items.method ? "red" : "green"
+                              "content-row space-between order-container align-items-center",
+                              index % 2 !== 0 && "even"
                             )}
-                            style={{ minWidth: "24px" }}
+                            key={index}
                           >
-                            {items.method ? "sell" : "buy"}
+                            <div
+                              className="label gray text-center"
+                              style={{ minWidth: "126px" }}
+                            >
+                              {moment(items.updated_at).format(
+                                "DD-MM HH:mm:ss"
+                              )}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "64px" }}
+                            >
+                              {items.walletFrom.currency.currency === "USDT"
+                                ? items.walletTo.currency.currency
+                                : items.walletFrom.currency.currency}
+                              /USDT
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "52px" }}
+                            >
+                              {items.type === "0" ? "Limit" : "Market"}
+                            </div>
+                            <div
+                              className={ClassNames(
+                                "label red text-center",
+                                items.method === "1" ? "red" : "green"
+                              )}
+                              style={{ minWidth: "32px" }}
+                            >
+                              {items.method === "1" ? "sell" : "buy"}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "96px" }}
+                            >
+                              {BigNumber(items.price).toFormat(
+                                2,
+                                FORMAT_DECIMAL
+                              )}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "96px" }}
+                            >
+                              {BigNumber(items.amount).toFormat(
+                                2,
+                                FORMAT_DECIMAL
+                              )}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "52px" }}
+                            >
+                              {!items.filled && "pending"}
+                            </div>
+                            <div
+                              className="label white text-center"
+                              style={{ minWidth: "156px" }}
+                            >
+                              {BigNumber(items.totalBalance).toFormat(
+                                3,
+                                FORMAT_DECIMAL
+                              )}{" "}
+                              USDT
+                            </div>
+                            <div
+                              className="label red text-center pointer"
+                              style={{ minWidth: "126px" }}
+                            >
+                              Cancel
+                            </div>
                           </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "96px" }}
-                          >
-                            {BigNumber(items.price).toFormat(2, FORMAT_DECIMAL)}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "96px" }}
-                          >
-                            {BigNumber(items.amount).toFormat(
-                              2,
-                              FORMAT_DECIMAL
-                            )}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "52px" }}
-                          >
-                            {!items.filled && "pending"}
-                          </div>
-                          <div
-                            className="label white text-center"
-                            style={{ minWidth: "126px" }}
-                          >
-                            {BigNumber(items.totalBalance).toFormat(
-                              6,
-                              FORMAT_DECIMAL
-                            )}{" "}
-                            USDT
-                          </div>
-                          <div
-                            className="label red text-center pointer"
-                            style={{ minWidth: "126px" }}
-                          >
-                            Cancel
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                  </div>
                 </div>
               </TabPane>
             </Tab>

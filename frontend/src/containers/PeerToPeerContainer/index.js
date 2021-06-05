@@ -116,6 +116,8 @@ const PeerToPeerContainer = ({ match, ...props }) => {
         amount
         walletFromBalance
         walletToBalance
+        created_at
+        updated_at
       }
     }
   `;
@@ -152,6 +154,16 @@ const PeerToPeerContainer = ({ match, ...props }) => {
       }
     },
   });
+
+  const sortHistory = (data) => {
+    var concat_array = [...data];
+
+    var sort = sortArray(concat_array, {
+      by: "created_at",
+      order: "desc",
+    });
+    return sort;
+  };
 
   useEffect(() => {
     if (data && data.getAllCurrencyWithNoStatic) {
@@ -336,7 +348,7 @@ const PeerToPeerContainer = ({ match, ...props }) => {
           </div>
           <HistoryContainer>
             {p2pHistory &&
-              p2pHistory.map((items, index) => {
+              sortHistory(p2pHistory).map((items, index) => {
                 return (
                   <div className="content-row space-between mgb-8" key={index}>
                     <div
@@ -361,6 +373,7 @@ const PeerToPeerContainer = ({ match, ...props }) => {
                       className="label gray text-center"
                       style={{ minWidth: "126px" }}
                     >
+                      {console.log(items.updated_at)}
                       {moment(items.updated_at).format("DD-MM HH:mm:ss") || "0"}
                     </div>
                     <div
