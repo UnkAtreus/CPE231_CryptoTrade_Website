@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
+import ClassNames from "classnames";
 import {
   LandingStyled,
   Header,
@@ -18,6 +19,7 @@ import { useQuery, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
 import { marketController } from "apiService";
 import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   MOCK_WALLET,
@@ -66,6 +68,19 @@ const LandingContainer = ({ match, ...props }) => {
   ]);
 
   const [getCurPrice, setgetCurPrice] = useState(MOCK_ALL_CUR_PRICE);
+  const [isUpPrice, setIsUpPrice] = useState(true);
+  const [btcTicker, setBtcTicker] = useState({});
+  const [adaTicker, setAdaTicker] = useState({});
+  const [ethTicker, setEthTicker] = useState({});
+  const [bchTicker, setBchTicker] = useState({});
+  const [dotTicker, setDotTicker] = useState({});
+  const [streams] = useState([
+    "btcusdt@ticker",
+    "adausdt@ticker",
+    "ethusdt@ticker",
+    "bchusdt@ticker",
+    "dotusdt@ticker",
+  ]);
   const curPrice = [];
 
   const FORMAT_DECIMAL = {
@@ -78,6 +93,8 @@ const LandingContainer = ({ match, ...props }) => {
     fractionGroupSize: 0,
     suffix: "",
   };
+  const dispatch = useDispatch();
+  const arg = useSelector((state) => state, isEqual);
 
   const { loading, error, data } = useQuery(GET_ALL_SYMBOL);
 
@@ -122,6 +139,59 @@ const LandingContainer = ({ match, ...props }) => {
     );
   };
 
+  const isEqual = (l, r) => {
+    if (l.ticker.c !== r.ticker.c)
+      if (l.ticker.c >= r.ticker.c) setIsUpPrice(true);
+      else setIsUpPrice(false);
+  };
+
+  const _connectSocketStreams = (streams) => {
+    streams = streams.join("/");
+    let connection = btoa(streams);
+    connection = new WebSocket(
+      `wss://stream.binance.com:9443/stream?streams=${streams}`
+    );
+    connection.onmessage = (evt) => {
+      let eventData = JSON.parse(evt.data);
+      // console.log(eventData);
+
+      if (eventData.stream.startsWith("btcusdt")) {
+        setBtcTicker(eventData.data);
+      }
+      if (eventData.stream.startsWith("adausdt")) {
+        setAdaTicker(eventData.data);
+      }
+      if (eventData.stream.startsWith("ethusdt")) {
+        setEthTicker(eventData.data);
+      }
+      if (eventData.stream.startsWith("bchusdt")) {
+        setBchTicker(eventData.data);
+      }
+      if (eventData.stream.startsWith("dotusdt")) {
+        setDotTicker(eventData.data);
+      }
+    };
+    connection.onerror = (evt) => {
+      console.error(evt);
+    };
+  };
+
+  const _disconnectSocketStreams = (streams) => {
+    streams = streams.join("/");
+    let connection = btoa(streams);
+    if (connection.readyState === WebSocket.OPEN) {
+      connection.close();
+    }
+  };
+
+  useEffect(() => {
+    _connectSocketStreams(streams);
+    // GetPrice();
+    return () => {
+      _disconnectSocketStreams(streams);
+    };
+  }, []);
+
   useEffect(() => {
     if (data && data.getAllCurrencyWithNoStatic) {
       setCoinSymbol(data.getAllCurrencyWithNoStatic);
@@ -150,58 +220,119 @@ const LandingContainer = ({ match, ...props }) => {
           <div className="paragraph gray mgb-24">
             Add cash or crypto funds to your wallet and start trading right away
           </div>
-          <Button
-            style={{ marginTop: "16px", width: "200px", marginBottom: "48px" }}
-            label="Find account"
-            color="purple"
-            fontColor="white"
-            onClick={() => {}}
-          />
+          <a href="/login">
+            <Button
+              style={{
+                marginTop: "16px",
+                width: "200px",
+                marginBottom: "48px",
+              }}
+              label="Find account"
+              color="purple"
+              fontColor="white"
+              onClick={() => {}}
+            />
+          </a>
         </div>
 
         <div
           className="content-row space-between mgb-16"
           style={{ marginTop: "8rem" }}
         >
-          <div className="content-column">
+          <div className="content-column" style={{ minWidth: "200px" }}>
             <div className="content-row">
               <div className="label gray">BTC/USDT</div>
-              <div className="label green">+6.15%</div>
+              <div
+                className={ClassNames(
+                  "label ",
+                  Number(btcTicker.P) > 0 ? "green" : "red"
+                )}
+              >
+                {btcTicker.P}%
+              </div>
             </div>
-            <div className="section-headline white">421.03</div>
-            <div className="label gray">$421.03</div>
+            <div className="section-headline white">
+              {BigNumber(btcTicker.c).toFormat(2, FORMAT_DECIMAL)}
+            </div>
+            <div className="label gray">
+              ${BigNumber(btcTicker.c).toFormat(2, FORMAT_DECIMAL)}
+            </div>
           </div>
-          <div className="content-column">
+          <div className="content-column" style={{ minWidth: "156px" }}>
             <div className="content-row">
-              <div className="label gray">BTC/USDT</div>
-              <div className="label green">+6.15%</div>
+              <div className="label gray">ADA/USDT</div>
+              <div
+                className={ClassNames(
+                  "label ",
+                  Number(adaTicker.P) > 0 ? "green" : "red"
+                )}
+              >
+                {adaTicker.P}%
+              </div>
             </div>
-            <div className="section-headline white">421.03</div>
-            <div className="label gray">$421.03</div>
+            <div className="section-headline white">
+              {BigNumber(adaTicker.c).toFormat(2, FORMAT_DECIMAL)}
+            </div>
+            <div className="label gray">
+              ${BigNumber(adaTicker.c).toFormat(2, FORMAT_DECIMAL)}
+            </div>
           </div>
-          <div className="content-column">
+          <div className="content-column" style={{ minWidth: "156px" }}>
             <div className="content-row">
-              <div className="label gray">BTC/USDT</div>
-              <div className="label green">+6.15%</div>
+              <div className="label gray">ETH/USDT</div>
+              <div
+                className={ClassNames(
+                  "label ",
+                  Number(ethTicker.P) > 0 ? "green" : "red"
+                )}
+              >
+                {ethTicker.P}%
+              </div>
             </div>
-            <div className="section-headline white">421.03</div>
-            <div className="label gray">$421.03</div>
+            <div className="section-headline white">
+              {BigNumber(ethTicker.c).toFormat(2, FORMAT_DECIMAL)}
+            </div>
+            <div className="label gray">
+              ${BigNumber(ethTicker.c).toFormat(2, FORMAT_DECIMAL)}
+            </div>
           </div>
-          <div className="content-column">
+          <div className="content-column" style={{ minWidth: "156px" }}>
             <div className="content-row">
-              <div className="label gray">BTC/USDT</div>
-              <div className="label green">+6.15%</div>
+              <div className="label gray">BCH/USDT</div>
+              <div
+                className={ClassNames(
+                  "label ",
+                  Number(bchTicker.P) > 0 ? "green" : "red"
+                )}
+              >
+                {bchTicker.P}%
+              </div>
             </div>
-            <div className="section-headline white">421.03</div>
-            <div className="label gray">$421.03</div>
+            <div className="section-headline white">
+              {BigNumber(bchTicker.c).toFormat(2, FORMAT_DECIMAL)}
+            </div>
+            <div className="label gray">
+              ${BigNumber(bchTicker.c).toFormat(2, FORMAT_DECIMAL)}
+            </div>
           </div>
-          <div className="content-column">
+          <div className="content-column" style={{ minWidth: "156px" }}>
             <div className="content-row">
-              <div className="label gray">BTC/USDT</div>
-              <div className="label green">+6.15%</div>
+              <div className="label gray">DOT/USDT</div>
+              <div
+                className={ClassNames(
+                  "label ",
+                  Number(dotTicker.P) > 0 ? "green" : "red"
+                )}
+              >
+                {dotTicker.P}%
+              </div>
             </div>
-            <div className="section-headline white">421.03</div>
-            <div className="label gray">$421.03</div>
+            <div className="section-headline white">
+              {BigNumber(dotTicker.c).toFormat(2, FORMAT_DECIMAL)}
+            </div>
+            <div className="label gray">
+              ${BigNumber(dotTicker.c).toFormat(2, FORMAT_DECIMAL)}
+            </div>
           </div>
         </div>
       </Container>
@@ -255,26 +386,20 @@ const LandingContainer = ({ match, ...props }) => {
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(getTotal("btc")).toFormat(2, FORMAT_DECIMAL)}
+                {BigNumber(btcTicker.q).toFormat(2)}
               </div>
 
               <div
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(userWallet[CRYPTO_INDEX["btc"]].amount).toFormat(
-                  2,
-                  FORMAT_DECIMAL
-                )}
+                {BigNumber(btcTicker.c).toFormat(2)} $
               </div>
               <div
-                className="paragraph white text-right"
+                className={ClassNames("paragraph white text-right")}
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(userWallet[CRYPTO_INDEX["btc"]].inOrder).toFormat(
-                  2,
-                  FORMAT_DECIMAL
-                )}
+                {btcTicker.P}%
               </div>
             </div>
           </div>
@@ -294,25 +419,19 @@ const LandingContainer = ({ match, ...props }) => {
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(getTotal("ada")).toFormat(2, FORMAT_DECIMAL)}
+                {BigNumber(adaTicker.q).toFormat(2)}
               </div>
               <div
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(userWallet[CRYPTO_INDEX["ada"]].amount).toFormat(
-                  2,
-                  FORMAT_DECIMAL
-                )}
+                {BigNumber(adaTicker.c).toFormat(2)} $
               </div>
               <div
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(userWallet[CRYPTO_INDEX["ada"]].inOrder).toFormat(
-                  2,
-                  FORMAT_DECIMAL
-                )}
+                {adaTicker.P}%
               </div>
             </div>
           </div>
@@ -332,25 +451,19 @@ const LandingContainer = ({ match, ...props }) => {
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(getTotal("eth")).toFormat(2, FORMAT_DECIMAL)}
+                {BigNumber(ethTicker.q).toFormat(2)}
               </div>
               <div
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(userWallet[CRYPTO_INDEX["eth"]].amount).toFormat(
-                  2,
-                  FORMAT_DECIMAL
-                )}
+                {BigNumber(ethTicker.c).toFormat(2)} $
               </div>
               <div
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(userWallet[CRYPTO_INDEX["eth"]].inOrder).toFormat(
-                  2,
-                  FORMAT_DECIMAL
-                )}
+                {ethTicker.P}%
               </div>
             </div>
           </div>
@@ -370,25 +483,19 @@ const LandingContainer = ({ match, ...props }) => {
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(getTotal("bch")).toFormat(2, FORMAT_DECIMAL)}
+                {BigNumber(bchTicker.q).toFormat(2)}
               </div>
               <div
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(userWallet[CRYPTO_INDEX["bch"]].amount).toFormat(
-                  2,
-                  FORMAT_DECIMAL
-                )}
+                {BigNumber(bchTicker.c).toFormat(2)} $
               </div>
               <div
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(userWallet[CRYPTO_INDEX["bch"]].inOrder).toFormat(
-                  2,
-                  FORMAT_DECIMAL
-                )}
+                {bchTicker.P}%
               </div>
             </div>
           </div>
@@ -408,25 +515,19 @@ const LandingContainer = ({ match, ...props }) => {
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(getTotal("dot")).toFormat(2, FORMAT_DECIMAL)}
+                {BigNumber(dotTicker.q).toFormat(2)}
               </div>
               <div
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(userWallet[CRYPTO_INDEX["dot"]].amount).toFormat(
-                  2,
-                  FORMAT_DECIMAL
-                )}
+                {BigNumber(dotTicker.c).toFormat(2)} $
               </div>
               <div
                 className="paragraph white text-right"
                 style={{ minWidth: "200px" }}
               >
-                {BigNumber(userWallet[CRYPTO_INDEX["dot"]].inOrder).toFormat(
-                  2,
-                  FORMAT_DECIMAL
-                )}
+                {dotTicker.P}%
               </div>
             </div>
           </div>
@@ -446,19 +547,21 @@ const LandingContainer = ({ match, ...props }) => {
               <div className="section-headline black mgb-24">
                 Start trading now
               </div>
-              <Button
-                style={{
-                  marginTop: "16px",
-                  width: "200px",
-                  marginBottom: "48px",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                }}
-                label="Trade Now"
-                color="purple"
-                fontColor="white"
-                onClick={() => {}}
-              />
+              <a href="/trades/btcusdt">
+                <Button
+                  style={{
+                    marginTop: "16px",
+                    width: "200px",
+                    marginBottom: "48px",
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                  }}
+                  label="Trade Now"
+                  color="purple"
+                  fontColor="white"
+                  onClick={() => {}}
+                />
+              </a>
             </div>
           </div>
         </div>
