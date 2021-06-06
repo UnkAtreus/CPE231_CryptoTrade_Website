@@ -35,9 +35,9 @@ export class TransactionFiatService {
     fiat.status = TransactionStatus.Pending;
     fiat.user = await this.userService.getUserByID(user.id);
     if (
-      !input.bankType &&
+      input.bankType &&
       input.bankType != '' &&
-      !input.bankNumber &&
+      input.bankNumber &&
       input.bankNumber != ''
     ) {
       const banktype = await this.bankService.getBankByName(input.bankType);
