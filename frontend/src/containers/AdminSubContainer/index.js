@@ -220,7 +220,8 @@ const AdminSubContainer = ({ match, ...props }) => {
   }, []);
 
   const showTable = () => {
-    if (match.params.type.toLowerCase() === "user")
+    var type = match.params.type.toLowerCase();
+    if (type === "user") {
       return (
         <HistorySection>
           <div className="title white mgb-16">{subTitle}</div>
@@ -311,6 +312,15 @@ const AdminSubContainer = ({ match, ...props }) => {
           </HistoryContainer>
         </HistorySection>
       );
+    } else if (type === "wallet") {
+    } else if (type === "order") {
+    } else if (type === "p2p") {
+    } else if (type === "credit") {
+    } else if (type === "transcrypto") {
+    } else if (type === "transfiat") {
+    } else if (type === "role") {
+    } else if (type === "currency") {
+    }
   };
 
   return (
