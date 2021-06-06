@@ -1105,6 +1105,11 @@ const HomeContainer = (props) => {
                           onChange={(e) => {
                             setValueAmountBuy(e);
                             calPriceBuy("amount", e);
+                            setOrderParams({
+                              ...orderParams,
+                              type: 0,
+                              amount: Number(e),
+                            });
                           }}
                         />
                         <ValueStep value={(e) => calPriceBuy("step", e)} />
@@ -1115,11 +1120,6 @@ const HomeContainer = (props) => {
                           onChange={(e) => {
                             setValueTotalBuy(e);
                             calPriceBuy("total", e);
-                            setOrderParams({
-                              ...orderParams,
-                              type: 0,
-                              amount: Number(e),
-                            });
                           }}
                         />
 
