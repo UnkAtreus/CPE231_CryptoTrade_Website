@@ -32,6 +32,7 @@ import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
 import moment from "moment";
 import sortArray from "sort-array";
 import QRCode from "qrcode.react";
+import { ToastContainer, toast } from "react-toastify";
 
 const DeopsitContainer = ({ match, ...props }) => {
   const depositType = match.params.type
@@ -104,6 +105,30 @@ const DeopsitContainer = ({ match, ...props }) => {
     fractionGroupSeparator: " ",
     fractionGroupSize: 0,
     suffix: "",
+  };
+
+  const notify = (isSuccess) => {
+    if (isSuccess) {
+      toast.success("Success ✔", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error("Failed ❌", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   const GET_ALL_SYMBOL = gql`
@@ -206,7 +231,10 @@ const DeopsitContainer = ({ match, ...props }) => {
       if (order) {
         console.log(order);
         setAmount(0);
+        notify(true);
         refetch();
+      } else {
+        notify(false);
       }
     },
   });
@@ -217,7 +245,10 @@ const DeopsitContainer = ({ match, ...props }) => {
         console.log(card);
         setIsNewCard(false);
         setHasNewCard(false);
+        notify(true);
         refetch();
+      } else {
+        notify(false);
       }
     },
   });
@@ -890,6 +921,17 @@ const DeopsitContainer = ({ match, ...props }) => {
               )}
           </HistoryContainer>
         </DepositHistory>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </Container>
     </DeopsitStyled>
   );

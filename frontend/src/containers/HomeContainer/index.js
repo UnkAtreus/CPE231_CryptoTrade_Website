@@ -25,6 +25,7 @@ import BigNumber from "bignumber.js";
 import { useQuery, useMutation, useSubscription, gql } from "@apollo/client";
 import moment from "moment";
 import sortArray from "sort-array";
+import { ToastContainer, toast } from "react-toastify";
 
 import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
 
@@ -252,6 +253,30 @@ const HomeContainer = (props) => {
     );
   };
 
+  const notify = (isSuccess) => {
+    if (isSuccess) {
+      toast.success("Success ✔", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error("Failed ❌", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
   const dispatch = useDispatch();
   const arg = useSelector((state) => state, isEqual);
 
@@ -260,7 +285,10 @@ const HomeContainer = (props) => {
     onCompleted(order) {
       if (order) {
         console.log(order);
+        notify(true);
         refetch();
+      } else {
+        notify(false);
       }
     },
   });
@@ -268,7 +296,10 @@ const HomeContainer = (props) => {
     onCompleted(order) {
       if (order) {
         console.log(order);
+        notify(true);
         refetch();
+      } else {
+        notify(false);
       }
     },
   });
@@ -2027,6 +2058,17 @@ const HomeContainer = (props) => {
           </OrderHistory>
         </>
       )}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </HomeStyled>
   );
 };

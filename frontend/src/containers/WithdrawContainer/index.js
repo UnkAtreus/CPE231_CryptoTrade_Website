@@ -29,6 +29,7 @@ import { useQuery, useMutation, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
 import sortArray from "sort-array";
 import moment from "moment";
+import { ToastContainer, toast } from "react-toastify";
 
 import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
 
@@ -74,15 +75,6 @@ const WithdrawContainer = ({ match, ...props }) => {
     },
   });
   const [selectBank, setSelectBank] = useState("KBANK");
-
-  const MOCK_USER_CURRENCY = {
-    btc: 0.00000091,
-    ada: 129.3349,
-    eth: 0.00138437,
-    bch: 0,
-    dot: 0,
-    usdt: 49657.01,
-  };
 
   const MOCK_FIAT = [
     {
@@ -196,13 +188,40 @@ const WithdrawContainer = ({ match, ...props }) => {
     }
   `;
 
+  const notify = (isSuccess) => {
+    if (isSuccess) {
+      toast.success("Success ✔", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error("Failed ❌", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
   const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
 
   const [createOrderCrypto] = useMutation(CREATE_ORDER, {
     onCompleted(order) {
       if (order) {
         console.log(order);
+        notify(true);
         refetch();
+      } else {
+        notify(false);
       }
     },
   });
@@ -211,7 +230,10 @@ const WithdrawContainer = ({ match, ...props }) => {
     onCompleted(order) {
       if (order) {
         console.log(order);
+        notify(true);
         refetch();
+      } else {
+        notify(false);
       }
     },
   });
@@ -658,6 +680,17 @@ const WithdrawContainer = ({ match, ...props }) => {
           </HistoryContainer>
         </WithdrawHistory>
       </Container>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </WithdrawStyled>
   );
 };

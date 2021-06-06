@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import "themes/styles/helpers/reset";
 import "themes/styles/helpers/scaffolding";
 import "themes/styles/global";
+import "react-toastify/dist/ReactToastify.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 

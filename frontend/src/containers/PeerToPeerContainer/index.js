@@ -26,6 +26,7 @@ import BigNumber from "bignumber.js";
 import ClassNames from "classnames";
 import sortArray from "sort-array";
 import moment from "moment";
+import { ToastContainer, toast } from "react-toastify";
 
 import { MOCK_WALLET, CRYPTO_INDEX } from "helpers";
 
@@ -144,13 +145,40 @@ const PeerToPeerContainer = ({ match, ...props }) => {
     }
   `;
 
+  const notify = (isSuccess) => {
+    if (isSuccess) {
+      toast.success("Success ✔", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error("Failed ❌", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
   const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
 
   const [createOrder] = useMutation(CREATE_ORDER_P2P, {
     onCompleted(order) {
       if (order) {
         console.log(order);
+        notify(true);
         refetch();
+      } else {
+        notify(false);
       }
     },
   });
@@ -387,6 +415,17 @@ const PeerToPeerContainer = ({ match, ...props }) => {
           </HistoryContainer>
         </PeerToPeerHistory>
       </Container>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </PeerToPeerStyled>
   );
 };

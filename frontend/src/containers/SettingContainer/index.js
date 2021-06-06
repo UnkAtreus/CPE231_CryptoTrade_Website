@@ -26,6 +26,7 @@ import {
 } from "helpers";
 import axios from "axios";
 import ClassNames from "classnames";
+import { ToastContainer, toast } from "react-toastify";
 
 const GET_ALL_SYMBOL = gql`
   query {
@@ -106,13 +107,40 @@ const SettingContainer = ({ match, ...props }) => {
     suffix: "",
   };
 
+  const notify = (isSuccess) => {
+    if (isSuccess) {
+      toast.success("Success ✔", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error("Failed ❌", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
   const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
 
   const [postVertify] = useMutation(POST_VERTIFY, {
     onCompleted(order) {
       if (order) {
         console.log(order);
+        notify(true);
         refetch();
+      } else {
+        notify(false);
       }
     },
   });
@@ -121,7 +149,10 @@ const SettingContainer = ({ match, ...props }) => {
     onCompleted(password) {
       if (password) {
         console.log(password);
+        notify(true);
         refetch();
+      } else {
+        notify(false);
       }
     },
   });
@@ -755,6 +786,17 @@ const SettingContainer = ({ match, ...props }) => {
           </InfoWrapper>
         </InfomationContainer>
       </Container>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </SettingStyled>
   );
 };
