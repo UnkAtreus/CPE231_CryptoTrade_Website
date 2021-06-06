@@ -8,7 +8,10 @@ import { User } from 'src/models/object/user.model';
 import CryptoInput from 'src/models/input/crypto.input';
 import { CurrencyService } from '../currency/currency.service';
 import { TranasctionMethod, TransactionStatus } from 'src/static/enum';
-import { NotEnoughBalanceInWallet } from 'src/utils/error-handling';
+import {
+  NotEnoughBalanceInWallet,
+  UserIsNotVerify,
+} from 'src/utils/error-handling';
 
 @Injectable()
 export class TransactionCryptoService {
@@ -32,6 +35,7 @@ export class TransactionCryptoService {
       curreny.id,
     );
 
+    const getuser = await this.userService.getUserByID(user.id);
     crypto.user = await this.userService.getUserByID(user.id);
     crypto.method = input.method;
     crypto.amount = input.amount;
@@ -48,6 +52,10 @@ export class TransactionCryptoService {
     } else {
       result = temp1 - temp2;
       crypto.fee = temp2 * 0.001;
+      if (getuser.verify == false) {
+        console.log('Do this');
+        throw UserIsNotVerify;
+      }
       if (result < 0) {
         throw NotEnoughBalanceInWallet;
       }
