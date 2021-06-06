@@ -55,7 +55,12 @@ export class UserResolver {
     @Args('passInput') input: PassInput,
     @Context('user') user: User,
   ) {
-    return this.userService.changePassword(input, user);
+    const d = this.userService.changePassword(input, user);
+    if (d) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @Mutation(() => User)

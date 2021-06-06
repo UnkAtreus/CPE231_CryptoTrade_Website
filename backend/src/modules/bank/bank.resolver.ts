@@ -44,7 +44,7 @@ export class BankResolver {
   }
 
   @Mutation(() => BankNum)
-  async deleteCard(@Args('id') id: number): Promise<DeleteResult> {
+  async deleteBank(@Args('id') id: number): Promise<DeleteResult> {
     return this.bankService.deleteBankByID(id);
   }
 }

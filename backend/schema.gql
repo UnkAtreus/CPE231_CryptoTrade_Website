@@ -222,7 +222,7 @@ type Mutation {
   updateCurrency(volume: Float, shortName: String, name: String, id: ID!): Currency!
   addCard(cardInput: CardInput!): CreditCard!
   updateCard(cardInput: CardInput!, id: Float!): CreditCard!
-  deleteCard(id: Float!): BankNum!
+  deleteCard(id: Float!): CreditCard!
   createOrder(input: OrderInput!): Order!
   cancelOrder(id: ID!): Order!
   fillOrder(id: ID!): Order!
@@ -230,6 +230,7 @@ type Mutation {
   updateFiatStatus(id: ID!, status: Float!): TransactionFiat!
   createBank: [Bank!]!
   addBankNum(name: String!, bankNum: String!): BankNum!
+  deleteBank(id: Float!): BankNum!
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
   updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
   createP2P(p2pInput: PtoPInput!): PtoP!

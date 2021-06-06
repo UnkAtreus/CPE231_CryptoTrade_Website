@@ -31,7 +31,7 @@ export class Verification {
   @Column({ type: 'text' })
   imageUrl?: string;
 
-  @OneToOne(() => User, (user) => user.wallet)
+  @ManyToOne(() => User, (user) => user.verification)
   user?: User;
 
   @Field()

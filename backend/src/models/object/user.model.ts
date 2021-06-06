@@ -115,7 +115,7 @@ export class User {
   @OneToMany(() => TransactionFiat, (transactionFiat) => transactionFiat.user)
   transactionFiat?: TransactionFiat[];
 
-  @OneToOne(() => Verification, (veri) => veri.user)
+  @OneToMany(() => Verification, (veri) => veri.user)
   verification?: Verification;
 }
 //   @Field((type) => [InvoiceModel], { nullable: true })
