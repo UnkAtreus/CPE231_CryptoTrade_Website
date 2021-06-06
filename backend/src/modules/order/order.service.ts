@@ -98,12 +98,21 @@ export class OrderService implements OnApplicationBootstrap {
   }
 
   async createOrder(userId: number, input: OrderInput): Promise<Order> {
+    if (!input.amount || input.amount <= 0) {
+      throw NotEnoughBalanceInWallet;
+    }
+
     const user = await this.userService.getUserById(userId);
     const walletFrom = await this.walletService.getWalletByCurrency(
       userId,
       input.currencyFrom,
     );
-    if (Number(walletFrom.amount) < input.amount) {
+    console.log(input.price, input.amount);
+    console.log(walletFrom.amount, Number(input.price) * Number(input.amount));
+    if (
+      Number(walletFrom.amount) <
+      Number(input.price) * Number(input.amount)
+    ) {
       throw NotEnoughBalanceInWallet;
     }
     const walletTo = await this.walletService.getWalletByCurrency(
