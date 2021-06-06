@@ -9,25 +9,16 @@ export class OwnerService {
     return this.repoService.transactionFiatRepo
       .createQueryBuilder('transactionfiat')
       .select('SUM(transactionfiat.fee)', 'sum')
-      .addSelect(
-        'year(transactionfiat.created_at), month(transactionfiat.created_at), day(transactionfiat.created_at)',
-      )
-      .groupBy(
-        'year(transactionfiat.created_at), month(transactionfiat.created_at), day(transactionfiat.created_at)',
-      )
+      .addSelect('CAST(transactionfiat.created_at as varchar(10))', 'date')
+      .groupBy('date')
       .getRawMany();
   }
   async countOrder() {
     return this.repoService.orderRepo
       .createQueryBuilder()
       .select('COUNT(*)', 'count')
-      .addSelect(
-        'year(order.created_at), month(order.created_at), day(order.created_at)',
-        'date',
-      )
-      .groupBy(
-        'year(order.created_at), month(order.created_at), day(order.created_at)',
-      )
+      .addSelect('CAST(order.created_at AS varchar(10))', 'date')
+      .groupBy('date')
       .getRawMany();
   }
 }
