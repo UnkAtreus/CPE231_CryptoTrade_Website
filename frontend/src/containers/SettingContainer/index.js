@@ -13,7 +13,7 @@ import {
   ProfileContainer,
 } from "./styled";
 import { Container, NavBar, Button, Input } from "components";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useMutation, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
 import { marketController } from "apiService";
 import moment from "moment";
@@ -25,6 +25,7 @@ import {
   MOCK_USER_INFO,
 } from "helpers";
 import axios from "axios";
+import ClassNames from "classnames";
 
 const GET_ALL_SYMBOL = gql`
   query {
@@ -51,7 +52,27 @@ const GET_ALL_SYMBOL = gql`
       nationality
       city
       address
+      verify
     }
+  }
+`;
+const POST_VERTIFY = gql`
+  mutation ($input: String!) {
+    createVertification(imagename: $input) {
+      id
+      status
+      imageUrl
+      created_at
+      updated_at
+      user {
+        email
+      }
+    }
+  }
+`;
+const NEW_PASSWORD = gql`
+  mutation ($input: PassInput!) {
+    changePassword(passInput: $input)
   }
 `;
 
@@ -59,6 +80,10 @@ const SettingContainer = ({ match, ...props }) => {
   const [selectedFile, setSelectedFile] = useState();
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
+  const [changePassParam, setChangePassParam] = useState({
+    oldPass: "",
+    newPass: "",
+  });
   const [coinSymbol, setCoinSymbol] = useState([
     {
       __typename: "Currency",
@@ -81,7 +106,25 @@ const SettingContainer = ({ match, ...props }) => {
     suffix: "",
   };
 
-  const { loading, error, data } = useQuery(GET_ALL_SYMBOL);
+  const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
+
+  const [postVertify] = useMutation(POST_VERTIFY, {
+    onCompleted(order) {
+      if (order) {
+        console.log(order);
+        refetch();
+      }
+    },
+  });
+
+  const [changePass] = useMutation(NEW_PASSWORD, {
+    onCompleted(password) {
+      if (password) {
+        console.log(password);
+        refetch();
+      }
+    },
+  });
 
   const GetPrice = async () => {
     const crypto_price = await marketController().getPrice("");
@@ -111,6 +154,11 @@ const SettingContainer = ({ match, ...props }) => {
   const PostFile = async (param) => {
     const file = await userController().postFile(param);
     console.log(file);
+    postVertify({
+      variables: {
+        input: file.imagePath,
+      },
+    });
   };
 
   const getTotal = (flag) => {
@@ -133,7 +181,7 @@ const SettingContainer = ({ match, ...props }) => {
   const onFileUpload = () => {
     const formData = new FormData();
     formData.append("file", selectedFile, selectedFile.name);
-    console.log(selectedFile);
+    // console.log(selectedFile);
     PostFile(formData);
   };
 
@@ -480,103 +528,129 @@ const SettingContainer = ({ match, ...props }) => {
                     Vertify Status:
                   </div>
                   <div className="content-row">
-                    <div className="label red">not vertify</div>
+                    <div
+                      className={ClassNames(
+                        "label",
+                        userInfo.vertify ? "green" : "red"
+                      )}
+                    >
+                      {userInfo.vertify ? "vertify" : "not vertify"}
+                    </div>
                   </div>
                 </div>
-                <div className="content-row mgb-8">
-                  <div className="label gray" style={{ minWidth: "164px" }}>
-                    Uplaod ID Card:
+                {!userInfo.vertify && (
+                  <div>
+                    <div className="content-row mgb-8">
+                      <div className="label gray" style={{ minWidth: "164px" }}>
+                        Uplaod ID Card:
+                      </div>
+                      <div className="content-row">
+                        <input
+                          type="file"
+                          onChange={(e) => {
+                            console.log(e.target.files[0]);
+                            setSelectedFile(e.target.files[0]);
+                          }}
+                        ></input>
+                      </div>
+                    </div>
+                    <div className="content-row mgb-8">
+                      <div
+                        className="label gray"
+                        style={{
+                          minWidth: "164px",
+                        }}
+                      ></div>
+                      <div className="content-row">
+                        <Button
+                          style={{
+                            width: "118px",
+                            height: "24px",
+                            borderRadius: "4px",
+                          }}
+                          label="Submit"
+                          color="green"
+                          fontColor="black"
+                          onClick={onFileUpload}
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div className="content-row">
-                    <input
-                      type="file"
-                      onChange={(e) => {
-                        console.log(e.target.files[0]);
-                        setSelectedFile(e.target.files[0]);
-                      }}
-                    ></input>
-                  </div>
-                </div>
-                <div className="content-row mgb-8">
-                  <div
-                    className="label gray"
-                    style={{
-                      minWidth: "164px",
-                    }}
-                  ></div>
-                  <div className="content-row">
-                    <Button
+                )}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    changePass({
+                      variables: { input: changePassParam },
+                    });
+                  }}
+                >
+                  <div className="content-row mgb-8">
+                    <div
+                      className="label gray"
                       style={{
-                        width: "118px",
-                        height: "24px",
-                        borderRadius: "4px",
+                        minWidth: "164px",
                       }}
-                      label="Submit"
-                      color="green"
-                      fontColor="black"
-                      onClick={onFileUpload}
-                    />
+                    >
+                      Current Password
+                    </div>
+                    <div className="content-row" style={{ height: "32px" }}>
+                      <Input
+                        type="password"
+                        placeholder="*********"
+                        onChange={(e) => {
+                          setChangePassParam({
+                            ...changePassParam,
+                            oldPass: e,
+                          });
+                        }}
+                      ></Input>
+                    </div>
                   </div>
-                </div>
-                <div className="content-row mgb-8">
-                  <div
-                    className="label gray"
-                    style={{
-                      minWidth: "164px",
-                    }}
-                  >
-                    Current Password
-                  </div>
-                  <div className="content-row" style={{ height: "32px" }}>
-                    <Input
-                      type="password"
-                      placeholder="*********"
-                      onChange={(e) => {
-                        console.log(e);
-                      }}
-                    ></Input>
-                  </div>
-                </div>
-                <div className="content-row mgb-8">
-                  <div
-                    className="label gray"
-                    style={{
-                      minWidth: "164px",
-                    }}
-                  >
-                    New Password
-                  </div>
-                  <div className="content-row" style={{ height: "32px" }}>
-                    <Input
-                      type="password"
-                      placeholder="*********"
-                      onChange={(e) => {
-                        console.log(e);
-                      }}
-                    ></Input>
-                  </div>
-                </div>
-                <div className="content-row mgb-8">
-                  <div
-                    className="label gray"
-                    style={{
-                      minWidth: "164px",
-                    }}
-                  ></div>
-                  <div className="content-row">
-                    <Button
+                  <div className="content-row mgb-8">
+                    <div
+                      className="label gray"
                       style={{
-                        width: "210px",
-                        height: "24px",
-                        borderRadius: "16px",
+                        minWidth: "164px",
                       }}
-                      label="Change Password"
-                      color="green"
-                      fontColor="black"
-                      onClick={onFileUpload}
-                    />
+                    >
+                      New Password
+                    </div>
+                    <div className="content-row" style={{ height: "32px" }}>
+                      <Input
+                        type="password"
+                        placeholder="*********"
+                        onChange={(e) => {
+                          setChangePassParam({
+                            ...changePassParam,
+                            newPass: e,
+                          });
+                        }}
+                      ></Input>
+                    </div>
                   </div>
-                </div>
+                  <div className="content-row mgb-8">
+                    <div
+                      className="label gray"
+                      style={{
+                        minWidth: "164px",
+                      }}
+                    ></div>
+                    <div className="content-row">
+                      <Button
+                        style={{
+                          width: "210px",
+                          height: "24px",
+                          borderRadius: "16px",
+                        }}
+                        label="Change Password"
+                        color="green"
+                        fontColor="black"
+                        onClick={() => {}}
+                      />
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

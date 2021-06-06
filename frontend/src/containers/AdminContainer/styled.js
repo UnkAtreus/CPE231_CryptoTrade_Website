@@ -123,4 +123,9 @@ export const CardContainer = styled.a`
   display: flex;
   align-items: center;
   padding: 16px 32px;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: #27273fa6;
+  }
 `;
