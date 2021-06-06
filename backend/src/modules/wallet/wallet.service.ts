@@ -26,7 +26,9 @@ export class WalletService {
     return await this.repoService.walletRepo.save(walletLists);
   }
   async getAllWallet(): Promise<Wallet[]> {
-    return await this.repoService.walletRepo.find();
+    return await this.repoService.walletRepo.find({
+      relations: ['currency', 'user'],
+    });
   }
 
   async getWalletByCurrencyId(
