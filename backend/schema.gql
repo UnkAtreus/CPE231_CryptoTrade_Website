@@ -161,7 +161,6 @@ type Query {
   getAllUser: [User!]!
   login(login: LoginInput!): TokenRole!
   getUserByToken: User!
-  registerCount(date: DateTime): Float!
   checkPin(pin: String!): Boolean!
   getAllWallet: [Wallet!]!
   getUserWalletByToken: [Wallet!]!
@@ -192,6 +191,11 @@ type Query {
   verfiForUser: Verification!
   getOwnerTranasctionFiat: [TransactionFiat!]!
   getCountOrder: [TransactionFiat!]!
+  getCountTransaction: [TransactionFiat!]!
+  countTopTransaction: [TransactionFiat!]!
+  getMostCurrencyDominate: [Wallet!]!
+  registerCount: [Wallet!]!
+  countOrderCancel: [Wallet!]!
 }
 
 input LoginInput {
