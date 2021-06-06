@@ -188,7 +188,7 @@ const WithdrawContainer = ({ match, ...props }) => {
     }
   `;
 
-  const notify = (isSuccess) => {
+  const notify = (isSuccess, errormsg = "Failed ❌") => {
     if (isSuccess) {
       toast.success("Success ✔", {
         position: "bottom-right",
@@ -200,7 +200,7 @@ const WithdrawContainer = ({ match, ...props }) => {
         progress: undefined,
       });
     } else {
-      toast.error("Failed ❌", {
+      toast.error(errormsg, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -222,9 +222,9 @@ const WithdrawContainer = ({ match, ...props }) => {
         refetch();
       }
     },
-    onError(order) {
-      if (order) {
-        notify(false);
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
       }
     },
   });
@@ -237,9 +237,9 @@ const WithdrawContainer = ({ match, ...props }) => {
         refetch();
       }
     },
-    onError(order) {
-      if (order) {
-        notify(false);
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
       }
     },
   });
@@ -667,7 +667,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                           className="label white text-center"
                           style={{ minWidth: "64px" }}
                         >
-                          {items.amount}
+                          {BigNumber(items.amount).toFormat(2)}
                         </div>
                         <div
                           className="label gray text-center"

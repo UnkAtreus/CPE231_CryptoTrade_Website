@@ -45,6 +45,10 @@ const GET_ALL_SYMBOL = gql`
       }
     }
     getUserByToken {
+      role {
+        id
+        role
+      }
       firstName
       lastName
       phone

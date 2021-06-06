@@ -43,6 +43,10 @@ const GET_ALL_SYMBOL = gql`
       }
     }
     getUserByToken {
+      role {
+        id
+        role
+      }
       id
       firstName
       lastName
@@ -107,7 +111,7 @@ const SettingContainer = ({ match, ...props }) => {
     suffix: "",
   };
 
-  const notify = (isSuccess) => {
+  const notify = (isSuccess, errormsg = "Failed ❌") => {
     if (isSuccess) {
       toast.success("Success ✔", {
         position: "bottom-right",
@@ -119,7 +123,7 @@ const SettingContainer = ({ match, ...props }) => {
         progress: undefined,
       });
     } else {
-      toast.error("Failed ❌", {
+      toast.error(errormsg, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -131,7 +135,7 @@ const SettingContainer = ({ match, ...props }) => {
     }
   };
 
-  const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
+  const { client, loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
 
   const [postVertify] = useMutation(POST_VERTIFY, {
     onCompleted(order) {
@@ -141,9 +145,9 @@ const SettingContainer = ({ match, ...props }) => {
         refetch();
       }
     },
-    onError(order) {
-      if (order) {
-        notify(false);
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
       }
     },
   });
@@ -154,13 +158,11 @@ const SettingContainer = ({ match, ...props }) => {
         console.log(password);
         notify(true);
         refetch();
-      } else {
-        notify(false);
       }
     },
-    onError(order) {
-      if (order) {
-        notify(false);
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
       }
     },
   });

@@ -189,6 +189,7 @@ type Query {
   allVeri: [Verification!]!
   allVeriForStaff: [Verification!]!
   verfiForUser: Verification!
+  getAllRole: [Role!]!
   getOwnerTranasctionFiat: JSON!
   getCountOrder: JSON!
   getCountTransaction: JSON!
@@ -236,7 +237,9 @@ type Mutation {
   createP2P(p2pInput: PtoPInput!): PtoP!
   createVertification(imagename: String!): Verification!
   updateVeri(status: Float!, id: Float!): Boolean!
-  createRole: String!
+  createAllRoles: String!
+  createRole(role: String!): Role!
+  updateRole(role: String!, id: ID!): Role!
 }
 
 """The `Upload` scalar type represents a file upload."""

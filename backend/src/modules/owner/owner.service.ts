@@ -8,27 +8,57 @@ export class OwnerService {
 
   async sumFiatFee() {
     return this.repoService.transactionFiatRepo
-      .createQueryBuilder('transactionfiat')
-      .select('SUM(transactionfiat.fee)', 'sum')
-      .addSelect('CAST(transactionfiat.created_at as varchar(10))', 'date')
+      .createQueryBuilder('tf')
+      .addFrom('transaction_crypto', 'tc')
+      .addFrom('order', 'od')
+      .select('SUM(tf.fee) + SUM(tc.fee) + SUM(od.fee)', 'sum1')
+      .select('SUM(tc.fee)', 'sum2')
+      .select('SUM(od.fee)', 'sum3')
+      .addSelect('CAST(tf.created_at as varchar(10))', 'date')
       .groupBy('date')
       .getRawMany();
   }
   async countTransaction(date?: Date) {
     date = date ?? new Date();
     const start = subDays(date, 7).toISOString().slice(0, 10);
-    const end = date.toISOString().slice(0, 10);
-    const endd = addDays(date, 1).toISOString().slice(0, 10);
-    return this.repoService.transactionFiatRepo
-      .createQueryBuilder('transactionfiat')
+    // const end = date.toISOString().slice(0, 10);
+    const end = addDays(date, 1).toISOString().slice(0, 10);
+    const resultFiat = await this.repoService.transactionFiatRepo
+      .createQueryBuilder('tf')
       .select('COUNT(*)', 'count')
-      .addSelect('CAST(transactionfiat.created_at AS varchar(10))', 'date')
-      .where('created_at BETWEEN :start AND :end', {
-        start: start,
-        end: endd,
-      })
+      .addSelect('CAST(tf.created_at AS varchar(10))', 'date')
+      .where(
+        'tf.created_at BETWEEN :start AND :end ',
+        // 'tf.created_at BETWEEN :start AND :end OR tc.created_at BETWEEN :start',
+        {
+          start: start,
+          end: end,
+        },
+      )
       .groupBy('date')
       .getRawMany();
+    const resultCrypto = await this.repoService.transactionCryptoRepo
+      .createQueryBuilder('tc')
+      .select('COUNT(*)', 'count')
+      .addSelect('CAST(tc.created_at AS varchar(10))', 'date')
+      .where(
+        'tc.created_at BETWEEN :start AND :end ',
+        // 'tf.created_at BETWEEN :start AND :end OR tc.created_at BETWEEN :start',
+        {
+          start: start,
+          end: end,
+        },
+      )
+      .groupBy('date')
+      .getRawMany();
+    resultFiat.forEach((fiat) => {
+      resultCrypto.forEach((crypto) => {
+        if (crypto.date == fiat.date) {
+          fiat.count = String(Number(fiat.count) + Number(crypto.count));
+        }
+      });
+    });
+    return resultFiat;
   }
   async countTopTransaction(date?: Date) {
     date = date ?? new Date();
@@ -56,7 +86,8 @@ export class OwnerService {
   async countOrder(date?: Date) {
     date = date ?? new Date();
     const start = subDays(date, 7).toISOString().slice(0, 10);
-    const end = date.toISOString().slice(0, 10);
+    // const end = date.toISOString().slice(0, 10);
+    const end = addDays(date, 1).toISOString().slice(0, 10);
     return this.repoService.orderRepo
       .createQueryBuilder()
       .select('COUNT(*)', 'count')
@@ -73,18 +104,27 @@ export class OwnerService {
     const start = subDays(date, 7).toISOString().slice(0, 10);
     //     const end = date.toISOString().slice(0, 10);
     const end = addDays(date, 1).toISOString().slice(0, 10);
-    return this.repoService.orderRepo
-      .createQueryBuilder('order')
-      .select('COUNT(*)', 'count')
-      .addSelect('SUM(order.fee)', 'feeTotal')
-      .addSelect('CAST(order.updated_at AS varchar(10))', 'date')
-      .where('updated_at BETWEEN :start AND :end', {
-        start: start,
-        end: end,
-      })
-      .andWhere('cancel = :cancel', { cancel: true })
-      .groupBy('date')
-      .getRawMany();
+    return (
+      this.repoService.orderRepo
+        .createQueryBuilder('order')
+        .leftJoinAndSelect('order.walletFrom', 'wf')
+        .leftJoinAndSelect('order.walletTo', 'wt')
+        // .leftJoinAndSelect('order.walletTo.currency', 'cu')
+        // .addFrom('currency',÷'cu')
+        // .select('COUNT(*)', 'count')
+        // .addSelect('SUM(order.fee)', 'feeCrypto')
+        .addSelect('CAST(order.updated_at AS varchar(10))', 'date')
+        .where('updated_at BETWEEN :start AND :end', {
+          start: start,
+          end: end,
+        })
+
+        .andWhere('cancel = :cancel', { cancel: 0 })
+        // .addWhere('cu.id == wt')
+        .groupBy('date')
+        // .addGroupBy('w')
+        .getRawMany()
+    );
   }
   async getMostCurrencyDominate() {
     const s = await this.repoService.walletRepo
@@ -101,7 +141,8 @@ export class OwnerService {
   }
   async getCountUserRegister(date?: Date) {
     date = date ?? new Date();
-    const start = date.toISOString().slice(0, 10);
+    const start = subDays(date, 7).toISOString().slice(0, 10);
+    // const end = date.toISOString().slice(0, 10);
     const end = addDays(date, 1).toISOString().slice(0, 10);
 
     return await this.repoService.userRepo
@@ -112,6 +153,7 @@ export class OwnerService {
         start: start,
         end: end,
       })
+      .andWhere('roleId =:role', { role: 1 })
       .groupBy('date')
       .getRawMany();
   }
