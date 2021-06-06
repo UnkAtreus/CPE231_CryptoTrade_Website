@@ -278,6 +278,15 @@ const DeopsitContainer = ({ match, ...props }) => {
             cardNumber: "",
           },
         });
+      else if (allCard === [])
+        setOrderParam({
+          ...orderParam,
+          bankType: "",
+          bankNumber: "",
+          cardInput: {
+            cardNumber: "",
+          },
+        });
       else
         setOrderParam({
           ...orderParam,
