@@ -390,7 +390,7 @@ const HomeContainer = (props) => {
         setValueAmountBuy(
           BigNumber(
             (userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data) / priceBuy
-          ).toFormat(2, FORMAT_DECIMAL)
+          ).toFormat(FORMAT_DECIMAL)
         );
         setValueTotalBuy(
           BigNumber(
