@@ -1,45 +1,42 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { VerificationService } from './verification.service';
 
-import { CreateVerificationInput } from './dto/create-verification.input';
-import { UpdateVerificationInput } from './dto/update-verification.input';
 import { Verification } from 'src/models/object/verification.model';
+import { Roles } from 'src/middleware/guard/roles.decorator';
+import { User } from 'src/models/object/user.model';
+import { TransactionStatus } from 'src/static/enum';
 
 @Resolver(() => Verification)
 export class VerificationResolver {
   constructor(private readonly verificationService: VerificationService) {}
-
   @Mutation(() => Verification)
-  createVerification(
-    @Args('createVerificationInput')
-    createVerificationInput: CreateVerificationInput,
-  ) {
-    return this.verificationService.create(createVerificationInput);
+  @Roles(['customer'])
+  async createVertification(
+    @Context('user') user: User,
+    @Args('imagename') image: string,
+  ): Promise<Verification> {
+    return await this.verificationService.create(user, image);
   }
-
-  @Query(() => [Verification], { name: 'verification' })
-  findAll() {
-    return this.verificationService.findAll();
+  @Query(() => [Verification])
+  async allVeri(): Promise<Verification[]> {
+    return await this.verificationService.findAll();
   }
-
-  @Query(() => Verification, { name: 'verification' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.verificationService.findOne(id);
+  @Query(() => [Verification])
+  @Roles(['staff'])
+  async allVeriForStaff(): Promise<Verification[]> {
+    return await this.verificationService.findAllForStaff();
   }
-
-  @Mutation(() => Verification)
-  updateVerification(
-    @Args('updateVerificationInput')
-    updateVerificationInput: UpdateVerificationInput,
-  ) {
-    return this.verificationService.update(
-      updateVerificationInput.id,
-      updateVerificationInput,
-    );
+  @Mutation(() => Boolean)
+  @Roles(['staff'])
+  async updateVeri(
+    @Args('id') id: number,
+    @Args('status') status: TransactionStatus,
+  ): Promise<boolean> {
+    return await this.verificationService.update(id, status);
   }
-
-  @Mutation(() => Verification)
-  removeVerification(@Args('id', { type: () => Int }) id: number) {
-    return this.verificationService.remove(id);
+  @Query(() => Verification)
+  @Roles(['customer'])
+  async verfiForUser(@Context('user') user: User): Promise<Verification> {
+    return await this.verificationService.findOneByUser(user);
   }
 }

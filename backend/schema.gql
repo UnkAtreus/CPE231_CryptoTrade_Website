@@ -119,7 +119,9 @@ type Wallet {
 type Verification {
   id: Float
   status: Float
-  imageUrl: Float
+  imageUrl: String
+  created_at: DateTime
+  updated_at: DateTime
   user: User
 }
 
@@ -185,7 +187,9 @@ type Query {
   getAllCryptoByUser: [TransactionCrypto!]!
   getAllP2P: [PtoP!]!
   getP2PByToken: [PtoP!]!
-  verification(id: Int!): Verification!
+  allVeri: [Verification!]!
+  allVeriForStaff: [Verification!]!
+  verfiForUser: Verification!
 }
 
 input LoginInput {
@@ -195,6 +199,7 @@ input LoginInput {
 
 type Mutation {
   uploadFile(file: Upload!): Boolean!
+  createUser(role: Float!, registerInput: RegisterInput!): TokenRole!
   registerUser(registerInput: RegisterInput!): TokenRole!
   verifyUser(idInput: Float!): String!
   changePassword(passInput: PassInput!): String!
@@ -217,9 +222,8 @@ type Mutation {
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
   updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
   createP2P(p2pInput: PtoPInput!): PtoP!
-  createVerification(createVerificationInput: CreateVerificationInput!): Verification!
-  updateVerification(updateVerificationInput: UpdateVerificationInput!): Verification!
-  removeVerification(id: Int!): Verification!
+  createVertification(imagename: String!): Verification!
+  updateVeri(status: Float!, id: Float!): Boolean!
   createRole: String!
 }
 
@@ -292,17 +296,6 @@ input PtoPInput {
   amount: Float
   targetUser: Float
   currency: String
-}
-
-input CreateVerificationInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateVerificationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
 }
 
 type Subscription {
