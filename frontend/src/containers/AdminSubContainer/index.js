@@ -30,7 +30,6 @@ import {
   MOCK_ALL_CUR_PRICE,
   MOCK_USER_INFO,
 } from "helpers";
-import { Button } from "semantic-ui-react";
 
 const GET_ALL_SYMBOL = gql`
   query {
