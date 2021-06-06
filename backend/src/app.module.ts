@@ -28,12 +28,12 @@ import { OwnerModule } from './modules/owner/owner.module';
 
 @Module({
   imports: [
-    GraphQLModule.forRoot(graphql_config),
-    TypeOrmModule.forRoot(typeorm_config),
-    ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
     }),
+    GraphQLModule.forRoot(graphql_config),
+    TypeOrmModule.forRoot(typeorm_config),
+    ScheduleModule.forRoot(),
     RepoModule,
     UserModule,
     CardModule,

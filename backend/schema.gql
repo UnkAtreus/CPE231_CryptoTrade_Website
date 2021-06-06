@@ -190,6 +190,8 @@ type Query {
   allVeri: [Verification!]!
   allVeriForStaff: [Verification!]!
   verfiForUser: Verification!
+  getOwnerTranasctionFiat: [TransactionFiat!]!
+  getCountOrder: [TransactionFiat!]!
 }
 
 input LoginInput {
