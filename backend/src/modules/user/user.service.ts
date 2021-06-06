@@ -13,7 +13,7 @@ import { Between, Raw, UpdateResult } from 'typeorm';
 import PassInput from 'src/models/input/password.input';
 import { TokenRole } from '../../models/output/tokenrole.model';
 import PincodeInput from 'src/models/input/pincode.input';
-import { addDays } from 'date-fns';
+import { addDays, isThisHour } from 'date-fns';
 import { Role } from 'src/models/object/role.model';
 @Injectable()
 export class UserService {
@@ -23,25 +23,26 @@ export class UserService {
   ) {}
   async createUser(
     registerInput: RegisterInput,
-    role: Role,
+    role: number,
   ): Promise<TokenRole> {
+    const roleget = await this.repoService.roleRepo.findOne(role);
     return Hash.encrypt(registerInput.password).then(
       async (password: string) => {
         const user: User = {
           email: registerInput.email,
           password: password,
           ...registerInput.profileInput,
-          role: role,
+          role: roleget,
         };
         const result = await this.createOrUpdate(user);
         if (result) {
-          if (role.role == AllRole.customer.role) {
+          if (roleget.role == AllRole.customer.role) {
             await this.walletService.createAllWalletForUser(result);
           }
           const token = await this.createToken(result);
           const tokenRole: TokenRole = {
             token: token,
-            role: user.role.role,
+            role: roleget.role,
           };
           return tokenRole;
         }

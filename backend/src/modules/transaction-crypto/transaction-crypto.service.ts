@@ -72,6 +72,7 @@ export class TransactionCryptoService {
       order: {
         created_at: 'DESC',
       },
+      relations: ['wallet', 'wallet.currency', 'user'],
     });
   }
 
