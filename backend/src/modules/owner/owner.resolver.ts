@@ -51,6 +51,9 @@ export class OwnerResolver {
   }
   @Query(() => GraphQLJSON)
   async getAllSumFee() {
+    // TRANSACTION FIAT , CRYPTO SUM GROUP BY DATE
+    // AND AOW MA YUM GUN
+    const x = await this.ownerService.countOrderCancelOrFilled(false);
     return;
   }
 }
