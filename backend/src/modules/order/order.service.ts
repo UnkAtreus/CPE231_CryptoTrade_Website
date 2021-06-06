@@ -106,6 +106,7 @@ export class OrderService implements OnApplicationBootstrap {
     const user = await this.userService.getUserById(userId);
     let walletFrom: Wallet;
     let walletTo: Wallet;
+    let fee: number;
     if (input.method == OrderMethod.Buy) {
       walletFrom = await this.walletService.getWalletByCurrency(
         userId,
@@ -126,6 +127,7 @@ export class OrderService implements OnApplicationBootstrap {
         walletFrom.id,
         Number(input.price) * Number(input.amount),
       );
+      fee = Number(input.amount) * 0.0001;
     } else {
       walletFrom = await this.walletService.getWalletByCurrency(
         userId,
@@ -140,6 +142,7 @@ export class OrderService implements OnApplicationBootstrap {
         throw NotEnoughBalanceInWallet;
       }
       await this.walletService.Sell(walletFrom.id, Number(input.amount));
+      fee = Number(input.price) * Number(input.amount) * 0.0001;
     }
 
     // const walletTo = await this.walletService.getWalletByCurrency(
@@ -158,6 +161,7 @@ export class OrderService implements OnApplicationBootstrap {
       cancel: false,
       filled: false,
       type: input.type,
+      fee: fee,
     };
 
     return await this.repoService.orderRepo.save(order);
@@ -226,11 +230,13 @@ export class OrderService implements OnApplicationBootstrap {
         .Buy(
           order.walletTo.id,
           order.walletFrom.id,
-          Number(order.amount),
+          Number(order.amount) * 0.9999,
           Number(order.totalBalance),
         )
         .then(() => {
           order.filled = true;
+
+          // order.fee
           return this.repoService.orderRepo.save(order);
         });
     } else {
@@ -238,31 +244,32 @@ export class OrderService implements OnApplicationBootstrap {
         .Buy(
           order.walletTo.id,
           order.walletFrom.id,
-          Number(order.totalBalance),
+          Number(order.totalBalance) * 0.9999,
           Number(order.amount),
         )
         .then(() => {
           order.filled = true;
+
           return this.repoService.orderRepo.save(order);
         });
     }
   }
-  async fillOrderModel(orderInput: Order): Promise<Order> {
-    // const order = await this.getOrderById(orderId);
-    return await this.walletService
-      .Buy(
-        orderInput.walletTo.id,
-        orderInput.walletFrom.id,
-        Number(orderInput.amount) * 0.9999,
-        Number(orderInput.totalBalance),
-      )
-      .then(() => {
-        orderInput.filled = true;
-        orderInput.fee = Number(orderInput.amount) * 0.0001;
+  // async fillOrderModel(orderInput: Order): Promise<Order> {
+  //   // const order = await this.getOrderById(orderId);
+  //   return await this.walletService
+  //     .Buy(
+  //       orderInput.walletTo.id,
+  //       orderInput.walletFrom.id,
+  //       Number(orderInput.amount) * 0.9999,
+  //       Number(orderInput.totalBalance),
+  //     )
+  //     .then(() => {
+  //       orderInput.filled = true;
+  //       orderInput.fee = Number(orderInput.amount) * 0.0001;
 
-        return this.repoService.orderRepo.save(orderInput);
-      });
-  }
+  //       return this.repoService.orderRepo.save(orderInput);
+  //     });
+  // }
 }
 
 // @Interval(2000)
