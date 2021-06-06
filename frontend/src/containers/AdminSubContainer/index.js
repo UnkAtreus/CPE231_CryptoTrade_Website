@@ -83,8 +83,8 @@ const AdminSubContainer = ({ match, ...props }) => {
     "order",
     "p2p",
     "credit",
-    "transCtypto",
-    "transFiat",
+    "transcrypto",
+    "transfiat",
     "role",
     "currency",
   ];
@@ -188,17 +188,130 @@ const AdminSubContainer = ({ match, ...props }) => {
 
   useEffect(() => {
     GetPrice();
-    if (match.params.type === "vertify") {
-      setTitle("Vertify User Infomation");
-      setSubTitle("Vertify");
-    } else if (match.params.type === "deposit") {
-      setTitle("Deposit Transaction");
-      setSubTitle("Deposit Order");
-    } else if (match.params.type === "withdraw") {
-      setTitle("Withdraw Transaction");
-      setSubTitle("Withdraw Order");
+    var type = match.params.type.toLowerCase();
+    if (type === "user") {
+      setTitle("User Infomation");
+      setSubTitle("UserInfo");
+    } else if (type === "wallet") {
+      setTitle("Wallet");
+      setSubTitle("User Wallet");
+    } else if (type === "order") {
+      setTitle("Order");
+      setSubTitle("User Order");
+    } else if (type === "p2p") {
+      setTitle("P2P Transaction");
+      setSubTitle("P2P Order");
+    } else if (type === "credit") {
+      setTitle("Credit Card");
+      setSubTitle("User Card List");
+    } else if (type === "transcrypto") {
+      setTitle("Crypto Transaction");
+      setSubTitle("Crypto Order");
+    } else if (type === "transfiat") {
+      setTitle("Fiat Transaction");
+      setSubTitle("Fiat Order");
+    } else if (type === "role") {
+      setTitle("Role");
+      setSubTitle("Role List");
+    } else if (type === "currency") {
+      setTitle("Currency");
+      setSubTitle("Currency List");
     }
   }, []);
+
+  const showTable = () => {
+    if (match.params.type.toLowerCase() === "user")
+      return (
+        <HistorySection>
+          <div className="title white mgb-16">{subTitle}</div>
+          <div className="content-row space-between mgb-8">
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "96px" }}
+            >
+              ID
+            </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "126px" }}
+            >
+              Firstname
+            </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "126px" }}
+            >
+              Lastname
+            </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "256px" }}
+            >
+              Email
+            </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "126px" }}
+            >
+              File
+            </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "190px" }}
+            >
+              Action
+            </div>
+          </div>
+          <HistoryContainer>
+            <div className="content-row space-between align-items-center mgb-8 history-container even">
+              <div
+                className="label gray text-center"
+                style={{ minWidth: "96px" }}
+              >
+                01
+              </div>
+              <div
+                className="label white text-center"
+                style={{ minWidth: "126px" }}
+              >
+                Kittipat
+              </div>
+              <div
+                className="label white text-center"
+                style={{ minWidth: "126px" }}
+              >
+                Dechkul
+              </div>
+              <div
+                className="label white text-center"
+                style={{ minWidth: "256px" }}
+              >
+                Kittipat2544@gmail.com
+              </div>
+              <div
+                className="label white text-center"
+                style={{ minWidth: "126px" }}
+              >
+                <a href="/">ID_CARD.jpg</a>
+              </div>
+              <div className="content-row justify-content-center">
+                <div
+                  className="label gray content-row justify-content-center"
+                  style={{ minWidth: "126px" }}
+                >
+                  <VertifyBtn>Vertify</VertifyBtn>
+                </div>
+                <div className="label gray" style={{ minWidth: "64px" }}>
+                  <CancleBtn>
+                    <FontAwesomeIcon icon={faTrashAlt} />
+                  </CancleBtn>
+                </div>
+              </div>
+            </div>
+          </HistoryContainer>
+        </HistorySection>
+      );
+  };
 
   return (
     <SettingStyled>
@@ -302,6 +415,7 @@ const AdminSubContainer = ({ match, ...props }) => {
             </div>
           </HistoryContainer>
         </HistorySection>
+        {showTable()}
         <div>
           <button onClick={openModal}>Open Modal</button>
         </div>
