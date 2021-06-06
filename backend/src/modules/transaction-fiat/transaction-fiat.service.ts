@@ -127,4 +127,13 @@ export class TransactionFiatService {
     fiat.status = status;
     return await this.repoService.transactionFiatRepo.save(fiat);
   }
+  // async getSumFeeByFiat(): Promise<string>{
+  //   const fiat: TransactionFiat[] = await this.getAllFiat();
+  //   const date: Date[];
+  //   let sum = 0;
+  //   for (let i = 0; i < fiat.length; i++) {
+  //     sum = sum + Number(fiat[i].amount);
+  //   }
+  //   return String(sum);
+  // }
 }
