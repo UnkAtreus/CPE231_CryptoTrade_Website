@@ -92,6 +92,14 @@ const CREATE_ORDER = gql`
   }
 `;
 
+const CANCLE_ORDER = gql`
+  mutation ($input: ID!) {
+    cancelOrder(id: $input) {
+      id
+    }
+  }
+`;
+
 const ORDER_SUBSCRIPTION = gql`
   subscription {
     orderTrigger {
@@ -249,6 +257,14 @@ const HomeContainer = (props) => {
 
   const { data, refetch } = useQuery(GET_ALL_DATA);
   const [createOrder] = useMutation(CREATE_ORDER, {
+    onCompleted(order) {
+      if (order) {
+        console.log(order);
+        refetch();
+      }
+    },
+  });
+  const [cancleOrder] = useMutation(CANCLE_ORDER, {
     onCompleted(order) {
       if (order) {
         console.log(order);
@@ -1717,6 +1733,11 @@ const HomeContainer = (props) => {
                             <div
                               className="label red text-center pointer"
                               style={{ minWidth: "126px" }}
+                              onClick={() => {
+                                cancleOrder({
+                                  variables: { input: items.id },
+                                });
+                              }}
                             >
                               Cancel
                             </div>
@@ -1776,12 +1797,6 @@ const HomeContainer = (props) => {
                       style={{ minWidth: "156px" }}
                     >
                       Total
-                    </div>
-                    <div
-                      className="label gray text-center"
-                      style={{ minWidth: "126px" }}
-                    >
-                      Action
                     </div>
                   </div>
                   <div style={{ overflow: "auto", height: "186px" }}>
@@ -1846,10 +1861,13 @@ const HomeContainer = (props) => {
                               )}
                             </div>
                             <div
-                              className="label white text-center"
+                              className={ClassNames(
+                                "label white text-center",
+                                items.filled ? "green" : "red"
+                              )}
                               style={{ minWidth: "52px" }}
                             >
-                              {!items.filled && "pending"}
+                              {items.filled ? "success" : "cancle"}
                             </div>
                             <div
                               className="label white text-center"
@@ -1860,12 +1878,6 @@ const HomeContainer = (props) => {
                                 FORMAT_DECIMAL
                               )}{" "}
                               USDT
-                            </div>
-                            <div
-                              className="label red text-center pointer"
-                              style={{ minWidth: "126px" }}
-                            >
-                              Cancel
                             </div>
                           </div>
                         );
@@ -1923,12 +1935,6 @@ const HomeContainer = (props) => {
                       style={{ minWidth: "156px" }}
                     >
                       Total
-                    </div>
-                    <div
-                      className="label gray text-center"
-                      style={{ minWidth: "126px" }}
-                    >
-                      Action
                     </div>
                   </div>
                   <div style={{ overflow: "auto", height: "186px" }}>
@@ -1993,10 +1999,13 @@ const HomeContainer = (props) => {
                               )}
                             </div>
                             <div
-                              className="label white text-center"
+                              className={ClassNames(
+                                "label white text-center",
+                                items.filled ? "green" : "red"
+                              )}
                               style={{ minWidth: "52px" }}
                             >
-                              {!items.filled && "pending"}
+                              {items.filled ? "success" : "cancle"}
                             </div>
                             <div
                               className="label white text-center"
@@ -2007,12 +2016,6 @@ const HomeContainer = (props) => {
                                 FORMAT_DECIMAL
                               )}{" "}
                               USDT
-                            </div>
-                            <div
-                              className="label red text-center pointer"
-                              style={{ minWidth: "126px" }}
-                            >
-                              Cancel
                             </div>
                           </div>
                         );
