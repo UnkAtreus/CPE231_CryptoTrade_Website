@@ -10,7 +10,7 @@ import { WalletService } from '../wallet/wallet.service';
 import { RepoService } from '../../repo/repo.service';
 import OrderInput from 'src/models/input/order.input';
 import { UserService } from '../user/user.service';
-import { OrderMethod } from 'src/static/enum';
+import { OrderMethod, OrderType } from 'src/static/enum';
 import {
   NotEnoughBalanceInWallet,
   Unauthorized,
@@ -20,6 +20,7 @@ import { User } from 'src/models/object/user.model';
 import { PubSub } from 'graphql-subscriptions';
 import OrderMarketInput from 'src/models/input/ordermarket.input';
 import { Interval } from '@nestjs/schedule';
+import { Wallet } from 'src/models/object/wallet.model';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
@@ -101,24 +102,49 @@ export class OrderService implements OnApplicationBootstrap {
     if (!input.amount || input.amount <= 0) {
       throw NotEnoughBalanceInWallet;
     }
-
     const user = await this.userService.getUserById(userId);
-    const walletFrom = await this.walletService.getWalletByCurrency(
-      userId,
-      input.currencyFrom,
-    );
-    console.log(input.price, input.amount);
-    console.log(walletFrom.amount, Number(input.price) * Number(input.amount));
-    if (
-      Number(walletFrom.amount) <
-      Number(input.price) * Number(input.amount)
-    ) {
-      throw NotEnoughBalanceInWallet;
+    let walletFrom: Wallet;
+    let walletTo: Wallet;
+    if (input.method == OrderMethod.Buy) {
+      walletFrom = await this.walletService.getWalletByCurrency(
+        userId,
+        input.currencyTo,
+      );
+
+      walletTo = await this.walletService.getWalletByCurrency(
+        userId,
+        input.currencyFrom,
+      );
+      if (
+        Number(walletFrom.amount) <
+        Number(input.price) * Number(input.amount)
+      ) {
+        throw NotEnoughBalanceInWallet;
+      }
+      await this.walletService.Sell(
+        walletFrom.id,
+        Number(input.price) * Number(input.amount),
+      );
+    } else {
+      walletFrom = await this.walletService.getWalletByCurrency(
+        userId,
+        input.currencyFrom,
+      );
+
+      walletTo = await this.walletService.getWalletByCurrency(
+        userId,
+        input.currencyTo,
+      );
+      if (Number(walletFrom.amount) < Number(input.amount)) {
+        throw NotEnoughBalanceInWallet;
+      }
+      await this.walletService.Sell(walletFrom.id, Number(input.amount));
     }
-    const walletTo = await this.walletService.getWalletByCurrency(
-      userId,
-      input.currencyTo,
-    );
+
+    // const walletTo = await this.walletService.getWalletByCurrency(
+    //   userId,
+    //   input.currencyTo,
+    // );
     const total: number = Number(input.price) * Number(input.amount);
     const order: Order = {
       user: user,
@@ -132,8 +158,6 @@ export class OrderService implements OnApplicationBootstrap {
       filled: false,
       type: input.type,
     };
-
-    await this.walletService.Sell(order.walletFrom.id, input.amount);
 
     return await this.repoService.orderRepo.save(order);
   }
