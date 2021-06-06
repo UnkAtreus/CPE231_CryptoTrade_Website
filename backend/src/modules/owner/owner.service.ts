@@ -8,9 +8,11 @@ export class OwnerService {
 
   async sumFiatFee() {
     return this.repoService.transactionFiatRepo
-      .createQueryBuilder('transactionfiat')
-      .select('SUM(transactionfiat.fee)', 'sum')
-      .addSelect('CAST(transactionfiat.created_at as varchar(10))', 'date')
+      .createQueryBuilder('tf')
+      .addFrom('transaction_crypto', 'tc')
+      .addFrom('order', 'od')
+      .select('SUM(tf.fee)', 'sum')
+      .addSelect('CAST(tf.created_at as varchar(10))', 'date')
       .groupBy('date')
       .getRawMany();
   }
