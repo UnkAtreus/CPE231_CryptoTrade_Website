@@ -9,7 +9,7 @@ import { Roles } from 'src/middleware/guard/roles.decorator';
 import { Gender } from 'src/static/enum';
 import faker from 'faker';
 import { Role } from 'src/models/object/role.model';
-import { TokenRole } from 'src/models/object/tokenrole.model';
+import { TokenRole } from 'src/models/output/tokenrole.model';
 @Resolver()
 export class UserResolver {
   constructor(private userService: UserService) {}

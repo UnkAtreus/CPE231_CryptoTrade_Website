@@ -11,7 +11,7 @@ import { Hash } from './helper/hash';
 import { WalletService } from '../wallet/wallet.service';
 import { Between, Raw, UpdateResult } from 'typeorm';
 import PassInput from 'src/models/input/password.input';
-import { TokenRole } from '../../models/object/tokenrole.model';
+import { TokenRole } from '../../models/output/tokenrole.model';
 import PincodeInput from 'src/models/input/pincode.input';
 import { addDays } from 'date-fns';
 import { Role } from 'src/models/object/role.model';

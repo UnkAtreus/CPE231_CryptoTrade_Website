@@ -12,7 +12,7 @@ type Currency {
   id: Float
   currency: String
   currencyLongName: String
-  volume: String
+  volume: Float
   user: [User!]
   wallet: [Wallet!]
 }
@@ -43,9 +43,9 @@ type PtoP {
   id: Float
   walletFrom: Wallet
   walletTo: Wallet
-  amount: String
-  walletFromBalance: String
-  walletToBalance: String
+  amount: Float
+  walletFromBalance: Float
+  walletToBalance: Float
   created_at: DateTime
   updated_at: DateTime
 }
@@ -105,8 +105,8 @@ type TransactionFiat {
 
 type Wallet {
   id: Float
-  amount: String
-  inOrder: String
+  amount: Float
+  inOrder: Float
   currency: Currency
   order: [Order!]
   p2pFrom: [PtoP!]
@@ -208,7 +208,7 @@ type Mutation {
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!
   deleteCurrency(id: ID!): String!
-  updateCurrency(volume: String, shortName: String, name: String, id: ID!): Currency!
+  updateCurrency(volume: Float, shortName: String, name: String, id: ID!): Currency!
   addCard(cardInput: CardInput!): CreditCard!
   updateCard(cardInput: CardInput!, id: Float!): CreditCard!
   deleteCard(id: Float!): BankNum!

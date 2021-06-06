@@ -34,9 +34,8 @@ export class TransactionCryptoService {
 
     crypto.user = await this.userService.getUserByID(user.id);
     crypto.method = input.method;
-    crypto.amount = String(input.amount);
+    crypto.amount = input.amount;
     crypto.targetWallet = input.targetWallet;
-    crypto.wallet = wallet;
     crypto.status = TransactionStatus.Pending;
 
     const temp1 = Number(wallet.amount);
@@ -48,13 +47,13 @@ export class TransactionCryptoService {
       crypto.status = TransactionStatus.Done;
     } else {
       result = temp1 - temp2;
-      crypto.fee = String(temp2 * 0.001);
+      crypto.fee = temp2 * 0.001;
       if (result < 0) {
         throw NotEnoughBalanceInWallet;
       }
     }
-    crypto.totalBalanceLeft = String(result);
-    await this.walletService.updateWallet(wallet.id, result);
+    crypto.totalBalanceLeft = result;
+    crypto.wallet = await this.walletService.updateWallet(wallet.id, result);
     return this.repoService.transactionCryptoRepo.save(crypto);
   }
   async getCryptoByID(id: number): Promise<TransactionCrypto> {

@@ -40,13 +40,13 @@ export class P2PService {
       input.targetUser,
       curreny.id,
     );
-    p2p.amount = String(input.amount);
+    p2p.amount = input.amount;
     p2p.walletFrom = walletFrom;
     p2p.walletTo = walletTo;
     const temp1 = Number(walletFrom.amount) - Number(input.amount);
     const temp2 = Number(walletTo.amount) + Number(input.amount);
-    p2p.walletFromBalance = String(temp1);
-    p2p.walletToBalance = String(temp2);
+    p2p.walletFromBalance = temp1;
+    p2p.walletToBalance = temp2;
     await this.walletService.updateWallet(walletFrom.id, temp1);
     await this.walletService.updateWallet(walletTo.id, temp2);
     return this.repoService.ptopRepo.save(p2p);

@@ -116,9 +116,9 @@ export class OrderService implements OnApplicationBootstrap {
       method: input.method,
       walletFrom: walletFrom,
       walletTo: walletTo,
-      price: String(input.price),
-      amount: String(input.amount),
-      totalBalance: String(total),
+      price: input.price,
+      amount: input.amount,
+      totalBalance: total,
       cancel: false,
       filled: false,
       type: input.type,
@@ -207,7 +207,8 @@ export class OrderService implements OnApplicationBootstrap {
       )
       .then(() => {
         orderInput.filled = true;
-        orderInput.fee = String(Number(orderInput.amount) * 0.0001);
+        orderInput.fee = Number(orderInput.amount) * 0.0001;
+
         return this.repoService.orderRepo.save(orderInput);
       });
   }
