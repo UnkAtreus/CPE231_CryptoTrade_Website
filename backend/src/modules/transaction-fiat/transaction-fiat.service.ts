@@ -54,7 +54,7 @@ export class TransactionFiatService {
             return result;
           }
         });
-    } else if (!input.cardInput && input.cardInput.cardNumber != '') {
+    } else if (input.cardInput && input.cardInput.cardNumber != '') {
       fiat.creditCard = await this.cardService
         .getCardByNum(input.cardInput.cardNumber, user)
         .then(async (result) => {
