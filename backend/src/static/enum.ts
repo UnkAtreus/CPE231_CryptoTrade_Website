@@ -13,8 +13,8 @@ export enum OrderType {
 }
 
 export enum OrderMethod {
-  limit,
-  market,
+  Buy,
+  Sell,
 }
 
 export enum TransactionStatus {
