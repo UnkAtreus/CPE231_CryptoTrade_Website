@@ -217,17 +217,32 @@ export class OrderService implements OnApplicationBootstrap {
   }
   async fillOrder(orderId: number): Promise<Order> {
     const order = await this.getOrderById(orderId);
-    return await this.walletService
-      .Buy(
-        order.walletTo.id,
-        order.walletFrom.id,
-        Number(order.amount),
-        Number(order.totalBalance),
-      )
-      .then(() => {
-        order.filled = true;
-        return this.repoService.orderRepo.save(order);
-      });
+
+    if (order.method == OrderMethod.Buy) {
+      return await this.walletService
+        .Buy(
+          order.walletTo.id,
+          order.walletFrom.id,
+          Number(order.amount),
+          Number(order.totalBalance),
+        )
+        .then(() => {
+          order.filled = true;
+          return this.repoService.orderRepo.save(order);
+        });
+    } else {
+      return await this.walletService
+        .Buy(
+          order.walletTo.id,
+          order.walletFrom.id,
+          Number(order.totalBalance),
+          Number(order.amount),
+        )
+        .then(() => {
+          order.filled = true;
+          return this.repoService.orderRepo.save(order);
+        });
+    }
   }
   async fillOrderModel(orderInput: Order): Promise<Order> {
     // const order = await this.getOrderById(orderId);
