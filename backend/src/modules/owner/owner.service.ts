@@ -18,7 +18,7 @@ export class OwnerService {
     date = date ?? new Date();
     const start = subDays(date, 7).toISOString().slice(0, 10);
     const end = date.toISOString().slice(0, 10);
-    const endd = addDays(date, 7).toISOString().slice(0, 10);
+    const endd = addDays(date, 1).toISOString().slice(0, 10);
     return this.repoService.transactionFiatRepo
       .createQueryBuilder('transactionfiat')
       .select('COUNT(*)', 'count')
