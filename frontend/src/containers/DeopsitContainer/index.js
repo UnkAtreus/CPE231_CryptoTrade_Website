@@ -522,6 +522,7 @@ const DeopsitContainer = ({ match, ...props }) => {
                     label="Submit"
                     color="green"
                     fontColor="black"
+                    onClick={() => {}}
                   />
                 </form>
               ) : (
@@ -669,7 +670,12 @@ const DeopsitContainer = ({ match, ...props }) => {
                           }}
                         ></Input>
                       </div>
-                      <Button label="Submit" color="green" fontColor="black" />
+                      <Button
+                        label="Submit"
+                        color="green"
+                        fontColor="black"
+                        onClick={() => {}}
+                      />
                     </form>
                   ) : (
                     <form
@@ -755,7 +761,12 @@ const DeopsitContainer = ({ match, ...props }) => {
                           ))}
                         </Dropdown>
                       </CoinDropdown>
-                      <Button label="Submit" color="green" fontColor="black" />
+                      <Button
+                        label="Submit"
+                        color="green"
+                        fontColor="black"
+                        onClick={() => {}}
+                      />
                     </form>
                   )}
                 </>

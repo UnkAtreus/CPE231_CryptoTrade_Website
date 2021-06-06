@@ -20,14 +20,20 @@ const getConfig = (configService, apiName) => {
         headers: {},
         params: {},
       };
-      break;
+      if (configService.params) {
+        config.params = configService.params;
+      }
+      return config;
     case "local":
       config = {
         baseURL: BASE_API_LOCAL + BASE_PATH_API_LOCAL,
         headers: {},
         params: {},
       };
-      break;
+      if (configService.params) {
+        config.params = configService.params;
+      }
+      return config;
 
     default:
       config = {

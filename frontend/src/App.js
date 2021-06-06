@@ -21,14 +21,39 @@ import WithdrawContainer from "./containers/WithdrawContainer";
 import PeerToPeerContainer from "./containers/PeerToPeerContainer";
 import SettingContainer from "./containers/SettingContainer";
 import LandingContainer from "./containers/LandingContainer";
+import OwnerContainer from "./containers/OwnerContainer";
 import { ROUTE_PATH } from "helpers";
 import { history } from "./store/configureStore";
 import StaffContainer from "./containers/StaffContainer";
 import StaffSubContainer from "./containers/StaffSubContainer";
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { split, HttpLink } from "@apollo/client";
+import { getMainDefinition } from "@apollo/client/utilities";
+import AdminSubContainer from "./containers/AdminSubContainer";
+import AdminContainer from "./containers/AdminContainer";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:5000/graphql",
 });
+
+// const wsLink = new WebSocketLink({
+//   uri: "ws://localhost:5000/subscriptions",
+//   options: {
+//     reconnect: true,
+//   },
+// });
+
+// const splitLink = split(
+//   ({ query }) => {
+//     const definition = getMainDefinition(query);
+//     return (
+//       definition.kind === "OperationDefinition" &&
+//       definition.operation === "subscription"
+//     );
+//   },
+//   wsLink,
+//   httpLink
+// );
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
@@ -128,6 +153,21 @@ export const App = (props) => {
               exact={true}
               path={ROUTE_PATH.STAFF.LINK}
               component={StaffContainer}
+            />
+            <PrivateRoute
+              exact={true}
+              path={ROUTE_PATH.ADMIN_SUB.LINK}
+              component={AdminSubContainer}
+            />
+            <PrivateRoute
+              exact={true}
+              path={ROUTE_PATH.ADMIN.LINK}
+              component={AdminContainer}
+            />
+            <PrivateRoute
+              exact={true}
+              path={ROUTE_PATH.OWNER.LINK}
+              component={OwnerContainer}
             />
             <PrivateRoute
               exact={true}

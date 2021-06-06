@@ -22,7 +22,7 @@ import { marketController } from "apiService";
 import ClassNames from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import BigNumber from "bignumber.js";
-import { useQuery, useMutation, gql } from "@apollo/client";
+import { useQuery, useMutation, useSubscription, gql } from "@apollo/client";
 import moment from "moment";
 import sortArray from "sort-array";
 
@@ -92,6 +92,20 @@ const CREATE_ORDER = gql`
   }
 `;
 
+const ORDER_SUBSCRIPTION = gql`
+  subscription {
+    orderTrigger {
+      method
+      type
+      price
+      amount
+      totalBalance
+      cancel
+      filled
+    }
+  }
+`;
+
 const constants = {
   lastUpdateId: 10299107955,
   bids: [
@@ -131,16 +145,6 @@ const HomeContainer = (props) => {
     amount: 0,
     type: 0,
   });
-
-  const MOCK_USER_CURRENCY = {
-    btc: 0.00000091,
-    ada: 129.3349,
-    eth: 0.00138437,
-    bch: 0,
-    dot: 0,
-    usdt: 49657.01,
-  };
-
   const FORMAT_DECIMAL = {
     prefix: "",
     decimalSeparator: ".",
@@ -243,9 +247,17 @@ const HomeContainer = (props) => {
   const dispatch = useDispatch();
   const arg = useSelector((state) => state, isEqual);
 
-  const { loading, error, data, refetch } = useQuery(GET_ALL_DATA);
+  const { data, refetch } = useQuery(GET_ALL_DATA);
   const [createOrder] = useMutation(CREATE_ORDER, {
     onCompleted(order) {
+      if (order) {
+        console.log(order);
+        refetch();
+      }
+    },
+  });
+  const { data_sub } = useSubscription(ORDER_SUBSCRIPTION, {
+    onSubscriptionData(order) {
       if (order) {
         console.log(order);
         refetch();
@@ -1037,12 +1049,6 @@ const HomeContainer = (props) => {
                       <form
                         onSubmit={(e) => {
                           e.preventDefault();
-                          // setOrderParams({
-                          //   ...orderParams,
-                          //   type: 0,
-                          //   price: Number(priceBuy),
-                          //   amount: Number(valueAmountBuy),
-                          // });
                           console.log({
                             ...orderParams,
                             method: 0,
@@ -1117,7 +1123,11 @@ const HomeContainer = (props) => {
                           }}
                         />
 
-                        <Button label="Buy BTC" color="green" />
+                        <Button
+                          label={"Buy " + cryptoSymbol}
+                          color="green"
+                          onClick={() => {}}
+                        />
                       </form>
                     </div>
 
@@ -1202,7 +1212,11 @@ const HomeContainer = (props) => {
                             calPriceSell("total", e);
                           }}
                         />
-                        <Button label="Sell BTC" color="red" />
+                        <Button
+                          label={"Sell " + cryptoSymbol}
+                          color="red"
+                          onClick={() => {}}
+                        />
                       </form>
                     </div>
                   </div>
@@ -1273,7 +1287,11 @@ const HomeContainer = (props) => {
                           // value={(e) => calPriceMarket("stepbuy", e)}
                           value={(e) => {}}
                         />
-                        <Button label="Buy BTC" color="green" />
+                        <Button
+                          label={"Buy " + cryptoSymbol}
+                          color="green"
+                          onClick={() => {}}
+                        />
                       </form>
                     </div>
 
@@ -1333,13 +1351,17 @@ const HomeContainer = (props) => {
                           value={valueAmountSellMarket}
                           onChange={(e) => {
                             setValueAmountSellMarket(e);
-                            calPriceMarket("amountsell", e);
+                            // calPriceMarket("amountsell", e);
                           }}
                         />
                         <ValueStep
                           value={(e) => calPriceMarket("stepsell", e)}
                         />
-                        <Button label="Sell BTC" color="red" />
+                        <Button
+                          label={"Sell " + cryptoSymbol}
+                          color="red"
+                          onClick={() => {}}
+                        />
                       </form>
                     </div>
                   </div>

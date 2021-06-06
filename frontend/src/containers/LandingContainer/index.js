@@ -155,6 +155,7 @@ const LandingContainer = ({ match, ...props }) => {
             label="Find account"
             color="purple"
             fontColor="white"
+            onClick={() => {}}
           />
         </div>
 
@@ -456,6 +457,7 @@ const LandingContainer = ({ match, ...props }) => {
                 label="Trade Now"
                 color="purple"
                 fontColor="white"
+                onClick={() => {}}
               />
             </div>
           </div>

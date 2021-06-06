@@ -10,19 +10,21 @@ import {
   SpotBalanceContainer,
   CryptoBalance,
   InfoWrapper,
+  ProfileContainer,
 } from "./styled";
-import { Container, NavBar } from "components";
+import { Container, NavBar, Button, Input } from "components";
 import { useQuery, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
 import { marketController } from "apiService";
 import moment from "moment";
-
+import { userController } from "apiService";
 import {
   MOCK_WALLET,
   CRYPTO_INDEX,
   MOCK_ALL_CUR_PRICE,
   MOCK_USER_INFO,
 } from "helpers";
+import axios from "axios";
 
 const GET_ALL_SYMBOL = gql`
   query {
@@ -39,6 +41,7 @@ const GET_ALL_SYMBOL = gql`
       }
     }
     getUserByToken {
+      id
       firstName
       lastName
       phone
@@ -53,6 +56,7 @@ const GET_ALL_SYMBOL = gql`
 `;
 
 const SettingContainer = ({ match, ...props }) => {
+  const [selectedFile, setSelectedFile] = useState();
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
   const [coinSymbol, setCoinSymbol] = useState([
@@ -104,6 +108,11 @@ const SettingContainer = ({ match, ...props }) => {
     console.log(getCurPrice);
   };
 
+  const PostFile = async (param) => {
+    const file = await userController().postFile(param);
+    console.log(file);
+  };
+
   const getTotal = (flag) => {
     return (
       Number(userWallet[CRYPTO_INDEX[flag]].amount) +
@@ -119,6 +128,13 @@ const SettingContainer = ({ match, ...props }) => {
       getTotal("dot") * Number(getCurPrice[7].price) +
       getTotal("btc")
     );
+  };
+
+  const onFileUpload = () => {
+    const formData = new FormData();
+    formData.append("file", selectedFile, selectedFile.name);
+    console.log(selectedFile);
+    PostFile(formData);
   };
 
   useEffect(() => {
@@ -444,9 +460,127 @@ const SettingContainer = ({ match, ...props }) => {
             </div>
           </CryptoBalance>
         </BalanceContainer>
+
         <SubHeader>
           <div className="feature-card-title white">Infomation</div>
         </SubHeader>
+        <ProfileContainer>
+          <div className="content-column">
+            <div className="content-column mgb-16">
+              <div className="title white mgb-16">User Profile</div>
+              <div className="content-column mgl-16">
+                <div className="content-row mgb-8">
+                  <div className="label gray" style={{ minWidth: "164px" }}>
+                    User ID:
+                  </div>
+                  <div className="label white">{userInfo.id}</div>
+                </div>
+                <div className="content-row mgb-8">
+                  <div className="label gray" style={{ minWidth: "164px" }}>
+                    Vertify Status:
+                  </div>
+                  <div className="content-row">
+                    <div className="label red">not vertify</div>
+                  </div>
+                </div>
+                <div className="content-row mgb-8">
+                  <div className="label gray" style={{ minWidth: "164px" }}>
+                    Uplaod ID Card:
+                  </div>
+                  <div className="content-row">
+                    <input
+                      type="file"
+                      onChange={(e) => {
+                        console.log(e.target.files[0]);
+                        setSelectedFile(e.target.files[0]);
+                      }}
+                    ></input>
+                  </div>
+                </div>
+                <div className="content-row mgb-8">
+                  <div
+                    className="label gray"
+                    style={{
+                      minWidth: "164px",
+                    }}
+                  ></div>
+                  <div className="content-row">
+                    <Button
+                      style={{
+                        width: "118px",
+                        height: "24px",
+                        borderRadius: "4px",
+                      }}
+                      label="Submit"
+                      color="green"
+                      fontColor="black"
+                      onClick={onFileUpload}
+                    />
+                  </div>
+                </div>
+                <div className="content-row mgb-8">
+                  <div
+                    className="label gray"
+                    style={{
+                      minWidth: "164px",
+                    }}
+                  >
+                    Current Password
+                  </div>
+                  <div className="content-row" style={{ height: "32px" }}>
+                    <Input
+                      type="password"
+                      placeholder="*********"
+                      onChange={(e) => {
+                        console.log(e);
+                      }}
+                    ></Input>
+                  </div>
+                </div>
+                <div className="content-row mgb-8">
+                  <div
+                    className="label gray"
+                    style={{
+                      minWidth: "164px",
+                    }}
+                  >
+                    New Password
+                  </div>
+                  <div className="content-row" style={{ height: "32px" }}>
+                    <Input
+                      type="password"
+                      placeholder="*********"
+                      onChange={(e) => {
+                        console.log(e);
+                      }}
+                    ></Input>
+                  </div>
+                </div>
+                <div className="content-row mgb-8">
+                  <div
+                    className="label gray"
+                    style={{
+                      minWidth: "164px",
+                    }}
+                  ></div>
+                  <div className="content-row">
+                    <Button
+                      style={{
+                        width: "210px",
+                        height: "24px",
+                        borderRadius: "16px",
+                      }}
+                      label="Change Password"
+                      color="green"
+                      fontColor="black"
+                      onClick={onFileUpload}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ProfileContainer>
         <InfomationContainer>
           <InfoWrapper>
             <div className="content-column">

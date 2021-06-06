@@ -5,7 +5,7 @@ import { SHARDS } from "../../themes";
 
 // Wrapper
 // ============================================================
-export const SettingStyled = styled.div`
+export const OwnerStyled = styled.div`
   /* Parent styles
   ------------------------------- */
 
@@ -52,7 +52,7 @@ export const InfomationContainer = styled.div`
   width: 100%;
   border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
   background-color: ${VARIABLES.COLORS.BACKGROUND_2};
-  padding: 16px 64px;
+  padding: 16px 32px;
   margin-bottom: 8px;
 `;
 
@@ -114,11 +114,43 @@ export const CryptoBalance = styled.div`
   }
 `;
 
-export const ProfileContainer = styled.div`
-  height: 288px;
-  width: 100%;
-  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+export const CardContainer = styled.div`
   background-color: ${VARIABLES.COLORS.BACKGROUND_2};
-  padding: 16px 64px;
+  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+  width: 324px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  padding: 16px 32px;
+  cursor: pointer;
+`;
+
+export const TopContainer = styled.div`
+  background-color: ${VARIABLES.COLORS.BACKGROUND_2};
+  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+  width: 664px;
+  height: 320px;
+  display: flex;
+  padding: 16px 32px;
+`;
+
+export const OrderContainer = styled.div`
+  background-color: ${VARIABLES.COLORS.BACKGROUND_2};
+  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+  width: 324px;
+  height: 320px;
+  display: flex;
+  padding: 16px 32px;
+  margin-left: 8px;
+  cursor: pointer;
+`;
+
+export const ShowDataContainer = styled.div`
+  background-color: ${VARIABLES.COLORS.BACKGROUND_2};
+  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 16px 32px;
   margin-bottom: 8px;
 `;

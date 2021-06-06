@@ -114,11 +114,59 @@ export const CryptoBalance = styled.div`
   }
 `;
 
-export const ProfileContainer = styled.div`
-  height: 288px;
+export const CardContainer = styled.div`
+  background-color: ${VARIABLES.COLORS.BACKGROUND_2};
+  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+  cursor: pointer;
+  width: 324px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  padding: 16px 32px;
+`;
+
+export const HistorySection = styled.div`
+  height: 512px;
   width: 100%;
   border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
   background-color: ${VARIABLES.COLORS.BACKGROUND_2};
-  padding: 16px 64px;
+  padding: 24px;
   margin-bottom: 8px;
+`;
+
+export const HistoryContainer = styled.div`
+  overflow: auto;
+  height: 410px;
+  .history-container {
+    height: 32px;
+    border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
+  }
+
+  .even {
+    background-color: ${VARIABLES.COLORS.BACKGROUND_5};
+  }
+`;
+
+export const CancleBtn = styled.div`
+  height: 24px;
+  width: 24px;
+  border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
+  background-color: #f14763cf;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+
+export const VertifyBtn = styled.div`
+  height: 24px;
+  width: 80px;
+  padding: 8px 8px;
+  border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
+  background-color: #47f19f52;
+  /* color: ${VARIABLES.COLORS.GREEN}; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 `;

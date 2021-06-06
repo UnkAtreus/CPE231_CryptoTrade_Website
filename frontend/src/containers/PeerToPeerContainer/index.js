@@ -312,6 +312,7 @@ const PeerToPeerContainer = ({ match, ...props }) => {
               label="Submit"
               color="green"
               fontColor="black"
+              onClick={() => {}}
             />
           </PeerToPeerDetail>
         </div>

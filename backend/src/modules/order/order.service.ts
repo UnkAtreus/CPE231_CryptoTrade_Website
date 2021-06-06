@@ -57,10 +57,10 @@ export class OrderService implements OnApplicationBootstrap {
           String(t['s']).includes(order.walletFrom.currency.currency) &&
           String(t['s']).includes(order.walletTo.currency.currency)
         ) {
-          if (Number(t['c']) > Number(order.price)) {
-            console.log(order.id);
-            await this.fillOrder(order.id);
-            this.pubSub.publish('orderTrigger', { orderTrigger: order });
+          if (Number(t['c']) >= Number(order.price)) {
+            // console.log(order.id);
+            const orderresult = await this.fillOrder(order.id);
+            this.pubSub.publish('orderTrigger', { orderTrigger: orderresult });
           }
         }
       });
