@@ -34,7 +34,7 @@ export const YouCantP2Pyourself = new ApolloError(
 );
 export const NotEnoughBalanceInWallet = new ApolloError(
   'Your wallet balance is not enough',
-  'WL-01',
+  'WL-02',
   {
     showPath: true,
     showLocations: true,
@@ -60,3 +60,11 @@ export const IncorrectPassword = new ApolloError(
     showLocations: false,
   },
 );
+export const UserIsNotVerify = new ApolloError(
+  'User is not verify. Please upload file to verify user',
+  'WL-03',
+  {
+    showPath: false,
+    showLocations: false,
+  },
+)
