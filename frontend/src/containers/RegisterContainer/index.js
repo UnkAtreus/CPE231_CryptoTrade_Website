@@ -117,7 +117,7 @@ const RegisterContainer = ({ match, ...props }) => {
     .fill("")
     .map((_v, idx) => now - idx);
 
-  const notify = (isSuccess) => {
+  const notify = (isSuccess, errormsg = "Failed ❌") => {
     if (isSuccess) {
       toast.success("Success ✔", {
         position: "bottom-right",
@@ -129,7 +129,7 @@ const RegisterContainer = ({ match, ...props }) => {
         progress: undefined,
       });
     } else {
-      toast.error("Failed ❌", {
+      toast.error(errormsg, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -151,9 +151,9 @@ const RegisterContainer = ({ match, ...props }) => {
         window.location.reload();
       }
     },
-    onError(order) {
-      if (order) {
-        notify(false);
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
       }
     },
   });

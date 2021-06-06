@@ -107,7 +107,7 @@ const DeopsitContainer = ({ match, ...props }) => {
     suffix: "",
   };
 
-  const notify = (isSuccess) => {
+  const notify = (isSuccess, errormsg = "Failed ❌") => {
     if (isSuccess) {
       toast.success("Success ✔", {
         position: "bottom-right",
@@ -119,7 +119,7 @@ const DeopsitContainer = ({ match, ...props }) => {
         progress: undefined,
       });
     } else {
-      toast.error("Failed ❌", {
+      toast.error(errormsg, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -235,9 +235,9 @@ const DeopsitContainer = ({ match, ...props }) => {
         refetch();
       }
     },
-    onError(order) {
-      if (order) {
-        notify(false);
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
       }
     },
   });
@@ -252,9 +252,9 @@ const DeopsitContainer = ({ match, ...props }) => {
         refetch();
       }
     },
-    onError(order) {
-      if (order) {
-        notify(false);
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
       }
     },
   });
