@@ -287,7 +287,10 @@ const HomeContainer = (props) => {
         console.log(order);
         notify(true);
         refetch();
-      } else {
+      }
+    },
+    onError(order) {
+      if (order) {
         notify(false);
       }
     },
@@ -298,7 +301,10 @@ const HomeContainer = (props) => {
         console.log(order);
         notify(true);
         refetch();
-      } else {
+      }
+    },
+    onError(order) {
+      if (order) {
         notify(false);
       }
     },

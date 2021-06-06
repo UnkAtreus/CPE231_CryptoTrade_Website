@@ -220,7 +220,10 @@ const WithdrawContainer = ({ match, ...props }) => {
         console.log(order);
         notify(true);
         refetch();
-      } else {
+      }
+    },
+    onError(order) {
+      if (order) {
         notify(false);
       }
     },
@@ -232,7 +235,10 @@ const WithdrawContainer = ({ match, ...props }) => {
         console.log(order);
         notify(true);
         refetch();
-      } else {
+      }
+    },
+    onError(order) {
+      if (order) {
         notify(false);
       }
     },

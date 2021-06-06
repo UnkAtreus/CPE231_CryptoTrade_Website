@@ -233,7 +233,10 @@ const DeopsitContainer = ({ match, ...props }) => {
         setAmount(0);
         notify(true);
         refetch();
-      } else {
+      }
+    },
+    onError(order) {
+      if (order) {
         notify(false);
       }
     },
@@ -247,7 +250,10 @@ const DeopsitContainer = ({ match, ...props }) => {
         setHasNewCard(false);
         notify(true);
         refetch();
-      } else {
+      }
+    },
+    onError(order) {
+      if (order) {
         notify(false);
       }
     },
