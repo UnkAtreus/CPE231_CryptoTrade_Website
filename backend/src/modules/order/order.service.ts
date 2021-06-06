@@ -10,7 +10,7 @@ import { WalletService } from '../wallet/wallet.service';
 import { RepoService } from '../../repo/repo.service';
 import OrderInput from 'src/models/input/order.input';
 import { UserService } from '../user/user.service';
-import { OrderMethod } from 'src/static/enum';
+import { OrderMethod, OrderType } from 'src/static/enum';
 import {
   NotEnoughBalanceInWallet,
   Unauthorized,
@@ -20,6 +20,7 @@ import { User } from 'src/models/object/user.model';
 import { PubSub } from 'graphql-subscriptions';
 import OrderMarketInput from 'src/models/input/ordermarket.input';
 import { Interval } from '@nestjs/schedule';
+import { Wallet } from 'src/models/object/wallet.model';
 const webClient = Websocket.client;
 @Injectable()
 export class OrderService implements OnApplicationBootstrap {
@@ -98,18 +99,52 @@ export class OrderService implements OnApplicationBootstrap {
   }
 
   async createOrder(userId: number, input: OrderInput): Promise<Order> {
-    const user = await this.userService.getUserById(userId);
-    const walletFrom = await this.walletService.getWalletByCurrency(
-      userId,
-      input.currencyFrom,
-    );
-    if (Number(walletFrom.amount) < input.amount) {
+    if (!input.amount || input.amount <= 0) {
       throw NotEnoughBalanceInWallet;
     }
-    const walletTo = await this.walletService.getWalletByCurrency(
-      userId,
-      input.currencyTo,
-    );
+    const user = await this.userService.getUserById(userId);
+    let walletFrom: Wallet;
+    let walletTo: Wallet;
+    if (input.method == OrderMethod.Buy) {
+      walletFrom = await this.walletService.getWalletByCurrency(
+        userId,
+        input.currencyTo,
+      );
+
+      walletTo = await this.walletService.getWalletByCurrency(
+        userId,
+        input.currencyFrom,
+      );
+      if (
+        Number(walletFrom.amount) <
+        Number(input.price) * Number(input.amount)
+      ) {
+        throw NotEnoughBalanceInWallet;
+      }
+      await this.walletService.Sell(
+        walletFrom.id,
+        Number(input.price) * Number(input.amount),
+      );
+    } else {
+      walletFrom = await this.walletService.getWalletByCurrency(
+        userId,
+        input.currencyFrom,
+      );
+
+      walletTo = await this.walletService.getWalletByCurrency(
+        userId,
+        input.currencyTo,
+      );
+      if (Number(walletFrom.amount) < Number(input.amount)) {
+        throw NotEnoughBalanceInWallet;
+      }
+      await this.walletService.Sell(walletFrom.id, Number(input.amount));
+    }
+
+    // const walletTo = await this.walletService.getWalletByCurrency(
+    //   userId,
+    //   input.currencyTo,
+    // );
     const total: number = Number(input.price) * Number(input.amount);
     const order: Order = {
       user: user,
@@ -123,8 +158,6 @@ export class OrderService implements OnApplicationBootstrap {
       filled: false,
       type: input.type,
     };
-
-    await this.walletService.Sell(order.walletFrom.id, input.amount);
 
     return await this.repoService.orderRepo.save(order);
   }
@@ -184,17 +217,32 @@ export class OrderService implements OnApplicationBootstrap {
   }
   async fillOrder(orderId: number): Promise<Order> {
     const order = await this.getOrderById(orderId);
-    return await this.walletService
-      .Buy(
-        order.walletTo.id,
-        order.walletFrom.id,
-        Number(order.amount),
-        Number(order.totalBalance),
-      )
-      .then(() => {
-        order.filled = true;
-        return this.repoService.orderRepo.save(order);
-      });
+
+    if (order.method == OrderMethod.Buy) {
+      return await this.walletService
+        .Buy(
+          order.walletTo.id,
+          order.walletFrom.id,
+          Number(order.amount),
+          Number(order.totalBalance),
+        )
+        .then(() => {
+          order.filled = true;
+          return this.repoService.orderRepo.save(order);
+        });
+    } else {
+      return await this.walletService
+        .Buy(
+          order.walletTo.id,
+          order.walletFrom.id,
+          Number(order.totalBalance),
+          Number(order.amount),
+        )
+        .then(() => {
+          order.filled = true;
+          return this.repoService.orderRepo.save(order);
+        });
+    }
   }
   async fillOrderModel(orderInput: Order): Promise<Order> {
     // const order = await this.getOrderById(orderId);

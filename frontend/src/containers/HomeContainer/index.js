@@ -139,8 +139,8 @@ const HomeContainer = (props) => {
   const [allOrder, setAllOrder] = useState([]);
   const [orderParams, setOrderParams] = useState({
     method: 0,
-    currencyFrom: "USDT",
-    currencyTo: "BTC",
+    currencyTo: "USDT",
+    currencyFrom: "BTC",
     price: 0,
     amount: 0,
     type: 0,
@@ -389,12 +389,12 @@ const HomeContainer = (props) => {
       case "step":
         setValueAmountBuy(
           BigNumber(
-            userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data
-          ).toFormat(2, FORMAT_DECIMAL)
+            (userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data) / priceBuy
+          ).toFormat(FORMAT_DECIMAL)
         );
         setValueTotalBuy(
           BigNumber(
-            userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data * priceBuy
+            userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data
           ).toFormat(2, FORMAT_DECIMAL)
         );
         break;
@@ -1053,8 +1053,8 @@ const HomeContainer = (props) => {
                             ...orderParams,
                             method: 0,
                             type: 0,
-                            currencyTo: cryptoSymbol,
-                            currencyFrom: "USDT",
+                            currencyFrom: cryptoSymbol,
+                            currencyTo: "USDT",
                             price: Number(priceBuy),
                             amount: Number(valueAmountBuy),
                           });
@@ -1064,8 +1064,8 @@ const HomeContainer = (props) => {
                               input: {
                                 ...orderParams,
                                 type: 0,
-                                currencyTo: cryptoSymbol,
-                                currencyFrom: "USDT",
+                                currencyFrom: cryptoSymbol,
+                                currencyTo: "USDT",
                                 price: Number(priceBuy),
                                 amount: Number(valueAmountBuy),
                               },
@@ -1236,8 +1236,8 @@ const HomeContainer = (props) => {
                             ...orderParams,
                             method: 0,
                             type: 1,
-                            currencyTo: cryptoSymbol,
-                            currencyFrom: "USDT",
+                            currencyFrom: cryptoSymbol,
+                            currencyTo: "USDT",
                             price: Number(arg.ticker.c),
                             amount: Number(valueAmountBuyMarket),
                           });
@@ -1248,8 +1248,8 @@ const HomeContainer = (props) => {
                                 ...orderParams,
                                 method: 0,
                                 type: 1,
-                                currencyTo: cryptoSymbol,
-                                currencyFrom: "USDT",
+                                currencyFrom: cryptoSymbol,
+                                currencyTo: "USDT",
                                 price: Number(arg.ticker.c),
                                 amount: Number(valueAmountBuyMarket),
                               },
