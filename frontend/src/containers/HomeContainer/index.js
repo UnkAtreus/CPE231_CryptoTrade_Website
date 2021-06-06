@@ -389,12 +389,12 @@ const HomeContainer = (props) => {
       case "step":
         setValueAmountBuy(
           BigNumber(
-            userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data
+            (userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data) / priceBuy
           ).toFormat(2, FORMAT_DECIMAL)
         );
         setValueTotalBuy(
           BigNumber(
-            userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data * priceBuy
+            userWallet[CRYPTO_INDEX["usdt"]].amount * 0.25 * data
           ).toFormat(2, FORMAT_DECIMAL)
         );
         break;
@@ -1105,11 +1105,6 @@ const HomeContainer = (props) => {
                           onChange={(e) => {
                             setValueAmountBuy(e);
                             calPriceBuy("amount", e);
-                            setOrderParams({
-                              ...orderParams,
-                              type: 0,
-                              amount: Number(e),
-                            });
                           }}
                         />
                         <ValueStep value={(e) => calPriceBuy("step", e)} />
@@ -1120,6 +1115,11 @@ const HomeContainer = (props) => {
                           onChange={(e) => {
                             setValueTotalBuy(e);
                             calPriceBuy("total", e);
+                            setOrderParams({
+                              ...orderParams,
+                              type: 0,
+                              amount: Number(e),
+                            });
                           }}
                         />
 
