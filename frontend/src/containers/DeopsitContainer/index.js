@@ -57,7 +57,7 @@ const DeopsitContainer = ({ match, ...props }) => {
       bank: "KBANK",
     },
   ]);
-  const [allCard, setAllCard] = useState([]);
+  const [allCard, setAllCard] = useState();
   const [isNewCard, setIsNewCard] = useState(allCard === [] ? true : false);
   const [hasCard, setHasNewCard] = useState(false);
   const [cardNum, setCardNum] = useState("0");
@@ -255,6 +255,7 @@ const DeopsitContainer = ({ match, ...props }) => {
     }
     if (data && data.getCardByToken) {
       setAllCard(data.getCardByToken);
+      console.log(data.getCardByToken);
     }
   }, [data]);
 
@@ -269,7 +270,7 @@ const DeopsitContainer = ({ match, ...props }) => {
         },
       });
     else if (payMentMethod === "Cradit / Dabit card")
-      if (isNewCard)
+      if (isNewCard) {
         setOrderParam({
           ...orderParam,
           bankType: "",
@@ -278,7 +279,8 @@ const DeopsitContainer = ({ match, ...props }) => {
             cardNumber: "",
           },
         });
-      else if (allCard !== [])
+      } else if (allCard !== []) {
+        console.log(allCard);
         setOrderParam({
           ...orderParam,
           bankType: "",
@@ -287,7 +289,7 @@ const DeopsitContainer = ({ match, ...props }) => {
             cardNumber: allCard[0].cardNumber,
           },
         });
-      else
+      } else
         setOrderParam({
           ...orderParam,
           bankType: "",
