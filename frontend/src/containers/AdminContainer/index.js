@@ -67,6 +67,18 @@ const AdminContainer = ({ match, ...props }) => {
   const [getCurPrice, setgetCurPrice] = useState(MOCK_ALL_CUR_PRICE);
   const curPrice = [];
 
+  const admin_param = [
+    "user",
+    "wallet",
+    "order",
+    "p2p",
+    "credit",
+    "transcrypto",
+    "transfiat",
+    "role",
+    "currency",
+  ];
+
   const FORMAT_DECIMAL = {
     prefix: "",
     decimalSeparator: ".",
@@ -135,9 +147,9 @@ const AdminContainer = ({ match, ...props }) => {
     }
   }, [data]);
 
-  useEffect(() => {
-    GetPrice();
-  }, []);
+  // useEffect(() => {
+  //   GetPrice();
+  // }, []);
 
   return (
     <SettingStyled>
@@ -148,25 +160,62 @@ const AdminContainer = ({ match, ...props }) => {
         <SubHeader>
           <div className="feature-card-title white">Admin CMS</div>
         </SubHeader>
-        <div className="content-row space-between">
-          <CardContainer href="/admin/vertify">
+        <div className="content-row space-between mgb-8">
+          <CardContainer href="/admin/user">
             <div>
-              <div className="section-headline gray">Vertify</div>
+              <div className="section-headline gray">User</div>
               <div className="headline white mgl-32">1010</div>
             </div>
           </CardContainer>
-          <CardContainer href="/admin/withdraw">
+          <CardContainer href="/admin/wallet">
             <div>
-              <div className="section-headline gray">Withdraw</div>
+              <div className="section-headline gray">Wallet</div>
               <div className="headline white mgl-32">223</div>
             </div>
           </CardContainer>
-          <CardContainer
-            href="/admin/deposit
-          "
-          >
+          <CardContainer href="/admin/order">
             <div>
-              <div className="section-headline gray">Deposit</div>
+              <div className="section-headline gray">Order</div>
+              <div className="headline white mgl-32">124</div>
+            </div>
+          </CardContainer>
+        </div>
+        <div className="content-row space-between mgb-8">
+          <CardContainer href="/admin/p2p">
+            <div>
+              <div className="section-headline gray">P2P</div>
+              <div className="headline white mgl-32">1010</div>
+            </div>
+          </CardContainer>
+          <CardContainer href="/admin/credit">
+            <div>
+              <div className="section-headline gray">Credit Card</div>
+              <div className="headline white mgl-32">223</div>
+            </div>
+          </CardContainer>
+          <CardContainer href="/admin/transcrypto">
+            <div>
+              <div className="section-headline gray">Trans Crypto</div>
+              <div className="headline white mgl-32">124</div>
+            </div>
+          </CardContainer>
+        </div>
+        <div className="content-row space-between mgb-8">
+          <CardContainer href="/admin/transfiat">
+            <div>
+              <div className="section-headline gray">Trans Fiat</div>
+              <div className="headline white mgl-32">1010</div>
+            </div>
+          </CardContainer>
+          <CardContainer href="/admin/role">
+            <div>
+              <div className="section-headline gray">Role</div>
+              <div className="headline white mgl-32">223</div>
+            </div>
+          </CardContainer>
+          <CardContainer href="/admin/currency">
+            <div>
+              <div className="section-headline gray">Currency</div>
               <div className="headline white mgl-32">124</div>
             </div>
           </CardContainer>
