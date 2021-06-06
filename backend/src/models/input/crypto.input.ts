@@ -6,7 +6,7 @@ class CryptoInput {
   readonly method?: TranasctionMethod;
   @Field(() => Float)
   readonly amount?: number;
-  @Field()
+  @Field({ nullable: true })
   readonly targetWallet?: string;
   @Field()
   readonly shortName?: string;

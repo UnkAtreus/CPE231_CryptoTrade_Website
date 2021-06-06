@@ -24,15 +24,16 @@ import { AppController } from './app.controller';
 import { VerificationModule } from './modules/verification/verification.module';
 import { RoleModule } from './modules/role/role.module';
 import { join } from 'path';
+import { OwnerModule } from './modules/owner/owner.module';
 
 @Module({
   imports: [
     GraphQLModule.forRoot(graphql_config),
     TypeOrmModule.forRoot(typeorm_config),
     ScheduleModule.forRoot(),
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'uploads'),
-    // }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+    }),
     RepoModule,
     UserModule,
     CardModule,
@@ -45,6 +46,7 @@ import { join } from 'path';
     P2PModule,
     VerificationModule,
     RoleModule,
+    OwnerModule,
     // TestsocketModule,
   ],
   controllers: [AppController],
