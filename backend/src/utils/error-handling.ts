@@ -20,6 +20,14 @@ export const SelectMethod = new ApolloError(
     showLocations: true,
   },
 );
+export const OrderHasBeenFilled = new ApolloError(
+  'Order has been filled before cancel.',
+  'OF-01',
+  {
+    showPath: true,
+    showLocations: true,
+  },
+);
 export const UserNotFound = new ApolloError('User not found.', '404', {
   showPath: true,
   showLocations: true,
@@ -67,4 +75,4 @@ export const UserIsNotVerify = new ApolloError(
     showPath: false,
     showLocations: false,
   },
-)
+);

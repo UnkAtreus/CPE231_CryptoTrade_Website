@@ -13,6 +13,7 @@ import { UserService } from '../user/user.service';
 import { OrderMethod, OrderType } from 'src/static/enum';
 import {
   NotEnoughBalanceInWallet,
+  OrderHasBeenFilled,
   Unauthorized,
 } from '../../utils/error-handling';
 import { throws } from 'assert';
@@ -175,10 +176,13 @@ export class OrderService implements OnApplicationBootstrap {
         order.walletFrom.id,
         Number(order.amount),
       );
-      order.cancel = true;
-
-      const orderResult = await this.repoService.orderRepo.save(order);
-      return await this.getOrderById(orderResult.id);
+      if (order.filled) {
+        order.cancel = true;
+        const orderResult = await this.repoService.orderRepo.save(order);
+        return await this.getOrderById(orderResult.id);
+      } else {
+        throw OrderHasBeenFilled;
+      }
     } else {
       throw Unauthorized;
     }
