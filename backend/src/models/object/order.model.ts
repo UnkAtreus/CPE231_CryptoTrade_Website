@@ -38,21 +38,21 @@ export class Order {
   walletTo?: Wallet;
 
   @Field(() => String)
-  @Column()
-  price?: string;
+  @Column({ type: 'decimal', precision: 38, scale: 19 })
+  price?: number;
 
   @Field(() => String)
   // @Column({ type: 'decimal', precision: 38, scale: 38 })
-  @Column()
-  amount?: string;
+  @Column({ type: 'decimal', precision: 38, scale: 19 })
+  amount?: number;
 
   @Field(() => String)
-  @Column()
-  totalBalance?: string;
+  @Column({ type: 'decimal', precision: 38, scale: 19 })
+  totalBalance?: number;
 
   @Field(() => String)
-  @Column({ default: '0' })
-  fee?: string;
+  @Column({ type: 'decimal', precision: 38, scale: 19, default: 0 })
+  fee?: number;
 
   @Field(() => Boolean)
   @Column()

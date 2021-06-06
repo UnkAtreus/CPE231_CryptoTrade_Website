@@ -114,11 +114,13 @@ export const CryptoBalance = styled.div`
   }
 `;
 
-export const ProfileContainer = styled.div`
-  height: 288px;
-  width: 100%;
-  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+export const CardContainer = styled.a`
   background-color: ${VARIABLES.COLORS.BACKGROUND_2};
-  padding: 16px 64px;
-  margin-bottom: 8px;
+  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+  cursor: pointer;
+  width: 324px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  padding: 16px 32px;
 `;

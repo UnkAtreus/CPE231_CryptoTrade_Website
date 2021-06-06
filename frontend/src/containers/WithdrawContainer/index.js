@@ -503,6 +503,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                   label="Submit"
                   color="green"
                   fontColor="black"
+                  onClick={() => {}}
                 />
               </form>
             ) : (
@@ -570,6 +571,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                   label="Submit"
                   color="green"
                   fontColor="black"
+                  onClick={() => {}}
                 />
               </form>
             )}

@@ -31,13 +31,13 @@ export class TransactionFiatService {
       throw SelectMethod;
     }
     fiat.method = input.method;
-    fiat.amount = String(input.amount);
+    fiat.amount = input.amount;
     fiat.status = TransactionStatus.Pending;
     fiat.user = await this.userService.getUserByID(user.id);
     if (
-      !input.bankType &&
+      input.bankType &&
       input.bankType != '' &&
-      !input.bankNumber &&
+      input.bankNumber &&
       input.bankNumber != ''
     ) {
       const banktype = await this.bankService.getBankByName(input.bankType);
@@ -54,7 +54,7 @@ export class TransactionFiatService {
             return result;
           }
         });
-    } else if (!input.cardInput && input.cardInput.cardNumber != '') {
+    } else if (input.cardInput && input.cardInput.cardNumber != '') {
       fiat.creditCard = await this.cardService
         .getCardByNum(input.cardInput.cardNumber, user)
         .then(async (result) => {
@@ -72,7 +72,6 @@ export class TransactionFiatService {
       user.id,
       currency.id,
     );
-    fiat.wallet = wallet;
 
     const walletAmount = Number(wallet.amount);
     const inputAmount = Number(input.amount);
@@ -83,13 +82,13 @@ export class TransactionFiatService {
       fiat.status = TransactionStatus.Done;
     } else {
       result = walletAmount - inputAmount;
-      fiat.fee = String(inputAmount * 0.001);
+      fiat.fee = inputAmount * 0.001;
       if (result < 0) {
         throw NotEnoughBalanceInWallet;
       }
     }
-    fiat.totalBalanceLeft = String(result);
-    await this.walletService.updateWallet(wallet.id, result);
+    fiat.totalBalanceLeft = result;
+    fiat.wallet = await this.walletService.updateWallet(wallet.id, result);
     return await this.repoService.transactionFiatRepo.save(fiat);
   }
 

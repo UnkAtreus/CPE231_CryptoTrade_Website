@@ -9,7 +9,7 @@ import { Roles } from 'src/middleware/guard/roles.decorator';
 import { Gender } from 'src/static/enum';
 import faker from 'faker';
 import { Role } from 'src/models/object/role.model';
-import { TokenRole } from 'src/models/object/tokenrole.model';
+import { TokenRole } from 'src/models/output/tokenrole.model';
 @Resolver()
 export class UserResolver {
   constructor(private userService: UserService) {}
@@ -23,6 +23,13 @@ export class UserResolver {
     return this.userService.loginUser(input);
   }
 
+  @Mutation(() => TokenRole)
+  async createUser(
+    @Args('registerInput') input: RegisterInput,
+    @Args('role', { type: () => Number }) role: Role,
+  ): Promise<any> {
+    return this.userService.createUser(input, role);
+  }
   @Mutation(() => TokenRole)
   async registerUser(
     @Args('registerInput') input: RegisterInput,

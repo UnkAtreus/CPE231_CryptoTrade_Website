@@ -9,7 +9,7 @@ export const Button = ({ match, ...props }) => {
     children: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     color: PropTypes.oneOf(["green", "purple", "red"]),
     fontColor: PropTypes.oneOf(["green", "purple", "red", "white", "black"]),
-    size: PropTypes.oneOf(["label","paragraph","title"]),
+    size: PropTypes.oneOf(["label", "paragraph", "title"]),
     style: PropTypes.object,
   };
 
@@ -47,8 +47,10 @@ export const Button = ({ match, ...props }) => {
 
   return (
     <ButtonStyle
-      onClick={()=> {}}
-      className={ClassNames("container", CheckColor(),CheckSize())}
+      onClick={() => {
+        props.onClick();
+      }}
+      className={ClassNames("container", CheckColor(), CheckSize())}
       style={props.style}
     >
       <div className={ClassNames(props.fontColor, props.size)}>

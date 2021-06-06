@@ -11,16 +11,43 @@ import { Hash } from './helper/hash';
 import { WalletService } from '../wallet/wallet.service';
 import { Between, Raw, UpdateResult } from 'typeorm';
 import PassInput from 'src/models/input/password.input';
-import { TokenRole } from '../../models/object/tokenrole.model';
+import { TokenRole } from '../../models/output/tokenrole.model';
 import PincodeInput from 'src/models/input/pincode.input';
 import { addDays } from 'date-fns';
+import { Role } from 'src/models/object/role.model';
 @Injectable()
 export class UserService {
   constructor(
     private readonly repoService: RepoService,
     private readonly walletService: WalletService,
   ) {}
-
+  async createUser(
+    registerInput: RegisterInput,
+    role: Role,
+  ): Promise<TokenRole> {
+    return Hash.encrypt(registerInput.password).then(
+      async (password: string) => {
+        const user: User = {
+          email: registerInput.email,
+          password: password,
+          ...registerInput.profileInput,
+          role: role,
+        };
+        const result = await this.createOrUpdate(user);
+        if (result) {
+          if (role.role == AllRole.customer.role) {
+            await this.walletService.createAllWalletForUser(result);
+          }
+          const token = await this.createToken(result);
+          const tokenRole: TokenRole = {
+            token: token,
+            role: user.role.role,
+          };
+          return tokenRole;
+        }
+      },
+    );
+  }
   async getAllUsers(): Promise<User[]> {
     return await this.repoService.userRepo.find({
       relations: ['role', 'wallet', 'wallet.currency'],

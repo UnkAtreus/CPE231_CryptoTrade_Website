@@ -1,12 +1,10 @@
-import apiService from '../apiService'
-
-const apiPath = '/api'
+import apiService from "../apiService";
 
 export const userController = (configService = {}) => {
-  const service = apiService(configService)
+  const service = apiService(configService);
   return {
-    getUserList: (params) => {
-      return service.get(`${apiPath}/users`, params , "binance")
+    postFile: (params) => {
+      return service.post(`upload`, params, "local");
     },
-  }
-}
+  };
+};

@@ -394,6 +394,7 @@ const RegisterContainer = ({ match, ...props }) => {
                       label="Sign Up"
                       color="purple"
                       style={{ width: "232px" }}
+                      onClick={() => {}}
                     />
                   </div>
                 </div>

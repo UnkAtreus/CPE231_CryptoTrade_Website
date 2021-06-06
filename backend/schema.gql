@@ -12,7 +12,7 @@ type Currency {
   id: Float
   currency: String
   currencyLongName: String
-  volume: String
+  volume: Float
   user: [User!]
   wallet: [Wallet!]
 }
@@ -43,9 +43,9 @@ type PtoP {
   id: Float
   walletFrom: Wallet
   walletTo: Wallet
-  amount: String
-  walletFromBalance: String
-  walletToBalance: String
+  amount: Float
+  walletFromBalance: Float
+  walletToBalance: Float
   created_at: DateTime
   updated_at: DateTime
 }
@@ -105,8 +105,8 @@ type TransactionFiat {
 
 type Wallet {
   id: Float
-  amount: String
-  inOrder: String
+  amount: Float
+  inOrder: Float
   currency: Currency
   order: [Order!]
   p2pFrom: [PtoP!]
@@ -119,7 +119,9 @@ type Wallet {
 type Verification {
   id: Float
   status: Float
-  imageUrl: Float
+  imageUrl: String
+  created_at: DateTime
+  updated_at: DateTime
   user: User
 }
 
@@ -185,7 +187,11 @@ type Query {
   getAllCryptoByUser: [TransactionCrypto!]!
   getAllP2P: [PtoP!]!
   getP2PByToken: [PtoP!]!
-  verification(id: Int!): Verification!
+  allVeri: [Verification!]!
+  allVeriForStaff: [Verification!]!
+  verfiForUser: Verification!
+  getOwnerTranasctionFiat: [TransactionFiat!]!
+  getCountOrder: [TransactionFiat!]!
 }
 
 input LoginInput {
@@ -195,6 +201,7 @@ input LoginInput {
 
 type Mutation {
   uploadFile(file: Upload!): Boolean!
+  createUser(role: Float!, registerInput: RegisterInput!): TokenRole!
   registerUser(registerInput: RegisterInput!): TokenRole!
   verifyUser(idInput: Float!): String!
   changePassword(passInput: PassInput!): String!
@@ -203,7 +210,7 @@ type Mutation {
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!
   deleteCurrency(id: ID!): String!
-  updateCurrency(volume: String, shortName: String, name: String, id: ID!): Currency!
+  updateCurrency(volume: Float, shortName: String, name: String, id: ID!): Currency!
   addCard(cardInput: CardInput!): CreditCard!
   updateCard(cardInput: CardInput!, id: Float!): CreditCard!
   deleteCard(id: Float!): BankNum!
@@ -217,9 +224,8 @@ type Mutation {
   createTransCrypto(cryptoInput: CryptoInput!): TransactionCrypto!
   updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
   createP2P(p2pInput: PtoPInput!): PtoP!
-  createVerification(createVerificationInput: CreateVerificationInput!): Verification!
-  updateVerification(updateVerificationInput: UpdateVerificationInput!): Verification!
-  removeVerification(id: Int!): Verification!
+  createVertification(imagename: String!): Verification!
+  updateVeri(status: Float!, id: Float!): Boolean!
   createRole: String!
 }
 
@@ -292,17 +298,6 @@ input PtoPInput {
   amount: Float
   targetUser: Float
   currency: String
-}
-
-input CreateVerificationInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateVerificationInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
 }
 
 type Subscription {

@@ -10,7 +10,7 @@ export class CurrencyService {
     const currency: Currency = {
       currencyLongName: currencyName,
       currency: currencyShortName,
-      volume: '0',
+      volume: 0,
     };
     return await this.repoService.currencyRepo.save(currency);
   }
@@ -37,7 +37,7 @@ export class CurrencyService {
       const currency: Currency = {
         currencyLongName: currencyNames[index],
         currency: currencyShortNames[index],
-        volume: '0',
+        volume: 0,
       };
       await this.repoService.currencyRepo.save(currency);
     }
@@ -48,7 +48,7 @@ export class CurrencyService {
     id?: number,
     name?: string,
     shortName?: string,
-    volume?: string,
+    volume?: number,
   ): Promise<Currency> {
     const currency = await this.repoService.currencyRepo.findOne(id);
     currency.currencyLongName = name ?? currency.currencyLongName;
