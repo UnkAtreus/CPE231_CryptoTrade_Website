@@ -22,6 +22,7 @@ import {
 import { history } from "../../store/configureStore";
 
 import { useMutation, gql } from "@apollo/client";
+import { ToastContainer, toast } from "react-toastify";
 
 const RegisterContainer = ({ match, ...props }) => {
   const [userParams, setUserParams] = useState({
@@ -116,6 +117,30 @@ const RegisterContainer = ({ match, ...props }) => {
     .fill("")
     .map((_v, idx) => now - idx);
 
+  const notify = (isSuccess) => {
+    if (isSuccess) {
+      toast.success("Success ✔", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error("Failed ❌", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
   const [createPost, { loading, error }] = useMutation(CREATE_USER, {
     onCompleted(login) {
       // {registerUser:
@@ -124,6 +149,11 @@ const RegisterContainer = ({ match, ...props }) => {
       if (login) {
         history.push("/login");
         window.location.reload();
+      }
+    },
+    onError(order) {
+      if (order) {
+        notify(false);
       }
     },
   });
@@ -409,6 +439,17 @@ const RegisterContainer = ({ match, ...props }) => {
           </div>
         </RegisterForm>
       </Container>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </RegisterStyled>
   );
 };
