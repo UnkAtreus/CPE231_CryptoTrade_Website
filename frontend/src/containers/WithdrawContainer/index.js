@@ -667,7 +667,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                           className="label white text-center"
                           style={{ minWidth: "64px" }}
                         >
-                          {items.amount}
+                          {BigNumber(items.amount).toFormat(2)}
                         </div>
                         <div
                           className="label gray text-center"
