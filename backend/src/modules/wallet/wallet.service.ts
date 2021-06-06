@@ -74,8 +74,8 @@ export class WalletService {
   async Buy(
     walletIDTarget: number,
     walletIDorder: number,
-    inOrder: number,
     amount: number,
+    inOrder: number,
   ): Promise<Wallet[]> {
     const walletTarget = await this.getWalletById(walletIDTarget);
     const walletInOrder = await this.getWalletById(walletIDorder);
