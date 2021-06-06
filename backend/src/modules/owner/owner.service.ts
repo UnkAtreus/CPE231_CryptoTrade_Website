@@ -99,7 +99,7 @@ export class OwnerService {
       .groupBy('date')
       .getRawMany();
   }
-  async countOrderCancel(date?: Date) {
+  async countOrderCancelOrFilled(isCancel: boolean, date?: Date) {
     date = date ?? new Date();
     const start = subDays(date, 7).toISOString().slice(0, 10);
     //     const end = date.toISOString().slice(0, 10);
@@ -125,7 +125,8 @@ export class OwnerService {
         start: start,
         end: end,
       })
-      .andWhere('cancel = :cancel', { cancel: 1 })
+      .andWhere('cancel = :cancel ', { cancel: isCancel })
+      .andWhere('filled = :filled ', { filled: !isCancel })
       .groupBy('date')
       .groupBy('currencyTo')
       .getRawMany();
