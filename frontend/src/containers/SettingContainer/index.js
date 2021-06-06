@@ -78,7 +78,7 @@ const NEW_PASSWORD = gql`
 `;
 
 const SettingContainer = ({ match, ...props }) => {
-  const [selectedFile, setSelectedFile] = useState();
+  const [selectedFile, setSelectedFile] = useState([]);
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
   const [changePassParam, setChangePassParam] = useState({
@@ -139,7 +139,10 @@ const SettingContainer = ({ match, ...props }) => {
         console.log(order);
         notify(true);
         refetch();
-      } else {
+      }
+    },
+    onError(order) {
+      if (order) {
         notify(false);
       }
     },
@@ -152,6 +155,11 @@ const SettingContainer = ({ match, ...props }) => {
         notify(true);
         refetch();
       } else {
+        notify(false);
+      }
+    },
+    onError(order) {
+      if (order) {
         notify(false);
       }
     },
@@ -211,8 +219,9 @@ const SettingContainer = ({ match, ...props }) => {
 
   const onFileUpload = () => {
     const formData = new FormData();
-    formData.append("file", selectedFile, selectedFile.name);
-    // console.log(selectedFile);
+    if (selectedFile.length !== 0) {
+      formData.append("file", selectedFile, selectedFile.name);
+    }
     PostFile(formData);
   };
 
