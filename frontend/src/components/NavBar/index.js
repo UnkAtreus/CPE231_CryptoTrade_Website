@@ -36,22 +36,42 @@ export const NavBar = () => {
             <div className="title mgl-32">P2P</div>
           </a>
         </div>
-        <div className="content-row">
+        <div className="content-row align-tiems-center">
           <a href="/withdraw/crypto" className="mgr-16">
             <div className="title mgl-32">Withdraw</div>
           </a>
-          <a href="/setting" className="mgr-16">
-            <div className="title mgl-32">Profile</div>
-          </a>
-          <a
-            href="/"
-            className="mgr-16"
-            onClick={() => {
-              handleItem("access-token").then(() => client.resetStore());
-            }}
-          >
-            <div className="title mgl-32">Logout</div>
-          </a>
+          {!data && !loading ? (
+            <div className="content-row">
+              <a href="/login" className="mgr-16">
+                <div
+                  className="title mgl-32 content-row justify-content-center align-items-center"
+                  style={{
+                    background: "#7F49E8",
+                    width: "100px",
+                    height: "30px",
+                    borderRadius: "8px",
+                  }}
+                >
+                  Login
+                </div>
+              </a>
+            </div>
+          ) : (
+            <div className="content-row">
+              <a href="/setting" className="mgr-16">
+                <div className="title mgl-32">Profile</div>
+              </a>
+              <a
+                href="/"
+                className="mgr-16"
+                onClick={() => {
+                  handleItem("access-token").then(() => client.resetStore());
+                }}
+              >
+                <div className="title mgl-32">Logout</div>
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </NavBarStyle>
