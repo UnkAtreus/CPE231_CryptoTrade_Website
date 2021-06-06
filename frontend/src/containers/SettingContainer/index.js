@@ -43,6 +43,10 @@ const GET_ALL_SYMBOL = gql`
       }
     }
     getUserByToken {
+      role {
+        id
+        role
+      }
       id
       firstName
       lastName
@@ -131,7 +135,7 @@ const SettingContainer = ({ match, ...props }) => {
     }
   };
 
-  const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
+  const { client, loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
 
   const [postVertify] = useMutation(POST_VERTIFY, {
     onCompleted(order) {

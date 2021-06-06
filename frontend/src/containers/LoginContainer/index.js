@@ -42,11 +42,33 @@ const LoginContainer = ({ match, ...props }) => {
     console.log("data", data);
     console.log("error", error);
     if (data) {
-      dispatch({
-        type: "SET_TOKEN",
-        data: { ...data, redirect: () => history.push("/home") } || {},
-      });
-      window.location.reload();
+      if (data.login.role === "customer") {
+        dispatch({
+          type: "SET_TOKEN",
+          data:
+            { ...data, redirect: () => history.push("/trades/btcusdt") } || {},
+        });
+      }
+      if (data.login.role === "staff") {
+        dispatch({
+          type: "SET_TOKEN",
+          data: { ...data, redirect: () => history.push("/staff") } || {},
+        });
+      }
+      if (data.login.role === "owner") {
+        dispatch({
+          type: "SET_TOKEN",
+          data: { ...data, redirect: () => history.push("/owner") } || {},
+        });
+      }
+      if (data.login.role === "admin") {
+        dispatch({
+          type: "SET_TOKEN",
+          data: { ...data, redirect: () => history.push("/admin") } || {},
+        });
+      }
+
+      // window.location.reload();
     }
   }, [data]);
 
@@ -70,8 +92,8 @@ const LoginContainer = ({ match, ...props }) => {
                   </div>
                   <Input
                     type="text"
-                    title="Telephone"
-                    placeholder="+66 812345678"
+                    title="Email"
+                    placeholder="Email"
                     onChange={(e) =>
                       setUserParams({
                         ...userParams,

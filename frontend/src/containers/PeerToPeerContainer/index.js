@@ -93,6 +93,10 @@ const PeerToPeerContainer = ({ match, ...props }) => {
         currencyLongName
       }
       getUserByToken {
+        role {
+          id
+          role
+        }
         email
         password
       }

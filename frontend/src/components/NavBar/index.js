@@ -1,7 +1,22 @@
 import React from "react";
 import { NavBarStyle } from "./styled";
+import { useQuery, gql } from "@apollo/client";
+import { handleItem } from "helpers/functions";
 
 export const NavBar = () => {
+  const POST_LOGOUT = gql`
+    query {
+      getUserByToken {
+        role {
+          id
+          role
+        }
+      }
+    }
+  `;
+  const { client, loading, error, data } = useQuery(POST_LOGOUT, {
+    fetchPolicy: "network-only",
+  });
   return (
     <NavBarStyle>
       <div className="nav-container">
@@ -27,6 +42,15 @@ export const NavBar = () => {
           </a>
           <a href="/setting" className="mgr-16">
             <div className="title mgl-32">Profile</div>
+          </a>
+          <a
+            href="/"
+            className="mgr-16"
+            onClick={() => {
+              handleItem("access-token").then(() => client.resetStore());
+            }}
+          >
+            <div className="title mgl-32">Logout</div>
           </a>
         </div>
       </div>
