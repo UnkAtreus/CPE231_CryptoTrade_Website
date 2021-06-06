@@ -11,6 +11,7 @@ import { BankService } from '../bank/bank.service';
 import {
   NotEnoughBalanceInWallet,
   SelectMethod,
+  UserIsNotVerify,
 } from 'src/utils/error-handling';
 import { CreditCard } from 'src/models/object/creditcard.model';
 import { CardService } from '../card/card.service';
@@ -34,6 +35,7 @@ export class TransactionFiatService {
     fiat.amount = input.amount;
     fiat.status = TransactionStatus.Pending;
     fiat.user = await this.userService.getUserByID(user.id);
+    const getuser = await this.userService.getUserByID(user.id);
     if (
       input.bankType &&
       input.bankType != '' &&
@@ -83,6 +85,10 @@ export class TransactionFiatService {
     } else {
       result = walletAmount - inputAmount;
       fiat.fee = inputAmount * 0.001;
+      if (getuser.verify == false) {
+        console.log('Do this');
+        throw UserIsNotVerify;
+      }
       if (result < 0) {
         throw NotEnoughBalanceInWallet;
       }
