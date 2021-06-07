@@ -190,15 +190,15 @@ type Query {
   allVeriForStaff: [Verification!]!
   verfiForUser: Verification!
   getAllRole: [Role!]!
-  getOwnerTranasctionFiat: JSON!
   getCountOrder: JSON!
   getCountTransaction: JSON!
-  countTopTransaction: JSON!
+  countTopUserOrder: JSON!
   getMostCurrencyDominate: JSON!
   registerCount: JSON!
   countOrderCancel: JSON!
   getSumFiatFee: JSON!
   getSumCryptoFee: JSON!
+  countOrderFilled: JSON!
 }
 
 input LoginInput {
@@ -219,6 +219,7 @@ type Mutation {
   changePassword(passInput: PassInput!): String!
   createPincode(input: String!): User!
   updatePincode(input: PincodeInput!): User!
+  deleteUserByID(id: Float!): User!
   createCurrency(currencyShortName: String!, currencyName: String!): Currency!
   createAllCurrency: [Currency!]!
   deleteCurrency(id: ID!): String!

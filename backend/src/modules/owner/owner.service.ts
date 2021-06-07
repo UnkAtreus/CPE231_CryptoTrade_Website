@@ -1,23 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { addDays, subDays } from 'date-fns';
 import { RepoService } from 'src/repo/repo.service';
-
+import { getConnection } from 'typeorm';
 @Injectable()
 export class OwnerService {
   constructor(private readonly repoService: RepoService) {}
 
-  async sumFiatFee() {
-    return this.repoService.transactionFiatRepo
-      .createQueryBuilder('tf')
-      .addFrom('transaction_crypto', 'tc')
-      .addFrom('order', 'od')
-      .select('SUM(tf.fee) + SUM(tc.fee) + SUM(od.fee)', 'sum1')
-      .select('SUM(tc.fee)', 'sum2')
-      .select('SUM(od.fee)', 'sum3')
-      .addSelect('CAST(tf.created_at as varchar(10))', 'date')
-      .groupBy('date')
-      .getRawMany();
-  }
+  // async sumFiatFee() {
+  //   return this.repoService.transactionFiatRepo
+  //     .createQueryBuilder('tf')
+  //     .addFrom('transaction_crypto', 'tc')
+  //     .addFrom('order', 'od')
+  //     .select('SUM(tf.fee) + SUM(tc.fee) + SUM(od.fee)', 'sum1')
+  //     .select('SUM(tc.fee)', 'sum2')
+  //     .select('SUM(od.fee)', 'sum3')
+  //     .addSelect('CAST(tf.created_at as varchar(10))', 'date')
+  //     .groupBy('date')
+  //     .orderBy('date', 'DESC')
+  //     .getRawMany();
+  // }
   async countTransaction(date?: Date) {
     date = date ?? new Date();
     const start = subDays(date, 7).toISOString().slice(0, 10);
@@ -36,6 +37,7 @@ export class OwnerService {
         },
       )
       .groupBy('date')
+      .orderBy('date', 'DESC')
       .getRawMany();
     const resultCrypto = await this.repoService.transactionCryptoRepo
       .createQueryBuilder('tc')
@@ -60,28 +62,43 @@ export class OwnerService {
     });
     return resultFiat;
   }
-  async countTopTransaction(date?: Date) {
+  async countTopOrder(date?: Date) {
     date = date ?? new Date();
     const start = subDays(date, 7).toISOString().slice(0, 10);
     //     const end = date.toISOString().slice(0, 10);
-    const endd = addDays(date, 7).toISOString().slice(0, 10);
-    return (
-      this.repoService.transactionFiatRepo
-        .createQueryBuilder('transactionfiat')
-        .leftJoinAndSelect('transactionfiat.user', 'user')
-        .select('COUNT(*)', 'count')
-        .addSelect('user.id , user.firstName , user.lastName')
-        .addSelect('CAST(transactionfiat.created_at AS varchar(10))', 'date')
-        .orderBy('count')
-        .limit(5)
-        // .where('transactionfiat.user = :userid' , { })
-        // .where('created_at BETWEEN :start AND :end', {
-        //   start: start,
-        //   end: endd,
-        // })
-        //       .groupBy('date')
-        .getRawMany()
-    );
+    const end = addDays(date, 1).toISOString().slice(0, 10);
+    const subQuey =
+      '(SELECT `od`.`id` AS `od_id`,`od`.`created_at`, COUNT(*) AS `count`, ROW_NUMBER() OVER (PARTITION BY date ORDER BY count desc) as row_num, `user`.`id` , `user`.`firstName` , `user`.`lastName`, CAST(`od`.`created_at` AS varchar(10)) AS `date` FROM `order` `od` LEFT JOIN `user` `user` ON `user`.`id`=`od`.`userId`   GROUP BY date, `user`.`id` ORDER BY date DESC)';
+    return getConnection()
+      .createQueryBuilder()
+      .from(subQuey, 'd')
+      .where('created_at BETWEEN :start AND :end', {
+        start: start,
+        end: end,
+      })
+      .andWhere('row_num < 6')
+      .getRawMany();
+    // .andWhere({date })
+    // .getSql()
+    // return this.repoService.orderRepo
+    //   .createQueryBuilder('od')
+    //   .leftJoinAndSelect('od.user', 'user')
+    //   .select('od.id')
+    //   .addSelect('COUNT(*)', 'count')
+    //   .addSelect(
+    //     'ROW_NUMBER() OVER (PARTITION BY date ORDER BY count desc) as row_num',
+    //   )
+    //   .addSelect('user.id , user.firstName , user.lastName')
+    //   .addSelect('CAST(od.created_at AS varchar(10))', 'date')
+    //   .where('od.created_at BETWEEN :start AND :end', {
+    //     start: start,
+    //     end: end,
+    //   })
+    //   .andWhere('row_num < 6')
+    //   .groupBy('date')
+    //   .addGroupBy('user.id')
+    //   .orderBy('date', 'DESC')
+    //   .getRawMany();
   }
   async countOrder(date?: Date) {
     date = date ?? new Date();

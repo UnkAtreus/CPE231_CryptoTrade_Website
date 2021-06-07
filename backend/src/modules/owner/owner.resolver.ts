@@ -7,12 +7,12 @@ import GraphQLJSON from 'graphql-type-json';
 export class OwnerResolver {
   constructor(private readonly ownerService: OwnerService) {}
 
-  @Query(() => GraphQLJSON)
-  async getOwnerTranasctionFiat() {
-    const x = await this.ownerService.sumFiatFee();
+  // @Query(() => GraphQLJSON)
+  // async getOwnerTranasctionFiat() {
+  //   const x = await this.ownerService.sumFiatFee();
 
-    return x;
-  }
+  //   return x;
+  // }
 
   @Query(() => GraphQLJSON)
   async getCountOrder() {
@@ -25,8 +25,8 @@ export class OwnerResolver {
     return x;
   }
   @Query(() => GraphQLJSON)
-  async countTopTransaction() {
-    const x = await this.ownerService.countTopTransaction();
+  async countTopUserOrder() {
+    const x = await this.ownerService.countTopOrder();
     return x;
   }
   @Query(() => GraphQLJSON)
@@ -42,11 +42,8 @@ export class OwnerResolver {
     return x;
   }
   @Query(() => GraphQLJSON)
-  //   async registerCount(@Args('date', { nullable: true }) date?: Date) {
   async countOrderCancel() {
     const x = await this.ownerService.countOrderCancelOrFilled(true);
-    // const x = await this.ownerService.countOrderCancelOrFilled(false);
-    console.log(x);
     return x;
   }
   @Query(() => GraphQLJSON)
@@ -57,6 +54,11 @@ export class OwnerResolver {
   @Query(() => GraphQLJSON)
   async getSumCryptoFee() {
     const x = await this.ownerService.getSumCryptoFee();
+    return x;
+  }
+  @Query(() => GraphQLJSON)
+  async countOrderFilled() {
+    const x = await this.ownerService.countOrderCancelOrFilled(false);
     return x;
   }
 
