@@ -87,7 +87,7 @@ export const GuestRoute = ({ component: Component, ...rest }) => (
 );
 
 export const PrivateRoute = ({ component: Component, ...rest }) => {
-  console.log(Component);
+  // console.log(Component);
   return (
     <Route
       {...rest}
