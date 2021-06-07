@@ -122,6 +122,7 @@ const StaffSubContainer = ({ match, ...props }) => {
   const [allVeri, setAllVeri] = useState([]);
   const [getAllFiat, setGetAllFiat] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [image, setImage] = useState("");
   const [coinSymbol, setCoinSymbol] = useState([
     {
       __typename: "Currency",
@@ -508,6 +509,7 @@ const StaffSubContainer = ({ match, ...props }) => {
                       }}
                       onClick={() => {
                         closeLightbox();
+                        setImage(data.imageUrl);
                       }}
                     >
                       {/* <ModalImage small={""} large={""} alt="Hello World!" /> */}
@@ -567,8 +569,8 @@ const StaffSubContainer = ({ match, ...props }) => {
       </Container>
       {isOpen && (
         <Lightbox
-          medium={""}
-          large={""}
+          medium={"http://localhost:5000/" + image}
+          large={"http://localhost:5000/" + image}
           alt="Hello World!"
           onClose={closeLightbox}
         />
