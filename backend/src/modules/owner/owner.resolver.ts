@@ -50,10 +50,19 @@ export class OwnerResolver {
     return x;
   }
   @Query(() => GraphQLJSON)
-  async getAllSumFee() {
-    // TRANSACTION FIAT , CRYPTO SUM GROUP BY DATE
-    // AND AOW MA YUM GUN
-    const x = await this.ownerService.countOrderCancelOrFilled(false);
-    return;
+  async getSumFiatFee() {
+    const x = await this.ownerService.getSumFiatFee();
+    return x;
   }
+  @Query(() => GraphQLJSON)
+  async getSumCryptoFee() {
+    const x = await this.ownerService.getSumCryptoFee();
+    return x;
+  }
+
+  // @Query(() => GraphQLJSON)
+  // async getSumFee() {
+  //   const x = await this.ownerService.getSumFee();
+  //   return x;
+  // }
 }

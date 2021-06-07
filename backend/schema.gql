@@ -197,7 +197,8 @@ type Query {
   getMostCurrencyDominate: JSON!
   registerCount: JSON!
   countOrderCancel: JSON!
-  getAllSumFee: JSON!
+  getSumFiatFee: JSON!
+  getSumCryptoFee: JSON!
 }
 
 input LoginInput {

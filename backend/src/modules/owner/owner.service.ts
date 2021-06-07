@@ -162,4 +162,60 @@ export class OwnerService {
       .groupBy('date')
       .getRawMany();
   }
+  async getSumFiatFee(date?: Date) {
+    date = date ?? new Date();
+    const start = subDays(date, 7).toISOString().slice(0, 10);
+    // const end = date.toISOString().slice(0, 10);
+    const end = addDays(date, 1).toISOString().slice(0, 10);
+
+    return await this.repoService.transactionFiatRepo
+      .createQueryBuilder('fiat')
+      .select('SUM(fiat.fee)', 'sumFiatFee')
+      // .select('SUM(fee)', 'sumFee')
+      .addSelect('CAST(fiat.created_at AS varchar(10))', 'date')
+      // .innerJoin('transaction_crypto', 'crypto', 'fiat.userId = crypto.userId')
+      // .leftJoin('wallet', 'wallet', 'wallet.id = crypto.walletId')
+      .groupBy('date')
+      .orderBy('date')
+      // .addSelect('SUM(crypto.fee)', 'sumCryptoFEE')
+      .getRawMany();
+  }
+
+  async getSumCryptoFee(date?: Date) {
+    date = date ?? new Date();
+    const start = subDays(date, 7).toISOString().slice(0, 10);
+    // const end = date.toISOString().slice(0, 10);
+    const end = addDays(date, 1).toISOString().slice(0, 10);
+
+    return await this.repoService.transactionCryptoRepo
+      .createQueryBuilder('crypto')
+      .select('SUM(crypto.fee)', 'sumCryptoFee')
+      // .select('SUM(fee)', 'sumFee')
+      .addSelect('CAST(crypto.created_at AS varchar(10))', 'date')
+      // .innerJoin('transaction_crypto', 'crypto', 'fiat.userId = crypto.userId')
+      .leftJoin('crypto.wallet', 'wt')
+      .leftJoin('currency', 'cc', 'cc.id = wt.currency')
+      .groupBy('date')
+      .groupBy('wt.currency')
+      .addSelect('cc.currency')
+      .orderBy('date')
+      // .addSelect('SUM(crypto.fee)', 'sumCryptoFEE')
+      .getRawMany();
+  }
+
+  // async getSumFee(date?: Date) {
+  //   date = date ?? new Date();
+  //   const start = subDays(date, 7).toISOString().slice(0, 10);
+  //   // const end = date.toISOString().slice(0, 10);
+  //   const end = addDays(date, 1).toISOString().slice(0, 10);
+
+  //   return await this.repoService.transactionFiatRepo
+  //     .createQueryBuilder('fiat')
+  //     .select('SUM(fiat.fee)', 'sumFiatFee')
+  //     .addSelect('CAST(fiat.created_at AS varchar(10))', 'date')
+  //     .leftJoin('user', 'u', 'u.id = fiat.user')
+  //     .leftJoin('transaction_crypto', 'crypto', 'u.id = crypto.user')
+  //     .groupBy('date')
+  //     .getRawMany();
+  // }
 }
