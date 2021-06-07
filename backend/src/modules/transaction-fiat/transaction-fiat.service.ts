@@ -103,7 +103,7 @@ export class TransactionFiatService {
   }
   async getAllFiat(): Promise<TransactionFiat[]> {
     return await this.repoService.transactionFiatRepo.find({
-      relations: ['user', 'bank', 'bank.banktype'],
+      relations: ['user', 'bank', 'bank.banktype', 'creditCard'],
       order: {
         created_at: 'DESC',
       },

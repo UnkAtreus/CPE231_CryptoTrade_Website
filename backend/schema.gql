@@ -197,6 +197,7 @@ type Query {
   getMostCurrencyDominate: JSON!
   registerCount: JSON!
   countOrderCancel: JSON!
+  getAllSumFee: JSON!
 }
 
 input LoginInput {

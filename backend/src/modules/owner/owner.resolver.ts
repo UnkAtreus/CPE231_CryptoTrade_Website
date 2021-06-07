@@ -10,6 +10,7 @@ export class OwnerResolver {
   @Query(() => GraphQLJSON)
   async getOwnerTranasctionFiat() {
     const x = await this.ownerService.sumFiatFee();
+
     return x;
   }
 
@@ -43,8 +44,16 @@ export class OwnerResolver {
   @Query(() => GraphQLJSON)
   //   async registerCount(@Args('date', { nullable: true }) date?: Date) {
   async countOrderCancel() {
-    const x = await this.ownerService.countOrderCancel();
+    const x = await this.ownerService.countOrderCancelOrFilled(true);
+    // const x = await this.ownerService.countOrderCancelOrFilled(false);
     console.log(x);
     return x;
+  }
+  @Query(() => GraphQLJSON)
+  async getAllSumFee() {
+    // TRANSACTION FIAT , CRYPTO SUM GROUP BY DATE
+    // AND AOW MA YUM GUN
+    const x = await this.ownerService.countOrderCancelOrFilled(false);
+    return;
   }
 }
