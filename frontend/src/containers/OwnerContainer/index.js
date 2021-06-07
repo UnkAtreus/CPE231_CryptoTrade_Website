@@ -68,13 +68,15 @@ const GET_ALL_SYMBOL = gql`
 
     registerCount
 
-    countOrderCancel
-
     getMostCurrencyDominate
 
     getSumFiatFee
 
     getSumCryptoFee
+
+    countOrderCancel
+
+    countOrderFilled
   }
 `;
 
@@ -88,6 +90,8 @@ const OwnerContainer = ({ match, ...props }) => {
   const [getSumCryptoFee, setGetSumCryptoFee] = useState({});
   const [getSumCryptoFeeDate, setGetSumCryptoFeeDate] = useState({});
   const [getSumFiatFee, setGetSumFiatFee] = useState([]);
+  const [countOrderCancel, setCountOrderCancel] = useState([]);
+  const [countOrderFilled, setCountOrderFilled] = useState([]);
   const [countOrder, setCountOrder] = useState(0);
   const [countRegis, setCountRegis] = useState(0);
   const [countTrans, setCountTrans] = useState(0);
@@ -167,7 +171,7 @@ const OwnerContainer = ({ match, ...props }) => {
       }
     });
     setgetCurPrice(curPrice);
-    console.log(getCurPrice);
+    // console.log(getCurPrice);
   };
 
   const getTotal = (flag) => {
@@ -232,6 +236,12 @@ const OwnerContainer = ({ match, ...props }) => {
     if (data && data.getSumFiatFee) {
       setGetSumFiatFee(data.getSumFiatFee);
     }
+    if (data && data.countOrderCancel) {
+      setCountOrderCancel(groupArray(data.countOrderCancel, "date"));
+    }
+    if (data && data.countOrderFilled) {
+      setCountOrderFilled(groupArray(data.countOrderFilled, "date"));
+    }
   }, [data]);
 
   const context_data = (canvas) => {
@@ -281,7 +291,7 @@ const OwnerContainer = ({ match, ...props }) => {
         datas.push(Number(data.count));
       });
     }
-    if (chartTitle === "Trasaction") {
+    if (chartTitle === "Transaction") {
       registerCount.map((data) => {
         labels.push(data.date);
         datas.push(Number(data.count));
@@ -329,7 +339,9 @@ const OwnerContainer = ({ match, ...props }) => {
     var dataset = [];
     var N = 7;
     // console.log(getSumFiatFee);
-    console.log(getSumCryptoFee);
+    // console.log(getSumCryptoFee);
+    console.log("countOrderCancel", countOrderCancel);
+    console.log(countOrderFilled);
 
     if (feeTitle === "Fee Fiat") {
       getSumFiatFee.map((data, index) => {
@@ -350,6 +362,29 @@ const OwnerContainer = ({ match, ...props }) => {
       ];
     }
     if (feeTitle === "Fee Crypto") {
+      Object.keys(getSumCryptoFee).map((key, index) => {
+        label = key;
+        getSumCryptoFee[key].map((data, index2) => {
+          if (index < N) {
+            datas.push(data.sumCryptoFee);
+          }
+        });
+        dataset.push({
+          label: label,
+          data: datas,
+          backgroundColor: ["rgb(154, 78, 255)"],
+          borderColor: ["rgba(153, 102, 255, 1)"],
+          borderWidth: 1,
+        });
+        datas = [];
+      });
+      Object.keys(getSumCryptoFeeDate).map((key, index) => {
+        if (index < N) {
+          labels.push(key);
+        }
+      });
+    }
+    if (feeTitle === "Fee Order(Crypto)") {
       Object.keys(getSumCryptoFee).map((key, index) => {
         label = key;
         getSumCryptoFee[key].map((data, index2) => {
@@ -415,7 +450,7 @@ const OwnerContainer = ({ match, ...props }) => {
         </ShowDataContainer>
       );
     }
-    if (chartTitle === "Trasaction") {
+    if (chartTitle === "Transaction") {
       return (
         <ShowDataContainer>
           <div className="content-clumn" style={{ width: "100%" }}>
@@ -475,11 +510,11 @@ const OwnerContainer = ({ match, ...props }) => {
           </CardContainer>
           <CardContainer
             onClick={() => {
-              setChartTitle("Trasaction");
+              setChartTitle("Transaction");
             }}
           >
             <div>
-              <div className="section-headline gray">Trasaction</div>
+              <div className="section-headline gray">Transaction</div>
               <div className="headline white mgl-32">{countTrans}</div>
             </div>
           </CardContainer>
@@ -582,7 +617,7 @@ const OwnerContainer = ({ match, ...props }) => {
             }}
           >
             <div>
-              <div className="section-headline gray">Form Crypto</div>
+              <div className="section-headline gray">From Crypto</div>
               <div className="headline white mgl-32">{countRegis}</div>
             </div>
           </CardFeeContainer>

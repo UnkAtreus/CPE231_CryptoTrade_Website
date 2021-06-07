@@ -270,6 +270,7 @@ const DeopsitContainer = ({ match, ...props }) => {
   };
 
   const getTotal = (flag) => {
+    console.log(userWallet);
     return (
       Number(userWallet[CRYPTO_INDEX[flag]].amount) +
       Number(userWallet[CRYPTO_INDEX[flag]].inOrder)
