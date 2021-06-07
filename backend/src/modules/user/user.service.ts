@@ -9,7 +9,7 @@ import { IncorrectPassword, UserNotFound } from 'src/utils/error-handling';
 
 import { Hash } from './helper/hash';
 import { WalletService } from '../wallet/wallet.service';
-import { Between, Raw, UpdateResult } from 'typeorm';
+import { Between, DeleteResult, Raw, UpdateResult } from 'typeorm';
 import PassInput from 'src/models/input/password.input';
 import { TokenRole } from '../../models/output/tokenrole.model';
 import PincodeInput from 'src/models/input/pincode.input';
@@ -172,5 +172,24 @@ export class UserService {
     } else {
       throw IncorrectPassword;
     }
+  }
+
+  async deleteUserByID(id: number): Promise<DeleteResult> {
+    return await this.repoService.userRepo.delete({ id: id });
+  }
+  async updateUserByID(id: number, input: RegisterInput): Promise<User> {
+    const user = await this.getUserByID(id);
+    user.email = input.email;
+    user.firstName = input.profileInput.firstName;
+    user.lastName = input.profileInput.lastName;
+    user.gender = input.profileInput.gender;
+    user.address = input.profileInput.address;
+    user.city = input.profileInput.city;
+    user.nationality = input.profileInput.nationality;
+    user.postcode = input.profileInput.postcode;
+    user.citizenID = input.profileInput.citizenID;
+    user.passportNumber = input.profileInput.passportNumber;
+    user.phone = input.profileInput.phone;
+    return await this.repoService.userRepo.save(user);
   }
 }

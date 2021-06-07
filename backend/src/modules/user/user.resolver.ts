@@ -10,6 +10,7 @@ import { Gender } from 'src/static/enum';
 import faker from 'faker';
 import { Role } from 'src/models/object/role.model';
 import { TokenRole } from 'src/models/output/tokenrole.model';
+import { DeleteResult } from 'typeorm';
 @Resolver()
 export class UserResolver {
   constructor(private userService: UserService) {}
@@ -88,5 +89,10 @@ export class UserResolver {
     @Args('pin') input: string,
   ): Promise<boolean> {
     return await this.userService.checkPincode(input, user);
+  }
+
+  @Mutation(() => User)
+  async deleteUserByID(@Args('id') id: number): Promise<DeleteResult> {
+    return this.userService.deleteUserByID(id);
   }
 }
