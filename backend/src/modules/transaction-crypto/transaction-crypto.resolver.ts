@@ -31,7 +31,6 @@ export class TransactionCryptoResolver {
     return await this.crytoService.getAllCryptoByUser(user);
   }
   @Mutation(() => TransactionCrypto)
-  @Roles(['staff'])
   async updateCryptoStatus(
     @Args('status') status: TransactionStatus,
     @Args('id', { type: () => ID }) id: number,
