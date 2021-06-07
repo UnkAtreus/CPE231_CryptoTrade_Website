@@ -511,7 +511,7 @@ const OwnerContainer = ({ match, ...props }) => {
       return (
         <ShowDataContainer>
           <div className="content-clumn" style={{ width: "100%" }}>
-            <div className="section-headline white mgb-24">Order</div>
+            <div className="section-headline white mgb-24">{chartTitle}</div>
             <Bar data={order_data} plugins={[plugin]} options={options} />
           </div>
         </ShowDataContainer>
@@ -521,7 +521,7 @@ const OwnerContainer = ({ match, ...props }) => {
       return (
         <ShowDataContainer>
           <div className="content-clumn" style={{ width: "100%" }}>
-            <div className="section-headline white mgb-24">Order</div>
+            <div className="section-headline white mgb-24">{chartTitle}</div>
             <Bar data={order_data} plugins={[plugin]} options={options} />
           </div>
         </ShowDataContainer>
@@ -531,7 +531,7 @@ const OwnerContainer = ({ match, ...props }) => {
       return (
         <ShowDataContainer>
           <div className="content-clumn" style={{ width: "100%" }}>
-            <div className="section-headline white mgb-24">Order</div>
+            <div className="section-headline white mgb-24">{chartTitle}</div>
             <Bar data={order_data} plugins={[plugin]} options={options} />
           </div>
         </ShowDataContainer>
