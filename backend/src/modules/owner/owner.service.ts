@@ -99,32 +99,37 @@ export class OwnerService {
       .groupBy('date')
       .getRawMany();
   }
-  async countOrderCancel(date?: Date) {
+  async countOrderCancelOrFilled(isCancel: boolean, date?: Date) {
     date = date ?? new Date();
     const start = subDays(date, 7).toISOString().slice(0, 10);
     //     const end = date.toISOString().slice(0, 10);
-    const end = addDays(date, 1).toISOString().slice(0, 10);
-    return (
-      this.repoService.orderRepo
-        .createQueryBuilder('order')
-        .leftJoinAndSelect('order.walletFrom', 'wf')
-        .leftJoinAndSelect('order.walletTo', 'wt')
-        // .leftJoinAndSelect('order.walletTo.currency', 'cu')
-        // .addFrom('currency',÷'cu')
-        // .select('COUNT(*)', 'count')
-        // .addSelect('SUM(order.fee)', 'feeCrypto')
-        .addSelect('CAST(order.updated_at AS varchar(10))', 'date')
-        .where('updated_at BETWEEN :start AND :end', {
-          start: start,
-          end: end,
-        })
-
-        .andWhere('cancel = :cancel', { cancel: 0 })
-        // .addWhere('cu.id == wt')
-        .groupBy('date')
-        // .addGroupBy('w')
-        .getRawMany()
-    );
+    const end = addDays(date, 3).toISOString().slice(0, 10);
+    return this.repoService.orderRepo
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.walletFrom', 'wf')
+      .leftJoinAndSelect('order.walletTo', 'wt')
+      .addSelect('COUNT (*)', 'count')
+      .addSelect('wf.currencyId', 'wf_currencyId')
+      .addSelect('wt.currencyId', 'wt_currencyId')
+      .addSelect('SUM (order.fee) ', 'sum')
+      .addSelect(
+        '(SELECT currency FROM currency WHERE id = wf_currencyId)',
+        'currencyFrom',
+      )
+      .addSelect(
+        '(SELECT currency FROM currency WHERE id = wt_currencyId)',
+        'currencyTo',
+      )
+      .addSelect('CAST(order.updated_at AS varchar(10))', 'date')
+      .where('updated_at BETWEEN :start AND :end', {
+        start: start,
+        end: end,
+      })
+      .andWhere('cancel = :cancel ', { cancel: isCancel })
+      .andWhere('filled = :filled ', { filled: !isCancel })
+      .groupBy('date')
+      .groupBy('currencyTo')
+      .getRawMany();
   }
   async getMostCurrencyDominate() {
     const s = await this.repoService.walletRepo
