@@ -55,6 +55,20 @@ const GET_ALL_SYMBOL = gql`
       address
     }
 
+    getAllFiat {
+      method
+      bank {
+        banktype {
+          bank
+        }
+        bankNumber
+      }
+      status
+      amount
+      totalBalanceLeft
+      fee
+    }
+
     allVeri {
       id
       status
@@ -71,6 +85,7 @@ const GET_ALL_SYMBOL = gql`
 const StaffContainer = ({ match, ...props }) => {
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
+  const [getAllFiat, setGetAllFiat] = useState([]);
   const [allVeri, setAllVeri] = useState([]);
   const [coinSymbol, setCoinSymbol] = useState([
     {
@@ -153,6 +168,15 @@ const StaffContainer = ({ match, ...props }) => {
       // console.log(data.allVeri);
       setAllVeri(data.allVeri);
     }
+    if (data && data.getAllFiat) {
+      var temp = [];
+      data.getAllFiat.map((data) => {
+        if (data.method === "1") {
+          temp.push(data);
+        }
+      });
+      setGetAllFiat(temp);
+    }
   }, [data]);
 
   useEffect(() => {
@@ -175,19 +199,13 @@ const StaffContainer = ({ match, ...props }) => {
               <div className="headline white mgl-32">{allVeri.length}</div>
             </div>
           </CardContainer>
-          <CardContainer href="/staff/withdraw">
-            <div>
-              <div className="section-headline gray">Withdraw</div>
-              <div className="headline white mgl-32">223</div>
-            </div>
-          </CardContainer>
           <CardContainer
-            href="/staff/deposit
-          "
+            href="/staff/withdraw"
+            style={{ width: "100%", marginLeft: "8px" }}
           >
             <div>
-              <div className="section-headline gray">Deposit</div>
-              <div className="headline white mgl-32">124</div>
+              <div className="section-headline gray">Withdraw Transaction</div>
+              <div className="headline white mgl-32">{getAllFiat.length}</div>
             </div>
           </CardContainer>
         </div>
