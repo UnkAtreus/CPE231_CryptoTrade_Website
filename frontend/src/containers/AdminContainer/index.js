@@ -197,7 +197,7 @@ const AdminContainer = ({ match, ...props }) => {
           <CardContainer href="/admin/wallet">
             <div>
               <div className="section-headline gray">Wallet</div>
-              <div className="headline white mgl-32">{getAllWallet.length}</div>
+              <div className="headline white mgl-32">{getAllUser.length}</div>
             </div>
           </CardContainer>
           <CardContainer href="/admin/order">
