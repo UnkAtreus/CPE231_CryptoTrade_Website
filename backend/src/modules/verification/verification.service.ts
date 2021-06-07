@@ -21,7 +21,7 @@ export class VerificationService {
   }
 
   async findAll() {
-    return await this.repoService.veriRepo.find();
+    return await this.repoService.veriRepo.find({ relations: ['user'] });
   }
   async findOne(id: number) {
     return await this.repoService.veriRepo.findOne({ where: { id: id } });

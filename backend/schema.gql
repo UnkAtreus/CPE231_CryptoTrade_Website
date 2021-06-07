@@ -237,7 +237,7 @@ type Mutation {
   updateCryptoStatus(id: ID!, status: Float!): TransactionCrypto!
   createP2P(p2pInput: PtoPInput!): PtoP!
   createVertification(imagename: String!): Verification!
-  updateVeri(status: Float!, id: Float!): Boolean!
+  updateVeri(status: Float!, id: Float!): Verification!
   createAllRoles: String!
   createRole(role: String!): Role!
   updateRole(role: String!, id: ID!): Role!

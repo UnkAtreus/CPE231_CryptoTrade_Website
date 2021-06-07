@@ -54,12 +54,24 @@ const GET_ALL_SYMBOL = gql`
       city
       address
     }
+
+    allVeri {
+      id
+      status
+      imageUrl
+      created_at
+      updated_at
+      user {
+        id
+      }
+    }
   }
 `;
 
 const StaffContainer = ({ match, ...props }) => {
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
+  const [allVeri, setAllVeri] = useState([]);
   const [coinSymbol, setCoinSymbol] = useState([
     {
       __typename: "Currency",
@@ -106,7 +118,7 @@ const StaffContainer = ({ match, ...props }) => {
       }
     });
     setgetCurPrice(curPrice);
-    console.log(getCurPrice);
+    // console.log(getCurPrice);
   };
 
   const getTotal = (flag) => {
@@ -137,6 +149,10 @@ const StaffContainer = ({ match, ...props }) => {
       console.log(data.getUserByToken);
       setUserInfo(data.getUserByToken);
     }
+    if (data && data.allVeri) {
+      // console.log(data.allVeri);
+      setAllVeri(data.allVeri);
+    }
   }, [data]);
 
   useEffect(() => {
@@ -156,7 +172,7 @@ const StaffContainer = ({ match, ...props }) => {
           <CardContainer href="/staff/vertify">
             <div>
               <div className="section-headline gray">Vertify</div>
-              <div className="headline white mgl-32">1010</div>
+              <div className="headline white mgl-32">{allVeri.length}</div>
             </div>
           </CardContainer>
           <CardContainer href="/staff/withdraw">
