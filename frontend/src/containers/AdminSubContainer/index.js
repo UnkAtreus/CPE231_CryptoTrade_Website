@@ -450,11 +450,12 @@ const AdminSubContainer = ({ match, ...props }) => {
                   <div
                     className={ClassNames(
                       "label white text-center",
-                      data.vertify ? "green" : "red"
+                      data.verify ? "green" : "red"
                     )}
                     style={{ minWidth: "96px" }}
                   >
-                    {data.vertify ? "vertify" : "not vertify"}
+                    {console.log(data.verify)}
+                    {data.verify ? "verify" : "not verify"}
                   </div>
                   <div
                     className="label white text-center"

@@ -48,7 +48,7 @@ export const BalanceContainer = styled.div`
 `;
 
 export const InfomationContainer = styled.div`
-  height: 418px;
+  height: 100%;
   width: 100%;
   border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
   background-color: ${VARIABLES.COLORS.BACKGROUND_2};

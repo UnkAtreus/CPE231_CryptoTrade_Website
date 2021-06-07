@@ -23,6 +23,7 @@ import { marketController } from "apiService";
 import moment from "moment";
 // import Chart from "chart.js";
 import { Bar } from "react-chartjs-2";
+import groupArray from "group-array";
 
 import {
   MOCK_WALLET,
@@ -70,6 +71,10 @@ const GET_ALL_SYMBOL = gql`
     countOrderCancel
 
     getMostCurrencyDominate
+
+    getSumFiatFee
+
+    getSumCryptoFee
   }
 `;
 
@@ -80,6 +85,9 @@ const OwnerContainer = ({ match, ...props }) => {
   const [getCountTransaction, setGetCountTransaction] = useState([]);
   const [registerCount, setRegisterCount] = useState([]);
   const [getMostCurrencyDominate, setGetMostCurrencyDominate] = useState([]);
+  const [getSumCryptoFee, setGetSumCryptoFee] = useState({});
+  const [getSumCryptoFeeDate, setGetSumCryptoFeeDate] = useState({});
+  const [getSumFiatFee, setGetSumFiatFee] = useState([]);
   const [countOrder, setCountOrder] = useState(0);
   const [countRegis, setCountRegis] = useState(0);
   const [countTrans, setCountTrans] = useState(0);
@@ -216,6 +224,14 @@ const OwnerContainer = ({ match, ...props }) => {
       });
       setCountRegis(count_data2);
     }
+
+    if (data && data.getSumCryptoFee) {
+      setGetSumCryptoFee(groupArray(data.getSumCryptoFee, "cc_currency"));
+      setGetSumCryptoFeeDate(groupArray(data.getSumCryptoFee, "date"));
+    }
+    if (data && data.getSumFiatFee) {
+      setGetSumFiatFee(data.getSumFiatFee);
+    }
   }, [data]);
 
   const context_data = (canvas) => {
@@ -302,6 +318,64 @@ const OwnerContainer = ({ match, ...props }) => {
           borderWidth: 1,
         },
       ],
+    };
+  };
+
+  const fee_data = (canvas) => {
+    // const ctx = canvas.getContext("2d");
+    var labels = [];
+    var datas = [];
+    var label = "";
+    var dataset = [];
+    var N = 7;
+    // console.log(getSumFiatFee);
+    console.log(getSumCryptoFee);
+
+    if (feeTitle === "Fee Fiat") {
+      getSumFiatFee.map((data, index) => {
+        if (index < N) {
+          labels.push(data.date);
+          datas.push(Number(data.sumFiatFee));
+        }
+      });
+
+      dataset = [
+        {
+          label: "Fee Fiat",
+          data: datas,
+          backgroundColor: ["rgb(154, 78, 255)"],
+          borderColor: ["rgba(153, 102, 255, 1)"],
+          borderWidth: 1,
+        },
+      ];
+    }
+    if (feeTitle === "Fee Crypto") {
+      Object.keys(getSumCryptoFee).map((key, index) => {
+        label = key;
+        getSumCryptoFee[key].map((data, index2) => {
+          if (index < N) {
+            datas.push(data.sumCryptoFee);
+          }
+        });
+        dataset.push({
+          label: label,
+          data: datas,
+          backgroundColor: ["rgb(154, 78, 255)"],
+          borderColor: ["rgba(153, 102, 255, 1)"],
+          borderWidth: 1,
+        });
+        datas = [];
+      });
+      Object.keys(getSumCryptoFeeDate).map((key, index) => {
+        if (index < N) {
+          labels.push(key);
+        }
+      });
+    }
+
+    return {
+      labels: labels,
+      datasets: dataset,
     };
   };
 
@@ -541,6 +615,7 @@ const OwnerContainer = ({ match, ...props }) => {
           <div className="content-column">
             <div className="section-headline gray mgb-24">{feeTitle}</div>
           </div>
+          <Bar data={fee_data} plugins={[plugin]} options={options} />
         </InfomationContainer>
       </Container>
     </OwnerStyled>
