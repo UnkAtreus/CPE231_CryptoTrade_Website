@@ -10,7 +10,7 @@ import { WalletService } from '../wallet/wallet.service';
 import { RepoService } from '../../repo/repo.service';
 import OrderInput from 'src/models/input/order.input';
 import { UserService } from '../user/user.service';
-import { OrderMethod, OrderType } from 'src/static/enum';
+import { OrderMethod, OrderType, TranasctionMethod } from 'src/static/enum';
 import {
   NotEnoughBalanceInWallet,
   OrderHasBeenFilled,
@@ -176,11 +176,18 @@ export class OrderService implements OnApplicationBootstrap {
   async cancelOrder(userId: number, orderId: number): Promise<Order> {
     const order = await this.getOrderById(orderId);
     if (order.user.id == userId) {
-      await this.walletService.cancelOrder(
-        order.walletFrom.id,
-        Number(order.amount),
-      );
       if (!order.filled) {
+        if (order.method == OrderMethod.Buy) {
+          await this.walletService.cancelOrder(
+            order.walletFrom.id,
+            Number(order.totalBalance),
+          );
+        } else {
+          await this.walletService.cancelOrder(
+            order.walletFrom.id,
+            Number(order.amount),
+          );
+        }
         order.cancel = true;
         const orderResult = await this.repoService.orderRepo.save(order);
         return await this.getOrderById(orderResult.id);
