@@ -160,7 +160,6 @@ type TokenRole {
 type Query {
   getAllUser: [User!]!
   login(login: LoginInput!): TokenRole!
-  updateUser(id: ID!, profile: ProfileInput!): User!
   getUserById(id: ID!): User!
   getUserByToken: User!
   checkPin(pin: String!): Boolean!
@@ -208,20 +207,6 @@ input LoginInput {
   password: String
 }
 
-input ProfileInput {
-  firstName: String
-  lastName: String
-  phone: String
-  nationality: String
-  citizenID: String
-  passportNumber: String
-  birthDate: DateTime
-  gender: Float
-  address: String
-  city: String
-  postcode: String
-}
-
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -231,6 +216,7 @@ type Mutation {
   uploadFile(file: Upload!): Boolean!
   createUser(role: Float!, registerInput: RegisterInput!): TokenRole!
   registerUser(registerInput: RegisterInput!): TokenRole!
+  updateUser(id: ID!, profile: ProfileInput!): User!
   verifyUser(idInput: Float!): String!
   changePassword(passInput: PassInput!): String!
   createPincode(input: String!): User!
@@ -268,6 +254,20 @@ input RegisterInput {
   email: String!
   password: String!
   profileInput: ProfileInput!
+}
+
+input ProfileInput {
+  firstName: String
+  lastName: String
+  phone: String
+  nationality: String
+  citizenID: String
+  passportNumber: String
+  birthDate: DateTime
+  gender: Float
+  address: String
+  city: String
+  postcode: String
 }
 
 input PassInput {

@@ -394,7 +394,7 @@ const HomeContainer = (props) => {
         break;
       case "cryptoPrice":
         setValueTotalSell(
-          BigNumber(valueAmountSell * priceSell).toFormat(2, FORMAT_DECIMAL)
+          BigNumber(valueAmountSell * data).toFormat(2, FORMAT_DECIMAL)
         );
         break;
 
@@ -435,7 +435,7 @@ const HomeContainer = (props) => {
         break;
       case "cryptoPrice":
         setValueTotalBuy(
-          BigNumber(valueAmountBuy * priceBuy).toFormat(2, FORMAT_DECIMAL)
+          BigNumber(valueAmountBuy * data).toFormat(2, FORMAT_DECIMAL)
         );
         // return BigNumber(valueAmountBuy * priceBuy).toFormat(2, FORMAT_DECIMAL);
         break;

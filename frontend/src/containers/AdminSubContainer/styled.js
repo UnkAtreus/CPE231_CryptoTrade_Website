@@ -178,3 +178,17 @@ export const VertifyBtn = styled.div`
   justify-content: center;
   cursor: pointer;
 `;
+
+export const RegisterFormContainer = styled.form`
+  display: block;
+  background-color: ${VARIABLES.COLORS.BACKGROUND_2};
+  padding: 0 24px;
+  border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
+  width: 416px;
+`;
+
+export const BirthdayInput = styled.div``;
+
+export const GenderInput = styled.div`
+  margin-bottom: 8px;
+`;

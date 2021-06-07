@@ -16,8 +16,20 @@ import {
   VertifyBtn,
   HistoryContainer,
   HistorySection,
+  RegisterFormContainer,
+  BirthdayInput,
+  GenderInput,
 } from "./styled";
-import { Container, NavBar, Button, Input } from "components";
+import {
+  Container,
+  Dropdown,
+  DropdownChild,
+  Radio,
+  RadioChild,
+  Button,
+  Input,
+  NavBar,
+} from "components";
 import { useQuery, useMutation, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
 import { marketController } from "apiService";
@@ -25,9 +37,11 @@ import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ToastContainer, toast } from "react-toastify";
 import {
+  faCross,
   faEdit,
   faPen,
   faPlus,
+  faTimes,
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import Modal from "react-modal";
@@ -38,7 +52,7 @@ import {
   CRYPTO_INDEX,
   MOCK_ALL_CUR_PRICE,
   MOCK_USER_INFO,
-  GET_ALL_DATA,
+  GET_ALL_DATA_ID,
 } from "helpers";
 
 const GET_ALL_SYMBOL = gql`
@@ -98,6 +112,104 @@ const AdminSubContainer = ({ match, ...props }) => {
   const [getAllCurrency, setGetAllCurrency] = useState([]);
   const [getAllBank, setGetAllBank] = useState([]);
   const [getAllBankNum, setGetAllBankNum] = useState([]);
+  const [getUserById, setGetUserById] = useState({});
+  const [uid, setUid] = useState(1);
+  const [userParams, setUserParams] = useState({
+    email: "",
+    password: "",
+  });
+  const [profileParams, setProfileParams] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    nationality: "Thai",
+    citizenID: "",
+    passportNumber: "",
+    birthDate: "",
+    gender: 0,
+    address: "",
+    city: "",
+    postcode: "",
+  });
+  const [profileParamsUpdate, setProfileParamsUpdate] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    nationality: "Thai",
+    citizenID: "",
+    passportNumber: "",
+    birthDate: "",
+    gender: 0,
+    address: "",
+    city: "",
+    postcode: "",
+  });
+
+  const [params, setParams] = useState({
+    email: "",
+    password: "",
+    profileInput: {},
+  });
+
+  const [checkPass, setCheckPass] = useState();
+  const [birthDate, setBirthDate] = useState({
+    day: 0,
+    month: 0,
+    year: 0,
+  });
+  useEffect(() => {
+    // console.log(profileParams);
+    setParams({
+      ...userParams,
+      profileInput: profileParams,
+    });
+  }, [profileParams]);
+
+  useEffect(() => {
+    // console.log(userParams);
+    setParams({
+      ...userParams,
+      profileInput: profileParams,
+    });
+  }, [userParams]);
+
+  const CREATE_USER = gql`
+    mutation RegisterUser($input: RegisterInput!) {
+      registerUser(registerInput: $input) {
+        token
+        role
+      }
+    }
+  `;
+
+  const UPDATE_USER = gql`
+    mutation ($input: ID!, $profile: ProfileInput!) {
+      updateUser(id: $input, profile: $profile) {
+        email
+        id
+      }
+    }
+  `;
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const now = new Date().getUTCFullYear();
+  const years = Array(now - (now - 60))
+    .fill("")
+    .map((_v, idx) => now - idx);
 
   const admin_param = [
     "user",
@@ -112,6 +224,136 @@ const AdminSubContainer = ({ match, ...props }) => {
     "bank",
     "banknum",
   ];
+
+  const [createPost, { error }] = useMutation(CREATE_USER, {
+    onCompleted(login) {
+      // {registerUser:
+      //  { role: "customer",
+      //    token: "" }}
+      if (login) {
+        console.log(login);
+        refetch();
+        notify(true);
+        closeModal();
+        // history.push("/login");
+        // window.location.reload();
+      }
+    },
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
+      }
+    },
+  });
+
+  const [updateUser] = useMutation(UPDATE_USER, {
+    onCompleted(login) {
+      // {registerUser:
+      //  { role: "customer",
+      //    token: "" }}
+      if (login) {
+        console.log(login);
+        refetch();
+        notify(true);
+        closeModal();
+        // history.push("/login");
+        // window.location.reload();
+      }
+    },
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
+      }
+    },
+  });
+
+  const handleCreatePost = (event) => {
+    event.preventDefault();
+    console.log(params);
+    createPost({ variables: { input: params } });
+  };
+
+  useEffect(() => {
+    // console.log(birthDate);
+    var string = birthDate.year + "-" + birthDate.month + "-" + birthDate.day;
+    // console.log(string);
+    var date = moment(string).format("YYYY-MM-DDThh:mm:ss[Z]");
+    setProfileParams({
+      ...profileParams,
+      birthDate: date,
+    });
+  }, [birthDate]);
+
+  const DateFormatter = (data) => {
+    if (typeof data === "string") {
+      const month = months.indexOf(data);
+      setBirthDate({ ...birthDate, month: month + 1 });
+    }
+    if (typeof data === "number" && data > 31) {
+      setBirthDate({ ...birthDate, year: data });
+    } else if (typeof data === "number" && data > 0) {
+      setBirthDate({ ...birthDate, day: data });
+    }
+  };
+
+  const genderType = (data) => {
+    switch (data) {
+      case "Male":
+        setProfileParams({
+          ...profileParams,
+          gender: 0,
+        });
+        break;
+      case "Female":
+        setProfileParams({
+          ...profileParams,
+          gender: 1,
+        });
+        break;
+      case "Other":
+        setProfileParams({
+          ...profileParams,
+          gender: 2,
+        });
+        break;
+
+      default:
+        setProfileParams({
+          ...profileParams,
+          gender: 2,
+        });
+        break;
+    }
+  };
+  const genderTypeUpdate = (data) => {
+    switch (data) {
+      case "Male":
+        setProfileParams({
+          ...profileParamsUpdate,
+          gender: 0,
+        });
+        break;
+      case "Female":
+        setProfileParams({
+          ...profileParamsUpdate,
+          gender: 1,
+        });
+        break;
+      case "Other":
+        setProfileParams({
+          ...profileParamsUpdate,
+          gender: 2,
+        });
+        break;
+
+      default:
+        setProfileParams({
+          ...profileParamsUpdate,
+          gender: 2,
+        });
+        break;
+    }
+  };
 
   const [getCurPrice, setgetCurPrice] = useState(MOCK_ALL_CUR_PRICE);
   const curPrice = [];
@@ -169,6 +411,10 @@ const AdminSubContainer = ({ match, ...props }) => {
   function openModal() {
     setIsOpen(true);
   }
+  const [modalIsOpen2, setIsOpen2] = useState(false);
+  function openModal2() {
+    setIsOpen2(true);
+  }
 
   function afterOpenModal() {
     // subtitle.style.color = "#f00";
@@ -176,9 +422,12 @@ const AdminSubContainer = ({ match, ...props }) => {
 
   function closeModal() {
     setIsOpen(false);
+    setIsOpen2(false);
   }
 
-  const { loading, error, data, refetch } = useQuery(GET_ALL_DATA);
+  const { loading, data, refetch } = useQuery(GET_ALL_DATA_ID, {
+    variables: { input: uid },
+  });
 
   const [delUser] = useMutation(DEL_USER, {
     onCompleted(order) {
@@ -245,13 +494,6 @@ const AdminSubContainer = ({ match, ...props }) => {
       setGetAllUser(data.getAllUser);
     }
     if (data && data.getAllWallet) {
-      console.log(data.getAllWallet);
-      var x = [];
-      x = groupArray(data.getAllWallet, "user.id");
-      console.log(x);
-      Object.keys(x).map((key, index) => {
-        console.log(x[key]);
-      });
       setgetAllWallet(groupArray(data.getAllWallet, "user.id"));
     }
     if (data && data.AllOrders) {
@@ -280,6 +522,24 @@ const AdminSubContainer = ({ match, ...props }) => {
     }
     if (data && data.getAllBankNum) {
       setGetAllBankNum(data.getAllBankNum);
+    }
+    if (data && data.getUserById) {
+      console.log("id", data.getUserById);
+      setProfileParamsUpdate({
+        ...profileParamsUpdate,
+        firstName: data.getUserById.firstName,
+        lastName: data.getUserById.lastName,
+        phone: data.getUserById.phone,
+        nationality: data.getUserById.nationality,
+        citizenID: data.getUserById.citizenID,
+        passportNumber: data.getUserById.passportNumber,
+        birthDate: data.getUserById.birthDate,
+        gender: data.getUserById.gender,
+        address: data.getUserById.address,
+        city: data.getUserById.city,
+        postcode: data.getUserById.postcode,
+      });
+      setGetUserById(data.getUserById);
     }
   }, [data]);
 
@@ -332,7 +592,7 @@ const AdminSubContainer = ({ match, ...props }) => {
             <div
               className="label gray mgb-16"
               style={{ alignSelf: "flex-end", cursor: "pointer" }}
-              onClick={() => {}}
+              onClick={openModal}
             >
               +Add Data
             </div>
@@ -520,7 +780,7 @@ const AdminSubContainer = ({ match, ...props }) => {
                     )}
                     style={{ minWidth: "96px" }}
                   >
-                    {console.log(data.verify)}
+                    {/* {console.log(data.verify)} */}
                     {data.verify ? "verify" : "not verify"}
                   </div>
                   <div
@@ -536,7 +796,10 @@ const AdminSubContainer = ({ match, ...props }) => {
                     <ActionBtn
                       className="edit"
                       style={{ margin: "0 8px" }}
-                      onClick={() => {}}
+                      onClick={() => {
+                        setUid(data.id);
+                        openModal2();
+                      }}
                     >
                       <FontAwesomeIcon icon={faPen} />
                     </ActionBtn>
@@ -1962,41 +2225,435 @@ const AdminSubContainer = ({ match, ...props }) => {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <div className="title" ref={(_subtitle) => (subtitle = _subtitle)}>
-          Create Bank Number
+        <div className="content-row space-between align-items-center">
+          <div className="title" ref={(_subtitle) => (subtitle = _subtitle)}>
+            Create User
+          </div>
+          <div style={{ cursor: "pointer" }} onClick={closeModal}>
+            <FontAwesomeIcon icon={faTimes} />
+          </div>
         </div>
 
-        <div className="content-row">
-          <Input
-            title="Amount"
-            suffix={"USD"}
-            value={""}
-            onChange={(e) => {
-              // setBankAmount(e);
-              // setOrderParam({
-              //   ...orderParam,
-              //   amount: Number(e),
-              // });
-            }}
-          ></Input>
-        </div>
-        <div className="content-row">
-          <Button
-            style={{ marginTop: "16px" }}
-            label="Submit"
-            color="green"
-            fontColor="black"
-            onClick={closeModal}
-          />
-          <Button
-            style={{ marginTop: "16px", marginLeft: "8px" }}
-            label="Submit"
-            color="red"
-            fontColor="black"
-            onClick={closeModal}
-          />
-        </div>
+        <RegisterFormContainer onSubmit={handleCreatePost}>
+          <div className="content-column ">
+            <div className="content-row">
+              <Input
+                type="text"
+                title="FirstName"
+                placeholder="Kittipat"
+                style={{ marginRight: "32px" }}
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParams,
+                    firstName: e,
+                  })
+                }
+              />
+              <Input
+                type="text"
+                title="LastName"
+                placeholder="Dechkul"
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParams,
+                    lastName: e,
+                  })
+                }
+              />
+            </div>
+            <Input
+              type="text"
+              title="Email"
+              placeholder="test@gmail.com"
+              onChange={(e) =>
+                setUserParams({
+                  ...userParams,
+                  email: e,
+                })
+              }
+            />
+            <div className="content-row">
+              <Input
+                type="text"
+                title="CitizenID"
+                style={{ marginRight: "32px" }}
+                placeholder="CitizenID"
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParams,
+                    citizenID: e,
+                  })
+                }
+              />
+
+              <Input
+                type="text"
+                title="PassportNumber"
+                placeholder="PassportNumber"
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParams,
+                    passportNumber: e,
+                  })
+                }
+              />
+            </div>
+            <Input
+              type="text"
+              title="Telephone"
+              placeholder="080 000 0000"
+              onChange={(e) =>
+                setProfileParams({
+                  ...profileParams,
+                  phone: e,
+                })
+              }
+            />
+            <BirthdayInput>
+              <div className="content-row">
+                <div className="label white" style={{ marginBottom: "-12px" }}>
+                  BirthDate
+                </div>
+              </div>
+              <div
+                className="inline-flex"
+                style={{
+                  display: "inline-flex",
+                  columnGap: "16px",
+                  width: "100%",
+                }}
+              >
+                <Dropdown
+                  onChange={(e) => {
+                    DateFormatter(e);
+                  }}
+                >
+                  {Array.from(Array(31).keys()).map((data, index) => {
+                    return (
+                      <DropdownChild name={index} key={index}>
+                        {data + 1}
+                      </DropdownChild>
+                    );
+                  })}
+                </Dropdown>
+                <Dropdown
+                  onChange={(e) => {
+                    DateFormatter(e);
+                  }}
+                >
+                  {months.map((data, index) => {
+                    return (
+                      <DropdownChild name={index} key={index}>
+                        {data}
+                      </DropdownChild>
+                    );
+                  })}
+                </Dropdown>
+                <Dropdown
+                  onChange={(e) => {
+                    DateFormatter(e);
+                  }}
+                >
+                  {years.map((data, index) => {
+                    return (
+                      <DropdownChild name={index} key={index}>
+                        {data}
+                      </DropdownChild>
+                    );
+                  })}
+                </Dropdown>
+              </div>
+            </BirthdayInput>
+            <GenderInput>
+              <div className="content-row">
+                <div className="label white">Gender</div>
+              </div>
+              <Radio
+                position="row"
+                gap={16}
+                onChange={(e) => {
+                  genderType(e);
+                }}
+                active={"Male"}
+              >
+                <RadioChild name="Male"></RadioChild>
+                <RadioChild name="Female"></RadioChild>
+                <RadioChild name="Other"></RadioChild>
+              </Radio>
+            </GenderInput>
+            <Input
+              type="text"
+              title="Address"
+              placeholder="Address"
+              onChange={(e) =>
+                setProfileParams({
+                  ...profileParams,
+                  address: e,
+                })
+              }
+            />
+            <div className="content-row">
+              <Input
+                type="text"
+                title="City"
+                placeholder="Bangkok"
+                style={{ marginRight: "32px" }}
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParams,
+                    city: e,
+                  })
+                }
+              />
+              <Input
+                type="text"
+                title="PostCode"
+                placeholder="10140"
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParams,
+                    postcode: e,
+                  })
+                }
+              />
+            </div>
+            <div className="content-row">
+              <Input
+                type="password"
+                style={{ marginRight: "32px" }}
+                title="Password"
+                placeholder="**********"
+                onChange={setCheckPass}
+              />
+              <Input
+                type="password"
+                title="ConfirmPassword"
+                placeholder="**********"
+                onChange={(e) =>
+                  checkPass === e
+                    ? setUserParams({
+                        ...userParams,
+                        password: e,
+                      })
+                    : 0
+                }
+              />
+            </div>
+            <div className="content-row justify-content-center ">
+              <Button
+                style={{ marginTop: "8px" }}
+                label="Submit"
+                color="green"
+                fontColor="black"
+                onClick={() => {}}
+              />
+            </div>
+          </div>
+        </RegisterFormContainer>
       </Modal>
+
+      <Modal
+        isOpen={modalIsOpen2}
+        onAfterOpen={afterOpenModal}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Edit"
+      >
+        <div className="content-row space-between align-items-center">
+          <div className="title" ref={(_subtitle) => (subtitle = _subtitle)}>
+            Edit User
+          </div>
+          <div style={{ cursor: "pointer" }} onClick={closeModal}>
+            <FontAwesomeIcon icon={faTimes} />
+          </div>
+        </div>
+
+        <RegisterFormContainer onSubmit={handleCreatePost}>
+          <div className="content-column ">
+            <div className="content-row">
+              <Input
+                type="text"
+                title="FirstName"
+                value={profileParamsUpdate.firstName}
+                placeholder="Kittipat"
+                style={{ marginRight: "32px" }}
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParamsUpdate,
+                    firstName: e,
+                  })
+                }
+              />
+              <Input
+                type="text"
+                title="LastName"
+                placeholder="Dechkul"
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParamsUpdate,
+                    lastName: e,
+                  })
+                }
+              />
+            </div>
+            <div className="content-row">
+              <Input
+                type="text"
+                title="CitizenID"
+                style={{ marginRight: "32px" }}
+                placeholder="CitizenID"
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParamsUpdate,
+                    citizenID: e,
+                  })
+                }
+              />
+
+              <Input
+                type="text"
+                title="PassportNumber"
+                placeholder="PassportNumber"
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParamsUpdate,
+                    passportNumber: e,
+                  })
+                }
+              />
+            </div>
+            <Input
+              type="text"
+              title="Telephone"
+              placeholder="080 000 0000"
+              onChange={(e) =>
+                setProfileParams({
+                  ...profileParamsUpdate,
+                  phone: e,
+                })
+              }
+            />
+            <BirthdayInput>
+              <div className="content-row">
+                <div className="label white" style={{ marginBottom: "-12px" }}>
+                  BirthDate
+                </div>
+              </div>
+              <div
+                className="inline-flex"
+                style={{
+                  display: "inline-flex",
+                  columnGap: "16px",
+                  width: "100%",
+                }}
+              >
+                <Dropdown
+                  onChange={(e) => {
+                    DateFormatter(e);
+                  }}
+                >
+                  {Array.from(Array(31).keys()).map((data, index) => {
+                    return (
+                      <DropdownChild name={index} key={index}>
+                        {data + 1}
+                      </DropdownChild>
+                    );
+                  })}
+                </Dropdown>
+                <Dropdown
+                  onChange={(e) => {
+                    DateFormatter(e);
+                  }}
+                >
+                  {months.map((data, index) => {
+                    return (
+                      <DropdownChild name={index} key={index}>
+                        {data}
+                      </DropdownChild>
+                    );
+                  })}
+                </Dropdown>
+                <Dropdown
+                  onChange={(e) => {
+                    DateFormatter(e);
+                  }}
+                >
+                  {years.map((data, index) => {
+                    return (
+                      <DropdownChild name={index} key={index}>
+                        {data}
+                      </DropdownChild>
+                    );
+                  })}
+                </Dropdown>
+              </div>
+            </BirthdayInput>
+            <GenderInput>
+              <div className="content-row">
+                <div className="label white">Gender</div>
+              </div>
+              <Radio
+                position="row"
+                gap={16}
+                onChange={(e) => {
+                  genderTypeUpdate(e);
+                }}
+                active={"Male"}
+              >
+                <RadioChild name="Male"></RadioChild>
+                <RadioChild name="Female"></RadioChild>
+                <RadioChild name="Other"></RadioChild>
+              </Radio>
+            </GenderInput>
+            <Input
+              type="text"
+              title="Address"
+              placeholder="Address"
+              onChange={(e) =>
+                setProfileParams({
+                  ...profileParamsUpdate,
+                  address: e,
+                })
+              }
+            />
+            <div className="content-row">
+              <Input
+                type="text"
+                title="City"
+                placeholder="Bangkok"
+                style={{ marginRight: "32px" }}
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParamsUpdate,
+                    city: e,
+                  })
+                }
+              />
+              <Input
+                type="text"
+                title="PostCode"
+                placeholder="10140"
+                onChange={(e) =>
+                  setProfileParams({
+                    ...profileParamsUpdate,
+                    postcode: e,
+                  })
+                }
+              />
+            </div>
+            <div className="content-row justify-content-center ">
+              <Button
+                style={{ marginTop: "8px" }}
+                label="Submit"
+                color="green"
+                fontColor="black"
+                onClick={() => {}}
+              />
+            </div>
+          </div>
+        </RegisterFormContainer>
+      </Modal>
+
       <ToastContainer
         position="bottom-right"
         autoClose={5000}

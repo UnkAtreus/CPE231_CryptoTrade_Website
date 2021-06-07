@@ -5,7 +5,7 @@ import ClassNames from "classnames";
 import { InputStyle, InputField } from "./styled";
 
 export const Input = ({ match, ...props }) => {
-  const [name, setname] = useState("");
+  const [name, setname] = useState(props.value || "");
 
   Input.propTypes = {
     className: PropTypes.string,

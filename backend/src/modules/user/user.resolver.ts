@@ -37,7 +37,7 @@ export class UserResolver {
   ): Promise<any> {
     return this.userService.registerUser(input);
   }
-  @Query(() => User)
+  @Mutation(() => User)
   async updateUser(
     @Args('profile') input: ProfileInput,
     @Args('id', { type: () => ID }) id: number,
