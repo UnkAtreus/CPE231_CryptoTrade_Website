@@ -477,7 +477,7 @@ const WithdrawContainer = ({ match, ...props }) => {
                 ></Input>
                 <div className="content-row space-between mgb-8">
                   <div className="label gray">Fee:</div>
-                  <div className="label white">0 %</div>
+                  <div className="label white">0.1 %</div>
                 </div>
                 <div className="content-row space-between mgb-8">
                   <div className="label gray">You will get:</div>
