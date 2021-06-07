@@ -627,19 +627,19 @@ const OwnerContainer = ({ match, ...props }) => {
                       className="paragraph white mgb-8 text-center"
                       style={{ minWidth: "96px" }}
                     >
-                      {data.currency_currency}
+                      {data.currency}
                     </div>
                     <div
                       className="paragraph white mgb-8 text-center"
                       style={{ minWidth: "96px" }}
                     >
-                      {data.user_id}
+                      {data.id}
                     </div>
                     <div
                       className="paragraph white mgb-8 text-center"
                       style={{ minWidth: "192px" }}
                     >
-                      {data.user_firstName + " " + data.user_lastName}
+                      {data.firstName + " " + data.lastName}
                     </div>
 
                     <div
