@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 import { Gender } from 'src/static/enum';
 
 @InputType()
-class ProfileInput {
+export class ProfileInput {
   @Field()
   readonly firstName?: string;
   @Field()

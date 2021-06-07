@@ -3,7 +3,7 @@ import { User } from 'src/models/object/user.model';
 import { RepoService } from 'src/repo/repo.service';
 import LoginInput from '../../models/input/login.input';
 import * as jwt from 'jsonwebtoken';
-import RegisterInput from '../../models/input/register.input';
+import RegisterInput, { ProfileInput } from '../../models/input/register.input';
 import AllRole from 'src/static/role';
 import { IncorrectPassword, UserNotFound } from 'src/utils/error-handling';
 
@@ -34,7 +34,7 @@ export class UserService {
           ...registerInput.profileInput,
           role: roleget,
         };
-        const result = await this.createOrUpdate(user);
+        const result = await this.repoService.userRepo.save(user);
         if (result) {
           if (roleget.role == AllRole.customer.role) {
             await this.walletService.createAllWalletForUser(result);
@@ -59,8 +59,8 @@ export class UserService {
     return jwt.sign({ id, roleName }, 'secret');
   }
 
-  async createOrUpdate(user: User): Promise<User> {
-    return await this.repoService.userRepo.save(user);
+  async createOrUpdate(data: ProfileInput, id: number): Promise<User> {
+    return await this.repoService.userRepo.save({ id, ...data });
   }
 
   async getUserById(id: number): Promise<User> {

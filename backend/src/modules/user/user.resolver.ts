@@ -1,7 +1,7 @@
 import PincodeInput from 'src/models/input/pincode.input';
 import PassInput from 'src/models/input/password.input';
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
-import RegisterInput from 'src/models/input/register.input';
+import { Args, Context, Mutation, Query, Resolver, ID } from '@nestjs/graphql';
+import RegisterInput, { ProfileInput } from 'src/models/input/register.input';
 import { User } from 'src/models/object/user.model';
 import { UserService } from './user.service';
 import LoginInput from '../../models/input/login.input';
@@ -37,7 +37,18 @@ export class UserResolver {
   ): Promise<any> {
     return this.userService.registerUser(input);
   }
+  @Query(() => User)
+  async updateUser(
+    @Args('profile') input: ProfileInput,
+    @Args('id', { type: () => ID }) id: number,
+  ): Promise<any> {
+    return this.userService.createOrUpdate(input, id);
+  }
 
+  @Query(() => User)
+  async getUserById(@Args('id', { type: () => ID }) id: number) {
+    return this.userService.getUserById(id);
+  }
   @Query(() => User)
   @Roles(['customer', 'staff', 'owner', 'admin'])
   async getUserByToken(@Context('user') user: User) {
