@@ -26,38 +26,6 @@ import {
   GET_ALL_DATA,
 } from "helpers";
 
-const GET_ALL_SYMBOL = gql`
-  query {
-    getAllCurrencyWithNoStatic {
-      currency
-      currencyLongName
-    }
-    getUserWalletByToken {
-      amount
-      inOrder
-      currency {
-        currency
-        currencyLongName
-      }
-    }
-    getUserByToken {
-      role {
-        id
-        role
-      }
-      firstName
-      lastName
-      phone
-      email
-      gender
-      birthDate
-      nationality
-      city
-      address
-    }
-  }
-`;
-
 const AdminContainer = ({ match, ...props }) => {
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
@@ -146,6 +114,7 @@ const AdminContainer = ({ match, ...props }) => {
   };
 
   useEffect(() => {
+    console.log(data);
     if (data && data.getUserByToken) {
       setUserInfo(data.getUserByToken);
     }

@@ -503,6 +503,7 @@ const HomeContainer = (props) => {
 
   useEffect(() => {
     if (data && data.getUserWalletByToken) {
+      console.log(data.getUserWalletByToken);
       setUserWallet(data.getUserWalletByToken);
     }
     if (data && data.Orders) {
