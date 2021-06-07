@@ -627,26 +627,26 @@ const OwnerContainer = ({ match, ...props }) => {
                       className="paragraph white mgb-8 text-center"
                       style={{ minWidth: "96px" }}
                     >
-                      {data.currency}
+                      {data.currency_currency}
                     </div>
                     <div
                       className="paragraph white mgb-8 text-center"
                       style={{ minWidth: "96px" }}
                     >
-                      {data.id}
+                      {data.user_id}
                     </div>
                     <div
                       className="paragraph white mgb-8 text-center"
                       style={{ minWidth: "192px" }}
                     >
-                      {data.firstName + " " + data.lastName}
+                      {data.user_firstName + " " + data.user_lastName}
                     </div>
 
                     <div
                       className="paragraph white mgb-8 text-center"
                       style={{ minWidth: "126px" }}
                     >
-                      {BigNumber(data.amount).toFormat(2)}
+                      {BigNumber(data.row_num).toFormat(2)}
                     </div>
                   </div>
                 ))}
@@ -677,7 +677,9 @@ const OwnerContainer = ({ match, ...props }) => {
           >
             <div>
               <div className="section-headline gray">From Fiat</div>
-              <div className="headline white mgl-32">{countFiat}</div>
+              <div className="headline white mgl-32">
+                {BigNumber(countFiat).toFormat(2)}
+              </div>
             </div>
           </CardFeeContainer>
           <CardFeeContainer
@@ -687,7 +689,9 @@ const OwnerContainer = ({ match, ...props }) => {
           >
             <div>
               <div className="section-headline gray">From Crypto</div>
-              <div className="headline white mgl-32">{countCrypto}</div>
+              <div className="headline white mgl-32">
+                {BigNumber(countCrypto).toFormat(2)}
+              </div>
             </div>
           </CardFeeContainer>
         </div>
@@ -700,7 +704,9 @@ const OwnerContainer = ({ match, ...props }) => {
           >
             <div>
               <div className="section-headline gray">From Order (Crypto)</div>
-              <div className="headline white mgl-32">{countOrderCrypto}</div>
+              <div className="headline white mgl-32">
+                {BigNumber(countOrderCrypto).toFormat(2)}
+              </div>
             </div>
           </CardFeeContainer>
           <CardFeeContainer
@@ -710,7 +716,9 @@ const OwnerContainer = ({ match, ...props }) => {
           >
             <div>
               <div className="section-headline gray">From Order (USDT)</div>
-              <div className="headline white mgl-32">{countOrderUSDT}</div>
+              <div className="headline white mgl-32">
+                {BigNumber(countOrderUSDT).toFormat(2)}
+              </div>
             </div>
           </CardFeeContainer>
         </div>
