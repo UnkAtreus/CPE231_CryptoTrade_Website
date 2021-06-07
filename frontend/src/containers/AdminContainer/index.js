@@ -23,6 +23,7 @@ import {
   CRYPTO_INDEX,
   MOCK_ALL_CUR_PRICE,
   MOCK_USER_INFO,
+  GET_ALL_DATA,
 } from "helpers";
 
 const GET_ALL_SYMBOL = gql`
@@ -60,13 +61,15 @@ const GET_ALL_SYMBOL = gql`
 const AdminContainer = ({ match, ...props }) => {
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
-  const [coinSymbol, setCoinSymbol] = useState([
-    {
-      __typename: "Currency",
-      currencyShortName: "BTC",
-      currency: "Bitcoin",
-    },
-  ]);
+  const [getAllUser, setGetAllUser] = useState([]);
+  const [getAllWallet, setgetAllWallet] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
+  const [getAllP2P, setGetAllP2P] = useState([]);
+  const [getAllCrypto, setGetAllCrypto] = useState([]);
+  const [getAllFiat, setGetAllFiat] = useState([]);
+  const [getAllCard, setGetAllCard] = useState([]);
+  const [getAllRole, setGetAllRole] = useState([]);
+  const [getAllCurrency, setGetAllCurrency] = useState([]);
 
   const [getCurPrice, setgetCurPrice] = useState(MOCK_ALL_CUR_PRICE);
   const curPrice = [];
@@ -94,7 +97,7 @@ const AdminContainer = ({ match, ...props }) => {
     suffix: "",
   };
 
-  const { loading, error, data } = useQuery(GET_ALL_SYMBOL);
+  const { loading, error, data } = useQuery(GET_ALL_DATA);
 
   const GetPrice = async () => {
     const crypto_price = await marketController().getPrice("");
@@ -139,15 +142,35 @@ const AdminContainer = ({ match, ...props }) => {
   };
 
   useEffect(() => {
-    if (data && data.getAllCurrencyWithNoStatic) {
-      setCoinSymbol(data.getAllCurrencyWithNoStatic);
-    }
-    if (data && data.getUserWalletByToken) {
-      setUserWallet(data.getUserWalletByToken);
-    }
     if (data && data.getUserByToken) {
-      console.log(data.getUserByToken);
       setUserInfo(data.getUserByToken);
+    }
+    if (data && data.getAllUser) {
+      setGetAllUser(data.getAllUser);
+    }
+    if (data && data.getAllWallet) {
+      setgetAllWallet(data.getAllWallet);
+    }
+    if (data && data.AllOrders) {
+      setAllOrders(data.AllOrders);
+    }
+    if (data && data.getAllP2P) {
+      setGetAllP2P(data.getAllP2P);
+    }
+    if (data && data.getAllCrypto) {
+      setGetAllCrypto(data.getAllCrypto);
+    }
+    if (data && data.getAllFiat) {
+      setGetAllFiat(data.getAllFiat);
+    }
+    if (data && data.getAllCard) {
+      setGetAllCard(data.getAllCard);
+    }
+    if (data && data.getAllRole) {
+      setGetAllRole(data.getAllRole);
+    }
+    if (data && data.getAllCurrency) {
+      setGetAllCurrency(data.getAllCurrency);
     }
   }, [data]);
 
@@ -168,19 +191,19 @@ const AdminContainer = ({ match, ...props }) => {
           <CardContainer href="/admin/user">
             <div>
               <div className="section-headline gray">User</div>
-              <div className="headline white mgl-32">1010</div>
+              <div className="headline white mgl-32">{getAllUser.length}</div>
             </div>
           </CardContainer>
           <CardContainer href="/admin/wallet">
             <div>
               <div className="section-headline gray">Wallet</div>
-              <div className="headline white mgl-32">223</div>
+              <div className="headline white mgl-32">{getAllUser.length}</div>
             </div>
           </CardContainer>
           <CardContainer href="/admin/order">
             <div>
               <div className="section-headline gray">Order</div>
-              <div className="headline white mgl-32">124</div>
+              <div className="headline white mgl-32">{allOrders.length}</div>
             </div>
           </CardContainer>
         </div>
@@ -188,19 +211,19 @@ const AdminContainer = ({ match, ...props }) => {
           <CardContainer href="/admin/p2p">
             <div>
               <div className="section-headline gray">P2P</div>
-              <div className="headline white mgl-32">1010</div>
+              <div className="headline white mgl-32">{getAllP2P.length}</div>
             </div>
           </CardContainer>
           <CardContainer href="/admin/credit">
             <div>
               <div className="section-headline gray">Credit Card</div>
-              <div className="headline white mgl-32">223</div>
+              <div className="headline white mgl-32">{getAllCard.length}</div>
             </div>
           </CardContainer>
           <CardContainer href="/admin/transcrypto">
             <div>
               <div className="section-headline gray">Trans Crypto</div>
-              <div className="headline white mgl-32">124</div>
+              <div className="headline white mgl-32">{getAllCrypto.length}</div>
             </div>
           </CardContainer>
         </div>
@@ -208,19 +231,21 @@ const AdminContainer = ({ match, ...props }) => {
           <CardContainer href="/admin/transfiat">
             <div>
               <div className="section-headline gray">Trans Fiat</div>
-              <div className="headline white mgl-32">1010</div>
+              <div className="headline white mgl-32">{getAllFiat.length}</div>
             </div>
           </CardContainer>
           <CardContainer href="/admin/role">
             <div>
               <div className="section-headline gray">Role</div>
-              <div className="headline white mgl-32">223</div>
+              <div className="headline white mgl-32">{getAllRole.length}</div>
             </div>
           </CardContainer>
           <CardContainer href="/admin/currency">
             <div>
               <div className="section-headline gray">Currency</div>
-              <div className="headline white mgl-32">124</div>
+              <div className="headline white mgl-32">
+                {getAllCurrency.length}
+              </div>
             </div>
           </CardContainer>
         </div>

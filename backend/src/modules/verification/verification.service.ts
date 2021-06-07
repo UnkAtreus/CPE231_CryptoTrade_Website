@@ -21,7 +21,7 @@ export class VerificationService {
   }
 
   async findAll() {
-    return await this.repoService.veriRepo.find();
+    return await this.repoService.veriRepo.find({ relations: ['user'] });
   }
   async findOne(id: number) {
     return await this.repoService.veriRepo.findOne({ where: { id: id } });
@@ -52,19 +52,23 @@ export class VerificationService {
     });
   }
 
-  async update(id: number, status: TransactionStatus): Promise<boolean> {
+  async update(
+    id: number,
+    status: TransactionStatus,
+    iduser: number,
+  ): Promise<boolean> {
     const veri = await this.findOne(id);
+    console.log(iduser);
+
     veri.status = status;
 
     return await this.repoService.veriRepo.save(veri).then(async (result) => {
       if (result) {
         if (status == TransactionStatus.Done) {
-          return await this.userService
-            .verifyUser(result.user.id)
-            .then((re) => {
-              if (!re) return false;
-              return true;
-            });
+          return await this.userService.verifyUser(iduser).then((re) => {
+            if (!re) return false;
+            return true;
+          });
         }
       }
     });

@@ -22,17 +22,18 @@ export class VerificationResolver {
     return await this.verificationService.findAll();
   }
   @Query(() => [Verification])
-  @Roles(['staff'])
+  @Roles(['staff', 'customer'])
   async allVeriForStaff(): Promise<Verification[]> {
     return await this.verificationService.findAllForStaff();
   }
   @Mutation(() => Boolean)
-  @Roles(['staff'])
+  @Roles(['staff', 'customer'])
   async updateVeri(
     @Args('id') id: number,
     @Args('status') status: TransactionStatus,
+    @Args('idInput') input: number,
   ): Promise<boolean> {
-    return await this.verificationService.update(id, status);
+    return await this.verificationService.update(id, status, input);
   }
   @Query(() => Verification)
   @Roles(['customer'])

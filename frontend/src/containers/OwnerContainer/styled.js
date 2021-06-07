@@ -125,6 +125,17 @@ export const CardContainer = styled.div`
   cursor: pointer;
 `;
 
+export const CardFeeContainer = styled.div`
+  background-color: ${VARIABLES.COLORS.BACKGROUND_2};
+  border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};
+  width: 100%;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  padding: 16px 32px;
+  cursor: pointer;
+`;
+
 export const TopContainer = styled.div`
   background-color: ${VARIABLES.COLORS.BACKGROUND_2};
   border-radius: ${VARIABLES.BORDER_RADIUSES.SMALL};

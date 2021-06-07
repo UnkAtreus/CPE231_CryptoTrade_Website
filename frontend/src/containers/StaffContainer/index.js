@@ -54,12 +54,39 @@ const GET_ALL_SYMBOL = gql`
       city
       address
     }
+
+    getAllFiat {
+      method
+      bank {
+        banktype {
+          bank
+        }
+        bankNumber
+      }
+      status
+      amount
+      totalBalanceLeft
+      fee
+    }
+
+    allVeri {
+      id
+      status
+      imageUrl
+      created_at
+      updated_at
+      user {
+        id
+      }
+    }
   }
 `;
 
 const StaffContainer = ({ match, ...props }) => {
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
+  const [getAllFiat, setGetAllFiat] = useState([]);
+  const [allVeri, setAllVeri] = useState([]);
   const [coinSymbol, setCoinSymbol] = useState([
     {
       __typename: "Currency",
@@ -106,7 +133,7 @@ const StaffContainer = ({ match, ...props }) => {
       }
     });
     setgetCurPrice(curPrice);
-    console.log(getCurPrice);
+    // console.log(getCurPrice);
   };
 
   const getTotal = (flag) => {
@@ -137,6 +164,19 @@ const StaffContainer = ({ match, ...props }) => {
       console.log(data.getUserByToken);
       setUserInfo(data.getUserByToken);
     }
+    if (data && data.allVeri) {
+      // console.log(data.allVeri);
+      setAllVeri(data.allVeri);
+    }
+    if (data && data.getAllFiat) {
+      var temp = [];
+      data.getAllFiat.map((data) => {
+        if (data.method === "1") {
+          temp.push(data);
+        }
+      });
+      setGetAllFiat(temp);
+    }
   }, [data]);
 
   useEffect(() => {
@@ -156,22 +196,16 @@ const StaffContainer = ({ match, ...props }) => {
           <CardContainer href="/staff/vertify">
             <div>
               <div className="section-headline gray">Vertify</div>
-              <div className="headline white mgl-32">1010</div>
-            </div>
-          </CardContainer>
-          <CardContainer href="/staff/withdraw">
-            <div>
-              <div className="section-headline gray">Withdraw</div>
-              <div className="headline white mgl-32">223</div>
+              <div className="headline white mgl-32">{allVeri.length}</div>
             </div>
           </CardContainer>
           <CardContainer
-            href="/staff/deposit
-          "
+            href="/staff/withdraw"
+            style={{ width: "100%", marginLeft: "8px" }}
           >
             <div>
-              <div className="section-headline gray">Deposit</div>
-              <div className="headline white mgl-32">124</div>
+              <div className="section-headline gray">Withdraw Transaction</div>
+              <div className="headline white mgl-32">{getAllFiat.length}</div>
             </div>
           </CardContainer>
         </div>

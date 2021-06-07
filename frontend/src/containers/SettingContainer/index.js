@@ -573,14 +573,14 @@ const SettingContainer = ({ match, ...props }) => {
                     <div
                       className={ClassNames(
                         "label",
-                        userInfo.vertify ? "green" : "red"
+                        userInfo.verify ? "green" : "red"
                       )}
                     >
-                      {userInfo.vertify ? "vertify" : "not vertify"}
+                      {userInfo.verify ? "verify" : "not verify"}
                     </div>
                   </div>
                 </div>
-                {!userInfo.vertify && (
+                {!userInfo.verify && (
                   <div>
                     <div className="content-row mgb-8">
                       <div className="label gray" style={{ minWidth: "164px" }}>

@@ -135,8 +135,6 @@ export const HistorySection = styled.div`
 `;
 
 export const HistoryContainer = styled.div`
-  overflow: auto;
-  height: 410px;
   .history-container {
     height: 32px;
     border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
@@ -147,7 +145,7 @@ export const HistoryContainer = styled.div`
   }
 `;
 
-export const CancleBtn = styled.div`
+export const ActionBtn = styled.div`
   height: 24px;
   width: 24px;
   border-radius: ${VARIABLES.BORDER_RADIUSES.REGULAR};
@@ -156,6 +154,16 @@ export const CancleBtn = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+
+  &.delete {
+    background-color: #f14763cf;
+  }
+  &.edit {
+    background-color: #ffde5acf;
+  }
+  &.add {
+    background-color: #47f19fcf;
+  }
 `;
 
 export const VertifyBtn = styled.div`

@@ -16,13 +16,16 @@ import {
   HistoryContainer,
   HistorySection,
 } from "./styled";
+import ClassNames from "classnames";
 import { Container, NavBar } from "components";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, useMutation, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
 import { marketController } from "apiService";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import ModalImage, { Lightbox } from "react-modal-image";
+import { ToastContainer, toast } from "react-toastify";
 
 import {
   MOCK_WALLET,
@@ -60,6 +63,42 @@ const GET_ALL_SYMBOL = gql`
       city
       address
     }
+    allVeri {
+      id
+      status
+      imageUrl
+      created_at
+      updated_at
+      user {
+        id
+        firstName
+        lastName
+        email
+      }
+    }
+    getAllFiat {
+      id
+      user {
+        id
+      }
+      method
+      bank {
+        banktype {
+          bank
+        }
+        bankNumber
+      }
+      status
+      amount
+      totalBalanceLeft
+      fee
+    }
+  }
+`;
+
+const POST_VERTIFY = gql`
+  mutation ($input: Float!, $id: Float!, $userID: Float!) {
+    updateVeri(status: $input, id: $id, idInput: $userID)
   }
 `;
 
@@ -68,6 +107,9 @@ const StaffSubContainer = ({ match, ...props }) => {
   const [subTitle, setSubTitle] = useState();
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
+  const [allVeri, setAllVeri] = useState([]);
+  const [getAllFiat, setGetAllFiat] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
   const [coinSymbol, setCoinSymbol] = useState([
     {
       __typename: "Currency",
@@ -75,6 +117,30 @@ const StaffSubContainer = ({ match, ...props }) => {
       currency: "Bitcoin",
     },
   ]);
+
+  const notify = (isSuccess, errormsg = "Failed ❌") => {
+    if (isSuccess) {
+      toast.success("Success ✔", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error(errormsg, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
 
   const [getCurPrice, setgetCurPrice] = useState(MOCK_ALL_CUR_PRICE);
   const curPrice = [];
@@ -90,7 +156,26 @@ const StaffSubContainer = ({ match, ...props }) => {
     suffix: "",
   };
 
-  const { loading, error, data } = useQuery(GET_ALL_SYMBOL);
+  const closeLightbox = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
+
+  const [postVertify] = useMutation(POST_VERTIFY, {
+    onCompleted(order) {
+      if (order) {
+        console.log(order);
+        notify(true);
+        refetch();
+      }
+    },
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
+      }
+    },
+  });
 
   const GetPrice = async () => {
     const crypto_price = await marketController().getPrice("");
@@ -145,6 +230,19 @@ const StaffSubContainer = ({ match, ...props }) => {
       console.log(data.getUserByToken);
       setUserInfo(data.getUserByToken);
     }
+    if (data && data.allVeri) {
+      // console.log(data.allVeri);
+      setAllVeri(data.allVeri);
+    }
+    if (data && data.getAllFiat) {
+      var temp = [];
+      data.getAllFiat.map((data) => {
+        if (data.method === "1") {
+          temp.push(data);
+        }
+      });
+      setGetAllFiat(temp);
+    }
   }, [data]);
 
   useEffect(() => {
@@ -161,20 +259,9 @@ const StaffSubContainer = ({ match, ...props }) => {
     }
   }, []);
 
-  return (
-    <SettingStyled>
-      <Header name="header">
-        <NavBar />
-      </Header>
-      <Container>
-        <SubHeader>
-          <div className="feature-card-title white">
-            <a className="feature-card-title white" href="/staff">
-              Staff CMS
-            </a>{" "}
-            / {title}
-          </div>
-        </SubHeader>
+  const getTable = () => {
+    if (subTitle === "Withdraw Order") {
+      return (
         <HistorySection>
           <div className="title white mgb-16">{subTitle}</div>
           <div className="content-row space-between mgb-8">
@@ -183,6 +270,115 @@ const StaffSubContainer = ({ match, ...props }) => {
               style={{ minWidth: "96px" }}
             >
               ID
+            </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "96px" }}
+            >
+              UserID
+            </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "96px" }}
+            >
+              Bank Type
+            </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "126px" }}
+            >
+              Bank Number
+            </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "126px" }}
+            >
+              Amount
+            </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "126px" }}
+            >
+              Total Balance
+            </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "126px" }}
+            >
+              Fee
+            </div>
+          </div>
+
+          <HistoryContainer>
+            {getAllFiat.map((data, index) => {
+              console.log(data);
+
+              return (
+                <div
+                  className={ClassNames(
+                    "content-row space-between align-items-center mgb-8 history-container "
+                  )}
+                  key={index}
+                >
+                  <div
+                    className="label gray text-center"
+                    style={{ minWidth: "96px" }}
+                  >
+                    {data.id}
+                  </div>
+                  <div
+                    className="label gray text-center"
+                    style={{ minWidth: "96px" }}
+                  >
+                    {data.user.id}
+                  </div>
+                  <div
+                    className="label white text-center"
+                    style={{ minWidth: "96px" }}
+                  >
+                    {data.bank.banktype.bank || "0"}
+                  </div>
+                  <div
+                    className="label white text-center"
+                    style={{ minWidth: "126px" }}
+                  >
+                    {data.bank.bankNumber || "0"}
+                  </div>
+                  <div
+                    className="label white text-center"
+                    style={{ minWidth: "126px" }}
+                  >
+                    {BigNumber(data.amount).toFormat(4)}
+                  </div>
+                  <div
+                    className="label white text-center"
+                    style={{ minWidth: "126px" }}
+                  >
+                    {BigNumber(data.totalBalanceLeft).toFormat(4)}
+                  </div>
+                  <div
+                    className="label white text-center"
+                    style={{ minWidth: "126px" }}
+                  >
+                    {BigNumber(data.fee).toFormat(4)}
+                  </div>
+                </div>
+              );
+            })}
+          </HistoryContainer>
+        </HistorySection>
+      );
+    }
+    if (subTitle === "Vertify") {
+      return (
+        <HistorySection>
+          <div className="title white mgb-16">{subTitle}</div>
+          <div className="content-row space-between mgb-8">
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "96px" }}
+            >
+              UserID
             </div>
             <div
               className="label gray text-center"
@@ -215,55 +411,128 @@ const StaffSubContainer = ({ match, ...props }) => {
               Action
             </div>
           </div>
+
           <HistoryContainer>
-            <div className="content-row space-between align-items-center mgb-8 history-container even">
-              <div
-                className="label gray text-center"
-                style={{ minWidth: "96px" }}
-              >
-                01
-              </div>
-              <div
-                className="label white text-center"
-                style={{ minWidth: "126px" }}
-              >
-                Kittipat
-              </div>
-              <div
-                className="label white text-center"
-                style={{ minWidth: "126px" }}
-              >
-                Dechkul
-              </div>
-              <div
-                className="label white text-center"
-                style={{ minWidth: "256px" }}
-              >
-                Kittipat2544@gmail.com
-              </div>
-              <div
-                className="label white text-center"
-                style={{ minWidth: "126px" }}
-              >
-                <a href="/">ID_CARD.jpg</a>
-              </div>
-              <div className="content-row justify-content-center">
-                <div
-                  className="label gray content-row justify-content-center"
-                  style={{ minWidth: "126px" }}
-                >
-                  <VertifyBtn>Vertify</VertifyBtn>
-                </div>
-                <div className="label gray" style={{ minWidth: "64px" }}>
-                  <CancleBtn>
-                    <FontAwesomeIcon icon={faTrashAlt} />
-                  </CancleBtn>
-                </div>
-              </div>
-            </div>
+            {allVeri.map((data, index) => {
+              console.log(data.status);
+              if (data.status !== 1)
+                return (
+                  <div
+                    className={ClassNames(
+                      "content-row space-between align-items-center mgb-8 history-container "
+                    )}
+                    key={index}
+                  >
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "96px" }}
+                    >
+                      {data.user.id}
+                    </div>
+                    <div
+                      className="label white text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      {data.user.firstName}
+                    </div>
+                    <div
+                      className="label white text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      {data.user.lastName}
+                    </div>
+                    <div
+                      className="label white text-center"
+                      style={{ minWidth: "256px" }}
+                    >
+                      {data.user.email}
+                    </div>
+                    <div
+                      className="label white text-center"
+                      style={{
+                        minWidth: "126px",
+                        overflow: "auto",
+                        whiteSpace: "nowrap",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        closeLightbox();
+                      }}
+                    >
+                      {/* <ModalImage small={""} large={""} alt="Hello World!" /> */}
+                      {data.imageUrl}
+                    </div>
+                    <div className="content-row justify-content-center">
+                      <div
+                        className="label gray content-row justify-content-center"
+                        style={{ minWidth: "126px" }}
+                      >
+                        <VertifyBtn
+                          onClick={() => {
+                            console.log(data.user.id);
+                            postVertify({
+                              variables: {
+                                input: 1,
+                                id: data.id,
+                                userID: data.user.id,
+                              },
+                            });
+                          }}
+                        >
+                          Vertify
+                        </VertifyBtn>
+                      </div>
+                      <div className="label gray" style={{ minWidth: "64px" }}>
+                        <CancleBtn>
+                          <FontAwesomeIcon icon={faTrashAlt} />
+                        </CancleBtn>
+                      </div>
+                    </div>
+                  </div>
+                );
+            })}
           </HistoryContainer>
         </HistorySection>
+      );
+    }
+  };
+
+  return (
+    <SettingStyled>
+      <Header name="header">
+        <NavBar />
+      </Header>
+      <Container>
+        <SubHeader>
+          <div className="feature-card-title white">
+            <a className="feature-card-title white" href="/staff">
+              Staff CMS
+            </a>{" "}
+            / {title}
+          </div>
+        </SubHeader>
+
+        {getTable()}
       </Container>
+      {isOpen && (
+        <Lightbox
+          medium={""}
+          large={""}
+          alt="Hello World!"
+          onClose={closeLightbox}
+        />
+      )}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </SettingStyled>
   );
 };

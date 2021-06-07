@@ -11,6 +11,7 @@ import {
   CryptoBalance,
   InfoWrapper,
   OrderContainer,
+  CardFeeContainer,
   TopContainer,
   ShowDataContainer,
   CardContainer,
@@ -59,12 +60,29 @@ const GET_ALL_SYMBOL = gql`
       city
       address
     }
+
+    getCountOrder
+
+    getCountTransaction
+
+    registerCount
+
+    countOrderCancel
+
+    getMostCurrencyDominate
   }
 `;
 
 const OwnerContainer = ({ match, ...props }) => {
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
+  const [getCountOrder, setGetCountOrder] = useState([]);
+  const [getCountTransaction, setGetCountTransaction] = useState([]);
+  const [registerCount, setRegisterCount] = useState([]);
+  const [getMostCurrencyDominate, setGetMostCurrencyDominate] = useState([]);
+  const [countOrder, setCountOrder] = useState(0);
+  const [countRegis, setCountRegis] = useState(0);
+  const [countTrans, setCountTrans] = useState(0);
   const [coinSymbol, setCoinSymbol] = useState([
     {
       __typename: "Currency",
@@ -74,6 +92,9 @@ const OwnerContainer = ({ match, ...props }) => {
   ]);
 
   const [getCurPrice, setgetCurPrice] = useState(MOCK_ALL_CUR_PRICE);
+  const [chartTitle, setChartTitle] = useState("Order");
+  const [feeTitle, setFeeTitle] = useState("Fee Fiat");
+  const [isOpen, setIsOpen] = useState(false);
   const curPrice = [];
 
   const FORMAT_DECIMAL = {
@@ -166,8 +187,34 @@ const OwnerContainer = ({ match, ...props }) => {
       setUserWallet(data.getUserWalletByToken);
     }
     if (data && data.getUserByToken) {
-      console.log(data.getUserByToken);
       setUserInfo(data.getUserByToken);
+    }
+    if (data && data.getMostCurrencyDominate) {
+      setGetMostCurrencyDominate(data.getMostCurrencyDominate);
+    }
+    if (data && data.getCountOrder) {
+      setGetCountOrder(data.getCountOrder);
+      let count_data = 0;
+      data.getCountOrder.map((data) => {
+        count_data += Number(data.count);
+      });
+      setCountOrder(count_data);
+    }
+    if (data && data.getCountTransaction) {
+      let count_data1 = 0;
+      setGetCountTransaction(data.getCountTransaction);
+      data.getCountTransaction.map((data) => {
+        count_data1 += Number(data.count);
+      });
+      setCountTrans(count_data1);
+    }
+    if (data && data.registerCount) {
+      let count_data2 = 0;
+      setRegisterCount(data.registerCount);
+      data.registerCount.map((data) => {
+        count_data2 += Number(data.count);
+      });
+      setCountRegis(count_data2);
     }
   }, [data]);
 
@@ -208,6 +255,56 @@ const OwnerContainer = ({ match, ...props }) => {
     };
   };
 
+  const order_data = (canvas) => {
+    // const ctx = canvas.getContext("2d");
+    var labels = [];
+    var datas = [];
+    if (chartTitle === "Order") {
+      getCountOrder.map((data) => {
+        labels.push(data.date);
+        datas.push(Number(data.count));
+      });
+    }
+    if (chartTitle === "Trasaction") {
+      registerCount.map((data) => {
+        labels.push(data.date);
+        datas.push(Number(data.count));
+      });
+    }
+    if (chartTitle === "New Customer") {
+      getCountTransaction.map((data) => {
+        labels.push(data.date);
+        datas.push(Number(data.count));
+      });
+    }
+
+    return {
+      labels: labels,
+      datasets: [
+        {
+          label: "order",
+          data: datas,
+          backgroundColor: [
+            "rgb(154, 78, 255)",
+            "rgb(154, 78, 255)",
+            "rgb(154, 78, 255)",
+            "rgb(154, 78, 255)",
+            "rgb(154, 78, 255)",
+          ],
+          borderColor: [
+            "rgba(153, 102, 255, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(153, 102, 255, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+  };
+
   const options = {
     responsive: true,
     scales: {
@@ -215,6 +312,10 @@ const OwnerContainer = ({ match, ...props }) => {
         beginAtZero: true,
       },
     },
+  };
+
+  const isToggleChart = () => {
+    setIsOpen(!isOpen);
   };
 
   const plugin = {
@@ -227,6 +328,41 @@ const OwnerContainer = ({ match, ...props }) => {
       ctx.fillRect(0, 0, chart.width, chart.height);
       ctx.restore();
     },
+  };
+
+  const getChart = () => {
+    if (chartTitle === "Order") {
+      return (
+        <ShowDataContainer>
+          <div className="content-clumn" style={{ width: "100%" }}>
+            <div className="section-headline white mgb-24">Order</div>
+            <Bar data={order_data} plugins={[plugin]} options={options} />
+          </div>
+        </ShowDataContainer>
+      );
+    }
+    if (chartTitle === "Trasaction") {
+      return (
+        <ShowDataContainer>
+          <div className="content-clumn" style={{ width: "100%" }}>
+            <div className="section-headline white mgb-24">Order</div>
+            <Bar data={order_data} plugins={[plugin]} options={options} />
+          </div>
+        </ShowDataContainer>
+      );
+    }
+    if (chartTitle === "New Customer") {
+      return (
+        <ShowDataContainer>
+          <div className="content-clumn" style={{ width: "100%" }}>
+            <div className="section-headline white mgb-24">Order</div>
+            <Bar data={order_data} plugins={[plugin]} options={options} />
+          </div>
+        </ShowDataContainer>
+      );
+    } else if (chartTitle === "Cancle") {
+      return <div></div>;
+    }
   };
 
   useEffect(() => {
@@ -243,110 +379,101 @@ const OwnerContainer = ({ match, ...props }) => {
           <div className="feature-card-title white">Owner CMS</div>
         </SubHeader>
         <div className="content-row space-between mgb-8">
-          <CardContainer>
+          <CardContainer
+            onClick={() => {
+              setChartTitle("Order");
+            }}
+          >
             <div>
               <div className="section-headline gray">Order</div>
-              <div className="headline white mgl-32">3.4 K</div>
+              <div className="headline white mgl-32">{countOrder}</div>
             </div>
           </CardContainer>
-          <CardContainer>
+          <CardContainer
+            onClick={() => {
+              setChartTitle("New Customer");
+            }}
+          >
             <div>
               <div className="section-headline gray">New Customer</div>
-              <div className="headline white mgl-32">12</div>
+              <div className="headline white mgl-32">{countRegis}</div>
             </div>
           </CardContainer>
-          <CardContainer>
+          <CardContainer
+            onClick={() => {
+              setChartTitle("Trasaction");
+            }}
+          >
             <div>
-              <div className="section-headline gray">Volumn Trade</div>
-              <div className="headline white mgl-32">1.12 M</div>
+              <div className="section-headline gray">Trasaction</div>
+              <div className="headline white mgl-32">{countTrans}</div>
             </div>
           </CardContainer>
         </div>
-        <ShowDataContainer>
-          <div className="content-clumn" style={{ width: "100%" }}>
-            <div className="section-headline white mgb-24">Order</div>
-
-            {/* <div className="content-column " style={{ width: "100%" }}>
-            <div className="section-headline gray mgb-24">Order</div>
-            <div className="content-row mgb-8">
-              <div
-                className="title gray text-center"
-                style={{ minWidth: "156px" }}
-              >
-                Date
-              </div>
-              <div
-                className="title gray text-center"
-                style={{ minWidth: "156px", marginLeft: "32px" }}
-              >
-                Total order
-              </div>
-            </div>
-            <div className="content-row mgb-8">
-              <div
-                className="title white text-center"
-                style={{ minWidth: "156px" }}
-              >
-                20/01/2544
-              </div>
-              <div
-                className="title white text-center"
-                style={{ minWidth: "156px", marginLeft: "32px" }}
-              >
-                10215645
-              </div>
-            </div>
-          </div> */}
-            <Bar data={context_data} plugins={[plugin]} options={options} />
-          </div>
-        </ShowDataContainer>
+        {getChart()}
         <div className="content-row mgb-8">
           <TopContainer>
             <div className="content-column" style={{ width: "100%" }}>
               <div className="section-headline gray mgb-24">
-                Top 5 user dominate currency
+                The Most Currency Dominate
               </div>
               <div className="content-row space-between">
-                <div className="content-column text-center">
-                  <div className="title gray mgb-8">BTC</div>
-                  <div className="paragraph white mgb-8">000001</div>
-                  <div className="paragraph white mgb-8">000001</div>
-                  <div className="paragraph white mgb-8">000001</div>
-                  <div className="paragraph white mgb-8">000001</div>
-                  <div className="paragraph white mgb-8">000001</div>
+                <div
+                  className="label gray mgb-8 text-center"
+                  style={{ minWidth: "96px" }}
+                >
+                  Currency
                 </div>
-                <div className="content-column text-center">
-                  <div className="title gray mgb-8">BTC</div>
-                  <div className="paragraph white mgb-8">000001</div>
-                  <div className="paragraph white mgb-8">000002</div>
-                  <div className="paragraph white mgb-8">000004</div>
-                  <div className="paragraph white mgb-8">000008</div>
-                  <div className="paragraph white mgb-8">000015</div>
+                <div
+                  className="label gray mgb-8 text-center"
+                  style={{ minWidth: "96px" }}
+                >
+                  UserID
                 </div>
-                <div className="content-column text-center">
-                  <div className="title gray mgb-8">BTC</div>
-                  <div className="paragraph white mgb-8">000012</div>
-                  <div className="paragraph white mgb-8">00004</div>
-                  <div className="paragraph white mgb-8">000065</div>
-                  <div className="paragraph white mgb-8">000101</div>
-                  <div className="paragraph white mgb-8">000054</div>
+                <div
+                  className="label gray mgb-8 text-center"
+                  style={{ minWidth: "192px" }}
+                >
+                  FillName
                 </div>
-                <div className="content-column text-center">
-                  <div className="title gray mgb-8">BTC</div>
-                  <div className="paragraph white mgb-8">000124</div>
-                  <div className="paragraph white mgb-8">000234</div>
-                  <div className="paragraph white mgb-8">000214</div>
-                  <div className="paragraph white mgb-8">000012</div>
-                  <div className="paragraph white mgb-8">000063</div>
+
+                <div
+                  className="label gray mgb-8 text-center mgr-4"
+                  style={{ minWidth: "126px" }}
+                >
+                  Amount
                 </div>
-                <div className="content-column text-center">
-                  <div className="title gray mgb-8">BTC</div>
-                  <div className="paragraph white mgb-8">000041</div>
-                  <div className="paragraph white mgb-8">005001</div>
-                  <div className="paragraph white mgb-8">000031</div>
-                  <div className="paragraph white mgb-8">000011</div>
-                  <div className="paragraph white mgb-8">000009</div>
-                </div>
+              </div>
+              <div style={{ overflow: "auto", height: "192px" }}>
+                {getMostCurrencyDominate.map((data, index) => (
+                  <div className="content-row space-between">
+                    <div
+                      className="paragraph white mgb-8 text-center"
+                      style={{ minWidth: "96px" }}
+                    >
+                      {data.currency_currency}
+                    </div>
+                    <div
+                      className="paragraph white mgb-8 text-center"
+                      style={{ minWidth: "96px" }}
+                    >
+                      {data.user_id}
+                    </div>
+                    <div
+                      className="paragraph white mgb-8 text-center"
+                      style={{ minWidth: "192px" }}
+                    >
+                      {data.user_firstName + " " + data.user_lastName}
+                    </div>
+
+                    <div
+                      className="paragraph white mgb-8 text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      {BigNumber(data.amount).toFormat(2)}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </TopContainer>
@@ -360,9 +487,59 @@ const OwnerContainer = ({ match, ...props }) => {
             </div>
           </OrderContainer>
         </div>
+        <SubHeader style={{ height: "86px" }}>
+          <div className="section-headline white">FEE</div>
+        </SubHeader>
+        <div className="content-row space-between mgb-8">
+          <CardFeeContainer
+            className="mgr-8"
+            onClick={() => {
+              setFeeTitle("Fee Fiat");
+            }}
+          >
+            <div>
+              <div className="section-headline gray">From Fiat</div>
+              <div className="headline white mgl-32">{countOrder}</div>
+            </div>
+          </CardFeeContainer>
+          <CardFeeContainer
+            onClick={() => {
+              setFeeTitle("Fee Crypto");
+            }}
+          >
+            <div>
+              <div className="section-headline gray">Form Crypto</div>
+              <div className="headline white mgl-32">{countRegis}</div>
+            </div>
+          </CardFeeContainer>
+        </div>
+        <div className="content-row space-between mgb-8">
+          <CardFeeContainer
+            className="mgr-8"
+            onClick={() => {
+              setFeeTitle("Fee Order(Crypto)");
+            }}
+          >
+            <div>
+              <div className="section-headline gray">From Order (Crypto)</div>
+              <div className="headline white mgl-32">{countOrder}</div>
+            </div>
+          </CardFeeContainer>
+          <CardFeeContainer
+            onClick={() => {
+              setFeeTitle("Fee Order(USDT)");
+            }}
+          >
+            <div>
+              <div className="section-headline gray">From Order (USDT)</div>
+              <div className="headline white mgl-32">{countRegis}</div>
+            </div>
+          </CardFeeContainer>
+        </div>
+
         <InfomationContainer>
           <div className="content-column">
-            <div className="section-headline gray mgb-24">FEE</div>
+            <div className="section-headline gray mgb-24">{feeTitle}</div>
           </div>
         </InfomationContainer>
       </Container>
