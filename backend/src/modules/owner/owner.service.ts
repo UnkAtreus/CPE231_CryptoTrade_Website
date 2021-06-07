@@ -154,8 +154,10 @@ export class OwnerService {
       .leftJoinAndSelect('wallet.currency', 'currency')
       .leftJoinAndSelect('wallet.user', 'user')
       .select('MAX(wallet.amount + wallet.inOrder)', 'amount')
-      .addSelect('currency')
-      .addSelect('user')
+      .addSelect('currency.currency', 'currency')
+      .addSelect('user.id ')
+      .addSelect('user.firstName ')
+      .addSelect('user.lastName ')
       .groupBy('currency')
       .getRawMany();
 
