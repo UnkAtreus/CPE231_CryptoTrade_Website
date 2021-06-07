@@ -177,7 +177,6 @@ export class UserService {
   async deleteUserByID(id: number): Promise<DeleteResult> {
     return await this.repoService.userRepo.delete({ id: id });
   }
-  
   async updateUserByID(id: number, input: RegisterInput): Promise<User> {
     const user = await this.getUserByID(id);
     user.email = input.email;
