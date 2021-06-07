@@ -17,12 +17,13 @@ import {
   HistoryContainer,
   HistorySection,
 } from "./styled";
-import { Container, NavBar } from "components";
-import { useQuery, gql } from "@apollo/client";
+import { Container, NavBar, Button, Input } from "components";
+import { useQuery, useMutation, gql } from "@apollo/client";
 import BigNumber from "bignumber.js";
 import { marketController } from "apiService";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ToastContainer, toast } from "react-toastify";
 import {
   faEdit,
   faPen,
@@ -72,6 +73,15 @@ const GET_ALL_SYMBOL = gql`
   }
 `;
 
+const DEL_USER = gql`
+  mutation ($input: Float!) {
+    deleteUserByID(id: $input) {
+      id
+      email
+    }
+  }
+`;
+
 const AdminSubContainer = ({ match, ...props }) => {
   const [title, setTitle] = useState();
   const [subTitle, setSubTitle] = useState();
@@ -106,6 +116,30 @@ const AdminSubContainer = ({ match, ...props }) => {
   const [getCurPrice, setgetCurPrice] = useState(MOCK_ALL_CUR_PRICE);
   const curPrice = [];
 
+  const notify = (isSuccess, errormsg = "Failed ❌") => {
+    if (isSuccess) {
+      toast.success("Success ✔", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else {
+      toast.error(errormsg, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
   const FORMAT_DECIMAL = {
     prefix: "",
     decimalSeparator: ".",
@@ -125,25 +159,41 @@ const AdminSubContainer = ({ match, ...props }) => {
       bottom: "auto",
       marginRight: "-50%",
       transform: "translate(-50%, -50%)",
+      border: "0",
+      background: "#27273F",
     },
   };
 
   var subtitle;
-  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
   function openModal() {
     setIsOpen(true);
   }
 
   function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    subtitle.style.color = "#f00";
+    // subtitle.style.color = "#f00";
   }
 
   function closeModal() {
     setIsOpen(false);
   }
 
-  const { loading, error, data } = useQuery(GET_ALL_DATA);
+  const { loading, error, data, refetch } = useQuery(GET_ALL_DATA);
+
+  const [delUser] = useMutation(DEL_USER, {
+    onCompleted(order) {
+      if (order) {
+        console.log(order);
+        notify(true);
+        refetch();
+      }
+    },
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
+      }
+    },
+  });
 
   const GetPrice = async () => {
     const crypto_price = await marketController().getPrice("");
@@ -263,6 +313,12 @@ const AdminSubContainer = ({ match, ...props }) => {
     } else if (type === "currency") {
       setTitle("Currency");
       setSubTitle("Currency List");
+    } else if (type === "banknum") {
+      setTitle("Bank Number");
+      setSubTitle("Bank Number List");
+    } else if (type === "bank") {
+      setTitle("Bank");
+      setSubTitle("Bank List");
     }
   }, []);
 
@@ -484,7 +540,14 @@ const AdminSubContainer = ({ match, ...props }) => {
                     >
                       <FontAwesomeIcon icon={faPen} />
                     </ActionBtn>
-                    <ActionBtn className="delete" onClick={() => {}}>
+                    <ActionBtn
+                      className="delete"
+                      onClick={() => {
+                        delUser({
+                          variables: { input: data.id },
+                        });
+                      }}
+                    >
                       <FontAwesomeIcon icon={faTrashAlt} />
                     </ActionBtn>
                   </div>
@@ -1610,6 +1673,178 @@ const AdminSubContainer = ({ match, ...props }) => {
           </div>
         </HistorySection>
       );
+    } else if (type === "banknum" && getAllBankNum.length !== 0) {
+      return (
+        <HistorySection>
+          <div className="content-row space-between">
+            <div className="title white mgb-16">{subTitle}</div>
+            <div
+              className="label gray mgb-16"
+              style={{ alignSelf: "flex-end", cursor: "pointer" }}
+              onClick={() => {}}
+            >
+              +Add Data
+            </div>
+          </div>
+          <div style={{ width: "944px", maxHeight: "440px", overflow: "auto" }}>
+            <div className="content-row space-between mgb-8">
+              <div
+                className="label gray text-center"
+                style={{ minWidth: "96px" }}
+              >
+                ID
+              </div>
+              <div
+                className="label gray text-center"
+                style={{ minWidth: "96px" }}
+              >
+                UserID
+              </div>
+              <div
+                className="label gray text-center"
+                style={{ minWidth: "96px" }}
+              >
+                Bank Type
+              </div>
+              <div
+                className="label gray text-center"
+                style={{ minWidth: "126px" }}
+              >
+                BankNumber
+              </div>
+              <div
+                className="label gray text-center"
+                style={{ minWidth: "126px" }}
+              >
+                Action
+              </div>
+            </div>
+            <HistoryContainer>
+              {getAllBankNum.map((data, index) => (
+                <div
+                  className="content-row space-between align-items-center mgb-8 history-container "
+                  key={index}
+                >
+                  <div
+                    className="label gray text-center"
+                    style={{ minWidth: "96px" }}
+                  >
+                    {data.id}
+                  </div>
+                  <div
+                    className="label white text-center"
+                    style={{ minWidth: "96px" }}
+                  >
+                    {data.user.id}
+                  </div>
+                  <div
+                    className="label white text-center"
+                    style={{ minWidth: "96px" }}
+                  >
+                    {data.banktype.bank}
+                  </div>
+                  <div
+                    className={ClassNames("label text-center")}
+                    style={{ minWidth: "126px" }}
+                  >
+                    {data.bankNumber}
+                  </div>
+
+                  <div
+                    className="label gray text-center content-row justify-content-center"
+                    style={{ minWidth: "126px" }}
+                  >
+                    <ActionBtn
+                      className="edit"
+                      style={{ margin: "0 8px" }}
+                      onClick={() => {}}
+                    >
+                      <FontAwesomeIcon icon={faPen} />
+                    </ActionBtn>
+                    <ActionBtn className="delete" onClick={() => {}}>
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </ActionBtn>
+                  </div>
+                </div>
+              ))}
+            </HistoryContainer>
+          </div>
+        </HistorySection>
+      );
+    } else if (type === "bank" && getAllBank.length !== 0) {
+      return (
+        <HistorySection>
+          <div className="content-row space-between">
+            <div className="title white mgb-16">{subTitle}</div>
+            <div
+              className="label gray mgb-16"
+              style={{ alignSelf: "flex-end", cursor: "pointer" }}
+              onClick={() => {}}
+            >
+              +Add Data
+            </div>
+          </div>
+          <div style={{ width: "944px", maxHeight: "440px", overflow: "auto" }}>
+            <div className="content-row space-between mgb-8">
+              <div
+                className="label gray text-center"
+                style={{ minWidth: "96px" }}
+              >
+                ID
+              </div>
+              <div
+                className="label gray text-center"
+                style={{ minWidth: "96px" }}
+              >
+                Bank Type
+              </div>
+              <div
+                className="label gray text-center"
+                style={{ minWidth: "126px" }}
+              >
+                Action
+              </div>
+            </div>
+            <HistoryContainer>
+              {getAllBank.map((data, index) => (
+                <div
+                  className="content-row space-between align-items-center mgb-8 history-container "
+                  key={index}
+                >
+                  <div
+                    className="label gray text-center"
+                    style={{ minWidth: "96px" }}
+                  >
+                    {data.id}
+                  </div>
+                  <div
+                    className="label white text-center"
+                    style={{ minWidth: "96px" }}
+                  >
+                    {data.bank}
+                  </div>
+
+                  <div
+                    className="label gray text-center content-row justify-content-center"
+                    style={{ minWidth: "126px" }}
+                  >
+                    <ActionBtn
+                      className="edit"
+                      style={{ margin: "0 8px" }}
+                      onClick={() => {}}
+                    >
+                      <FontAwesomeIcon icon={faPen} />
+                    </ActionBtn>
+                    <ActionBtn className="delete" onClick={() => {}}>
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </ActionBtn>
+                  </div>
+                </div>
+              ))}
+            </HistoryContainer>
+          </div>
+        </HistorySection>
+      );
     }
   };
 
@@ -1716,9 +1951,9 @@ const AdminSubContainer = ({ match, ...props }) => {
           </HistoryContainer>
         </HistorySection> */}
         {showTable()}
-        <div>
+        {/* <div>
           <button onClick={openModal}>Open Modal</button>
-        </div>
+        </div> */}
       </Container>
       <Modal
         isOpen={modalIsOpen}
@@ -1727,17 +1962,52 @@ const AdminSubContainer = ({ match, ...props }) => {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <h2 ref={(_subtitle) => (subtitle = _subtitle)}>Hello</h2>
-        <button onClick={closeModal}>close</button>
-        <div>I am a modal</div>
-        <form>
-          <input />
-          <button>tab navigation</button>
-          <button>stays</button>
-          <button>inside</button>
-          <button>the modal</button>
-        </form>
+        <div className="title" ref={(_subtitle) => (subtitle = _subtitle)}>
+          Create Bank Number
+        </div>
+
+        <div className="content-row">
+          <Input
+            title="Amount"
+            suffix={"USD"}
+            value={""}
+            onChange={(e) => {
+              // setBankAmount(e);
+              // setOrderParam({
+              //   ...orderParam,
+              //   amount: Number(e),
+              // });
+            }}
+          ></Input>
+        </div>
+        <div className="content-row">
+          <Button
+            style={{ marginTop: "16px" }}
+            label="Submit"
+            color="green"
+            fontColor="black"
+            onClick={closeModal}
+          />
+          <Button
+            style={{ marginTop: "16px", marginLeft: "8px" }}
+            label="Submit"
+            color="red"
+            fontColor="black"
+            onClick={closeModal}
+          />
+        </div>
       </Modal>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </SettingStyled>
   );
 };
