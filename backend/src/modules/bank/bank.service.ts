@@ -67,7 +67,9 @@ export class BankService {
   }
 
   async getBankNumAll(): Promise<BankNum[]> {
-    return await this.repoService.bankNumRepo.find();
+    return await this.repoService.bankNumRepo.find({
+      relations: ['user', 'banktype'],
+    });
   }
 
   async getBankNumByToken(user: User): Promise<BankNum[]> {

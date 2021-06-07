@@ -149,19 +149,30 @@ export class OwnerService {
       .getRawMany();
   }
   async getMostCurrencyDominate() {
-    const s = await this.repoService.walletRepo
-      .createQueryBuilder('wallet')
-      .leftJoinAndSelect('wallet.currency', 'currency')
-      .leftJoinAndSelect('wallet.user', 'user')
-      .select('MAX(wallet.amount + wallet.inOrder)', 'amount')
-      .addSelect('currency.currency', 'currency')
-      .addSelect('user.id ')
-      .addSelect('user.firstName ')
-      .addSelect('user.lastName ')
-      .groupBy('currency')
-      .getRawMany();
+    const subQuey =
+      '(SELECT `currency`.`currency` AS `currency_currency`, `wallet`.`amount` + `wallet`.`inOrder` AS `amount` , ROW_NUMBER() OVER (PARTITION BY `currency` ORDER BY `amount` desc) as row_num, `user`.`id`  AS `user_id`, `user`.`email`  AS `user_email`, `user`.`firstName`  AS `user_firstName`, `user`.`lastName`  AS `user_lastName` FROM `wallet` `wallet` LEFT JOIN `currency` `currency` ON `currency`.`id`=`wallet`.`currencyId`  LEFT JOIN `user` `user` ON `user`.`id`=`wallet`.`userId`)';
+    const s = getConnection()
+      .createQueryBuilder()
+      .from(subQuey, 't')
+      .andWhere('row_num = 1');
 
-    return s;
+    console.log(s.getSql());
+
+    // const s = this.repoService.walletRepo
+    //   .createQueryBuilder('wallet')
+    //   .leftJoinAndSelect('wallet.currency', 'currency')
+    //   .leftJoinAndSelect('wallet.user', 'user')
+    //   .select('MAX(wallet.amount + wallet.inOrder)', 'amount')
+    //   .addSelect('currency.currency', 'currency')
+    //   .addSelect('user.id ', 'user_id')
+    //   .addSelect('user.email ', 'user_email')
+    //   .addSelect('user.firstName ', 'user_firstName')
+    //   .addSelect('user.lastName ', 'user_lastName')
+    //   .groupBy('currency');
+    // // .getRawMany();
+    // console.log(await s.getSql());
+
+    return await s.getRawMany();
   }
   async getCountUserRegister(date?: Date) {
     date = date ?? new Date();
