@@ -169,4 +169,8 @@ export const VertifyBtn = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: 0.3s;
+  &:hover {
+    background-color: #47f19fa6;
+  }
 `;

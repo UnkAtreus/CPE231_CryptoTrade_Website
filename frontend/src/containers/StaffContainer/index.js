@@ -86,6 +86,8 @@ const StaffContainer = ({ match, ...props }) => {
   const [userWallet, setUserWallet] = useState(MOCK_WALLET);
   const [userInfo, setUserInfo] = useState(MOCK_USER_INFO);
   const [getAllFiat, setGetAllFiat] = useState([]);
+  const [countVeri, setCountVeri] = useState(0);
+  const [countWithdraw, setCountWithdraw] = useState(0);
   const [allVeri, setAllVeri] = useState([]);
   const [coinSymbol, setCoinSymbol] = useState([
     {
@@ -165,16 +167,26 @@ const StaffContainer = ({ match, ...props }) => {
       setUserInfo(data.getUserByToken);
     }
     if (data && data.allVeri) {
-      // console.log(data.allVeri);
+      console.log(data.allVeri);
+      let count = 0;
+      data.allVeri.map((data) => {
+        if (data.status !== "0") count += 1;
+      });
+      setCountVeri(count);
       setAllVeri(data.allVeri);
     }
     if (data && data.getAllFiat) {
       var temp = [];
+      let count = 0;
       data.getAllFiat.map((data) => {
         if (data.method === "1") {
           temp.push(data);
+          if (data.status !== "1") {
+            count += 1;
+          }
         }
       });
+      setCountWithdraw(count);
       setGetAllFiat(temp);
     }
   }, [data]);
@@ -196,7 +208,7 @@ const StaffContainer = ({ match, ...props }) => {
           <CardContainer href="/staff/vertify">
             <div>
               <div className="section-headline gray">Vertify</div>
-              <div className="headline white mgl-32">{allVeri.length}</div>
+              <div className="headline white mgl-32">{countVeri}</div>
             </div>
           </CardContainer>
           <CardContainer
@@ -205,7 +217,7 @@ const StaffContainer = ({ match, ...props }) => {
           >
             <div>
               <div className="section-headline gray">Withdraw Transaction</div>
-              <div className="headline white mgl-32">{getAllFiat.length}</div>
+              <div className="headline white mgl-32">{countWithdraw}</div>
             </div>
           </CardContainer>
         </div>

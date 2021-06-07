@@ -64,7 +64,6 @@ export const CRYPTO_INDEX = {
   bch: 3,
   dot: 4,
   usdt: 5,
-  thb: 6,
   usd: 6,
 };
 

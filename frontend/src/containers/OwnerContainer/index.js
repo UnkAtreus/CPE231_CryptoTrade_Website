@@ -92,9 +92,16 @@ const OwnerContainer = ({ match, ...props }) => {
   const [getSumFiatFee, setGetSumFiatFee] = useState([]);
   const [countOrderCancel, setCountOrderCancel] = useState([]);
   const [countOrderFilled, setCountOrderFilled] = useState([]);
+  const [countOrderFilledDate, setCountOrderFilledDate] = useState([]);
   const [countOrder, setCountOrder] = useState(0);
   const [countRegis, setCountRegis] = useState(0);
   const [countTrans, setCountTrans] = useState(0);
+  const [countFiat, setCountFiat] = useState(0);
+  const [countCrypto, setCountCrypto] = useState(0);
+  const [countOrderCrypto, setCountOrderCrypto] = useState(0);
+  const [countOrderUSDT, setCountOrderUSDT] = useState(0);
+  const [countCancel, setCountCancel] = useState(0);
+  const [countCancelValue, setCountCancelValue] = useState(0);
   const [coinSymbol, setCoinSymbol] = useState([
     {
       __typename: "Currency",
@@ -230,17 +237,47 @@ const OwnerContainer = ({ match, ...props }) => {
     }
 
     if (data && data.getSumCryptoFee) {
+      let count_data = 0;
+      data.getSumCryptoFee.map((data) => {
+        count_data += Number(data.sumCryptoFee);
+      });
+      setCountCrypto(count_data);
       setGetSumCryptoFee(groupArray(data.getSumCryptoFee, "cc_currency"));
       setGetSumCryptoFeeDate(groupArray(data.getSumCryptoFee, "date"));
     }
     if (data && data.getSumFiatFee) {
+      let count_data = 0;
+      data.getSumFiatFee.map((data) => {
+        count_data += Number(data.sumFiatFee);
+      });
+      setCountFiat(count_data);
       setGetSumFiatFee(data.getSumFiatFee);
     }
     if (data && data.countOrderCancel) {
+      let count_data = 0;
+      let count_cancel = 0;
+      data.countOrderCancel.map((data) => {
+        count_data += Number(data.sum);
+        count_cancel += 1;
+      });
+      setCountCancel(count_cancel);
+      setCountCancelValue(count_data);
       setCountOrderCancel(groupArray(data.countOrderCancel, "date"));
     }
     if (data && data.countOrderFilled) {
-      setCountOrderFilled(groupArray(data.countOrderFilled, "date"));
+      let count_data = 0;
+      let count_data_usdt = 0;
+      data.countOrderFilled.map((data) => {
+        if (data.currencyTo !== "USDT") {
+          count_data += Number(data.sum);
+        } else {
+          count_data_usdt += Number(data.sum);
+        }
+      });
+      setCountOrderCrypto(count_data);
+      setCountOrderUSDT(count_data_usdt);
+      setCountOrderFilled(groupArray(data.countOrderFilled, "currencyTo"));
+      setCountOrderFilledDate(groupArray(data.countOrderFilled, "date"));
     }
   }, [data]);
 
@@ -342,6 +379,7 @@ const OwnerContainer = ({ match, ...props }) => {
     // console.log(getSumCryptoFee);
     console.log("countOrderCancel", countOrderCancel);
     console.log(countOrderFilled);
+    console.log(countOrderFilledDate);
 
     if (feeTitle === "Fee Fiat") {
       getSumFiatFee.map((data, index) => {
@@ -385,23 +423,52 @@ const OwnerContainer = ({ match, ...props }) => {
       });
     }
     if (feeTitle === "Fee Order(Crypto)") {
-      Object.keys(getSumCryptoFee).map((key, index) => {
-        label = key;
-        getSumCryptoFee[key].map((data, index2) => {
-          if (index < N) {
-            datas.push(data.sumCryptoFee);
-          }
-        });
-        dataset.push({
-          label: label,
-          data: datas,
-          backgroundColor: ["rgb(154, 78, 255)"],
-          borderColor: ["rgba(153, 102, 255, 1)"],
-          borderWidth: 1,
-        });
-        datas = [];
+      Object.keys(countOrderFilled).map((key, index) => {
+        if (key !== "USDT") {
+          label = key;
+
+          countOrderFilled[key].map((data, index2) => {
+            if (index < N) {
+              datas.push(data.sumCryptoFee);
+            }
+          });
+          dataset.push({
+            label: label,
+            data: datas,
+            backgroundColor: ["rgb(154, 78, 255)"],
+            borderColor: ["rgba(153, 102, 255, 1)"],
+            borderWidth: 1,
+          });
+          datas = [];
+        }
       });
-      Object.keys(getSumCryptoFeeDate).map((key, index) => {
+      Object.keys(countOrderFilledDate).map((key, index) => {
+        if (index < N) {
+          labels.push(key);
+        }
+      });
+    }
+    if (feeTitle === "Fee Order(USDT)") {
+      Object.keys(countOrderFilled).map((key, index) => {
+        if (key === "USDT") {
+          label = key;
+
+          countOrderFilled[key].map((data, index2) => {
+            if (index < N) {
+              datas.push(data.sumCryptoFee);
+            }
+          });
+          dataset.push({
+            label: label,
+            data: datas,
+            backgroundColor: ["rgb(154, 78, 255)"],
+            borderColor: ["rgba(153, 102, 255, 1)"],
+            borderWidth: 1,
+          });
+          datas = [];
+        }
+      });
+      Object.keys(countOrderFilledDate).map((key, index) => {
         if (index < N) {
           labels.push(key);
         }
@@ -444,7 +511,7 @@ const OwnerContainer = ({ match, ...props }) => {
       return (
         <ShowDataContainer>
           <div className="content-clumn" style={{ width: "100%" }}>
-            <div className="section-headline white mgb-24">Order</div>
+            <div className="section-headline white mgb-24">{chartTitle}</div>
             <Bar data={order_data} plugins={[plugin]} options={options} />
           </div>
         </ShowDataContainer>
@@ -454,7 +521,7 @@ const OwnerContainer = ({ match, ...props }) => {
       return (
         <ShowDataContainer>
           <div className="content-clumn" style={{ width: "100%" }}>
-            <div className="section-headline white mgb-24">Order</div>
+            <div className="section-headline white mgb-24">{chartTitle}</div>
             <Bar data={order_data} plugins={[plugin]} options={options} />
           </div>
         </ShowDataContainer>
@@ -464,7 +531,7 @@ const OwnerContainer = ({ match, ...props }) => {
       return (
         <ShowDataContainer>
           <div className="content-clumn" style={{ width: "100%" }}>
-            <div className="section-headline white mgb-24">Order</div>
+            <div className="section-headline white mgb-24">{chartTitle}</div>
             <Bar data={order_data} plugins={[plugin]} options={options} />
           </div>
         </ShowDataContainer>
@@ -560,19 +627,19 @@ const OwnerContainer = ({ match, ...props }) => {
                       className="paragraph white mgb-8 text-center"
                       style={{ minWidth: "96px" }}
                     >
-                      {data.currency_currency}
+                      {data.currency}
                     </div>
                     <div
                       className="paragraph white mgb-8 text-center"
                       style={{ minWidth: "96px" }}
                     >
-                      {data.user_id}
+                      {data.id}
                     </div>
                     <div
                       className="paragraph white mgb-8 text-center"
                       style={{ minWidth: "192px" }}
                     >
-                      {data.user_firstName + " " + data.user_lastName}
+                      {data.firstName + " " + data.lastName}
                     </div>
 
                     <div
@@ -590,9 +657,11 @@ const OwnerContainer = ({ match, ...props }) => {
             <div className="content-column">
               <div className="section-headline gray mgb-24">Cancel order</div>
               <div className="title gray">Amount</div>
-              <div className="headline white mgl-32">1500</div>
+              <div className="headline white mgl-32">{countCancel}</div>
               <div className="title gray">Total value</div>
-              <div className="headline white mgl-32">15078 $</div>
+              <div className="headline white mgl-32">
+                {BigNumber(countCancelValue).toFormat(0)} $
+              </div>
             </div>
           </OrderContainer>
         </div>
@@ -608,7 +677,7 @@ const OwnerContainer = ({ match, ...props }) => {
           >
             <div>
               <div className="section-headline gray">From Fiat</div>
-              <div className="headline white mgl-32">{countOrder}</div>
+              <div className="headline white mgl-32">{countFiat}</div>
             </div>
           </CardFeeContainer>
           <CardFeeContainer
@@ -618,7 +687,7 @@ const OwnerContainer = ({ match, ...props }) => {
           >
             <div>
               <div className="section-headline gray">From Crypto</div>
-              <div className="headline white mgl-32">{countRegis}</div>
+              <div className="headline white mgl-32">{countCrypto}</div>
             </div>
           </CardFeeContainer>
         </div>
@@ -631,7 +700,7 @@ const OwnerContainer = ({ match, ...props }) => {
           >
             <div>
               <div className="section-headline gray">From Order (Crypto)</div>
-              <div className="headline white mgl-32">{countOrder}</div>
+              <div className="headline white mgl-32">{countOrderCrypto}</div>
             </div>
           </CardFeeContainer>
           <CardFeeContainer
@@ -641,7 +710,7 @@ const OwnerContainer = ({ match, ...props }) => {
           >
             <div>
               <div className="section-headline gray">From Order (USDT)</div>
-              <div className="headline white mgl-32">{countRegis}</div>
+              <div className="headline white mgl-32">{countOrderUSDT}</div>
             </div>
           </CardFeeContainer>
         </div>

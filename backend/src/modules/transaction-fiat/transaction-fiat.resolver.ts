@@ -40,7 +40,6 @@ export class TransactionFiatResolver {
     return await this.fiatService.countAllFiat();
   }
   @Mutation(() => TransactionFiat)
-  @Roles(['staff'])
   async updateFiatStatus(
     @Args('status') status: TransactionStatus,
     @Args('id', { type: () => ID }) id: number,

@@ -102,6 +102,18 @@ const POST_VERTIFY = gql`
   }
 `;
 
+const POST_WITHDRAW = gql`
+  mutation ($id: ID!, $input: Float!) {
+    updateFiatStatus(id: $id, status: $input) {
+      user {
+        id
+      }
+      status
+      method
+    }
+  }
+`;
+
 const StaffSubContainer = ({ match, ...props }) => {
   const [title, setTitle] = useState();
   const [subTitle, setSubTitle] = useState();
@@ -163,6 +175,20 @@ const StaffSubContainer = ({ match, ...props }) => {
   const { loading, error, data, refetch } = useQuery(GET_ALL_SYMBOL);
 
   const [postVertify] = useMutation(POST_VERTIFY, {
+    onCompleted(order) {
+      if (order) {
+        console.log(order);
+        notify(true);
+        refetch();
+      }
+    },
+    onError(error) {
+      if (error) {
+        notify(false, String(error));
+      }
+    },
+  });
+  const [postWithdraw] = useMutation(POST_WITHDRAW, {
     onCompleted(order) {
       if (order) {
         console.log(order);
@@ -307,63 +333,88 @@ const StaffSubContainer = ({ match, ...props }) => {
             >
               Fee
             </div>
+            <div
+              className="label gray text-center"
+              style={{ minWidth: "96px" }}
+            >
+              Action
+            </div>
           </div>
 
           <HistoryContainer>
             {getAllFiat.map((data, index) => {
               console.log(data);
-
-              return (
-                <div
-                  className={ClassNames(
-                    "content-row space-between align-items-center mgb-8 history-container "
-                  )}
-                  key={index}
-                >
+              if (data.status !== "1") {
+                return (
                   <div
-                    className="label gray text-center"
-                    style={{ minWidth: "96px" }}
+                    className={ClassNames(
+                      "content-row space-between align-items-center mgb-8 history-container "
+                    )}
+                    key={index}
                   >
-                    {data.id}
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "96px" }}
+                    >
+                      {data.id}
+                    </div>
+                    <div
+                      className="label gray text-center"
+                      style={{ minWidth: "96px" }}
+                    >
+                      {data.user.id}
+                    </div>
+                    <div
+                      className="label white text-center"
+                      style={{ minWidth: "96px" }}
+                    >
+                      {data.bank.banktype.bank || "0"}
+                    </div>
+                    <div
+                      className="label white text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      {data.bank.bankNumber || "0"}
+                    </div>
+                    <div
+                      className="label white text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      {BigNumber(data.amount).toFormat(4)}
+                    </div>
+                    <div
+                      className="label white text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      {BigNumber(data.totalBalanceLeft).toFormat(4)}
+                    </div>
+                    <div
+                      className="label white text-center"
+                      style={{ minWidth: "126px" }}
+                    >
+                      {BigNumber(data.fee).toFormat(4)}
+                    </div>
+                    <div
+                      className="label gray content-row justify-content-center"
+                      style={{ minWidth: "96px" }}
+                    >
+                      <VertifyBtn
+                        onClick={() => {
+                          console.log(data.id);
+                          postWithdraw({
+                            variables: {
+                              id: data.id,
+                              input: 1,
+                            },
+                          });
+                        }}
+                      >
+                        Success
+                      </VertifyBtn>
+                    </div>
                   </div>
-                  <div
-                    className="label gray text-center"
-                    style={{ minWidth: "96px" }}
-                  >
-                    {data.user.id}
-                  </div>
-                  <div
-                    className="label white text-center"
-                    style={{ minWidth: "96px" }}
-                  >
-                    {data.bank.banktype.bank || "0"}
-                  </div>
-                  <div
-                    className="label white text-center"
-                    style={{ minWidth: "126px" }}
-                  >
-                    {data.bank.bankNumber || "0"}
-                  </div>
-                  <div
-                    className="label white text-center"
-                    style={{ minWidth: "126px" }}
-                  >
-                    {BigNumber(data.amount).toFormat(4)}
-                  </div>
-                  <div
-                    className="label white text-center"
-                    style={{ minWidth: "126px" }}
-                  >
-                    {BigNumber(data.totalBalanceLeft).toFormat(4)}
-                  </div>
-                  <div
-                    className="label white text-center"
-                    style={{ minWidth: "126px" }}
-                  >
-                    {BigNumber(data.fee).toFormat(4)}
-                  </div>
-                </div>
-              );
+                );
+              }
             })}
           </HistoryContainer>
         </HistorySection>

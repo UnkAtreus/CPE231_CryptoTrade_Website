@@ -153,7 +153,6 @@ export const OrderContainer = styled.div`
   display: flex;
   padding: 16px 32px;
   margin-left: 8px;
-  cursor: pointer;
 `;
 
 export const ShowDataContainer = styled.div`
