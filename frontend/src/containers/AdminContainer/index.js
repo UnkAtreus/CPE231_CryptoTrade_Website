@@ -70,6 +70,8 @@ const AdminContainer = ({ match, ...props }) => {
   const [getAllCard, setGetAllCard] = useState([]);
   const [getAllRole, setGetAllRole] = useState([]);
   const [getAllCurrency, setGetAllCurrency] = useState([]);
+  const [getAllBank, setGetAllBank] = useState([]);
+  const [getAllBankNum, setGetAllBankNum] = useState([]);
 
   const [getCurPrice, setgetCurPrice] = useState(MOCK_ALL_CUR_PRICE);
   const curPrice = [];
@@ -84,6 +86,8 @@ const AdminContainer = ({ match, ...props }) => {
     "transfiat",
     "role",
     "currency",
+    "banknum",
+    "bank",
   ];
 
   const FORMAT_DECIMAL = {
@@ -172,6 +176,12 @@ const AdminContainer = ({ match, ...props }) => {
     if (data && data.getAllCurrency) {
       setGetAllCurrency(data.getAllCurrency);
     }
+    if (data && data.getAllBank) {
+      setGetAllBank(data.getAllBank);
+    }
+    if (data && data.getAllBankNum) {
+      setGetAllBankNum(data.getAllBankNum);
+    }
   }, [data]);
 
   // useEffect(() => {
@@ -246,6 +256,22 @@ const AdminContainer = ({ match, ...props }) => {
               <div className="headline white mgl-32">
                 {getAllCurrency.length}
               </div>
+            </div>
+          </CardContainer>
+        </div>
+        <div className="content-row mgb-8">
+          <CardContainer href="/admin/banknum">
+            <div>
+              <div className="section-headline gray">Bank Number</div>
+              <div className="headline white mgl-32">
+                {getAllBankNum.length}
+              </div>
+            </div>
+          </CardContainer>
+          <CardContainer href="/admin/bank" style={{ marginLeft: "8px" }}>
+            <div>
+              <div className="section-headline gray">Bank</div>
+              <div className="headline white mgl-32">{getAllBank.length}</div>
             </div>
           </CardContainer>
         </div>

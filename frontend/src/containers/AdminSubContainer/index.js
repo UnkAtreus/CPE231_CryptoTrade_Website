@@ -86,6 +86,8 @@ const AdminSubContainer = ({ match, ...props }) => {
   const [getAllCard, setGetAllCard] = useState([]);
   const [getAllRole, setGetAllRole] = useState([]);
   const [getAllCurrency, setGetAllCurrency] = useState([]);
+  const [getAllBank, setGetAllBank] = useState([]);
+  const [getAllBankNum, setGetAllBankNum] = useState([]);
 
   const admin_param = [
     "user",
@@ -97,6 +99,8 @@ const AdminSubContainer = ({ match, ...props }) => {
     "transfiat",
     "role",
     "currency",
+    "bank",
+    "banknum",
   ];
 
   const [getCurPrice, setgetCurPrice] = useState(MOCK_ALL_CUR_PRICE);
@@ -220,6 +224,12 @@ const AdminSubContainer = ({ match, ...props }) => {
     }
     if (data && data.getAllCurrency) {
       setGetAllCurrency(data.getAllCurrency);
+    }
+    if (data && data.getAllBank) {
+      setGetAllBank(data.getAllBank);
+    }
+    if (data && data.getAllBankNum) {
+      setGetAllBankNum(data.getAllBankNum);
     }
   }, [data]);
 

@@ -170,5 +170,26 @@ export const GET_ALL_DATA = gql`
       currency
       currencyLongName
     }
+
+    getAllBank {
+      id
+      bank
+      banknum {
+        banktype {
+          bank
+        }
+      }
+    }
+
+    getAllBankNum {
+      id
+      banktype {
+        bank
+      }
+      bankNumber
+      user {
+        id
+      }
+    }
   }
 `;
