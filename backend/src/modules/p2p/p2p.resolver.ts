@@ -20,7 +20,6 @@ export class P2PResolver {
   }
 
   @Query(() => [PtoP])
-  @Roles(['customer'])
   async getAllP2P(): Promise<PtoP[]> {
     return this.p2pService.getAllP2P();
   }

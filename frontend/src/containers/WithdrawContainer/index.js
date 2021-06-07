@@ -657,11 +657,11 @@ const WithdrawContainer = ({ match, ...props }) => {
                         <div
                           className={ClassNames(
                             "label text-center",
-                            items.status === "0" ? "green" : "red"
+                            items.status === "0" ? "white" : "green"
                           )}
                           style={{ minWidth: "64px" }}
                         >
-                          {items.status === "0" ? "success" : "cancle"}
+                          {items.status === "0" ? "pending" : "success"}
                         </div>
                         <div
                           className="label white text-center"
