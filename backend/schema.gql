@@ -160,7 +160,8 @@ type TokenRole {
 type Query {
   getAllUser: [User!]!
   login(login: LoginInput!): TokenRole!
-  updateUser(profile: RegisterInput!): User!
+  updateUser(id: ID!, profile: ProfileInput!): User!
+  getUserById(id: ID!): User!
   getUserByToken: User!
   checkPin(pin: String!): Boolean!
   getAllWallet: [Wallet!]!
@@ -205,12 +206,6 @@ type Query {
 input LoginInput {
   email: String
   password: String
-}
-
-input RegisterInput {
-  email: String!
-  password: String!
-  profileInput: ProfileInput!
 }
 
 input ProfileInput {
@@ -268,6 +263,12 @@ type Mutation {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input RegisterInput {
+  email: String!
+  password: String!
+  profileInput: ProfileInput!
+}
 
 input PassInput {
   oldPass: String

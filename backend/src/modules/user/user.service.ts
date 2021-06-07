@@ -90,7 +90,7 @@ export class UserService {
           ...registerInput.profileInput,
           role: AllRole.customer,
         };
-        const result = await this.createOrUpdate(user); // สร้างเสร็จ
+        const result = await this.repoService.userRepo.save(user);
         if (result) {
           await this.walletService.createAllWalletForUser(result);
           const token = await this.createToken(result);
